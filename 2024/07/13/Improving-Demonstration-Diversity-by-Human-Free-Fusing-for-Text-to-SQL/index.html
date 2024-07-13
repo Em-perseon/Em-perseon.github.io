@@ -194,7 +194,7 @@
     </div>
     
     <div class="content" v-pre>
-        <h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul>
+        <h1 id="1-Abstract"><a href="#1-Abstract" class="headerlink" title="1.Abstract"></a>1.Abstract</h1><ul>
 <li><p>使用<strong>大型语言模型(llm)的上下文学习</strong>是当前<strong>Text-to-SQL​</strong>的主流方法。先前的研究已经探索了从人工标记的示范池中选择相关的示范，但这些方法缺乏<strong>多样性</strong>，并且需要高昂的标记成本。</p>
 </li>
 <li><p>在这项工作中，我们将讨论度量和增强文本到sql演示池的多样性。首先，我们引入了一个<strong>多样性度量</strong>，并提出了现有标签数据的多样性可以进一步增强。受这些发现的启发，提出了<strong>fuse</strong>，迭代地融合演示，以创建基于人类标记的多样化演示池，甚至从头开始使用llm，从而降低标记成本。FUSED在现有标记的基础上实现了3.2%的平均改进，在几个主流数据集上实现了5.0%的从头开始改进，证明了它的有效性</p>
@@ -212,19 +212,24 @@
 <p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/zirui-HIT/Fused">https://github.com/zirui-HIT/Fused</a></p>
 </li>
 </ul>
-<h1 id="1-Analysis"><a href="#1-Analysis" class="headerlink" title="1.Analysis"></a>1.Analysis</h1><p>提出可以进一步增强现有标记演示池的多样性。首先，我们讨论了示范池的高度多样性的必要性。然后，我们引入了一个度量来量化演示池的多样性。基于这一度量，我们讨论了现有标签数据的多样性可以进一步增强。我们将目前的度量标准与附录A中其他现有度量标准进行比较。</p>
+<h1 id="2-Analysis"><a href="#2-Analysis" class="headerlink" title="2.Analysis"></a>2.Analysis</h1><p>提出可以进一步增强现有标记演示池的多样性。首先，我们讨论了示范池的高度多样性的必要性。然后，我们引入了一个度量来量化演示池的多样性。基于这一度量，我们讨论了现有标签数据的多样性可以进一步增强。我们将目前的度量标准与附录A中其他现有度量标准进行比较。</p>
 <h2 id="Necessity-of-the-Diversity"><a href="#Necessity-of-the-Diversity" class="headerlink" title="Necessity of the Diversity"></a>Necessity of the Diversity</h2><ul>
 <li>LLms通过模仿提供的示范来生成答案，也就是，给定一个用户问题，以前的工作从演示池中选择最相似的演示来指导LLMs生成答案，但是，由于用户问题是<strong>不可预测的</strong>，因此演示池应该尽可能多样化，以涵盖各种用户问题。多样性越高，任何用户问题与演示之间的相似性越高，从而更好地指导答案生成;多样性越低，越来越多的用户问题与演示不太相似，从而降低了模型的性能。</li>
 </ul>
 <h2 id="Diversity-Measurement"><a href="#Diversity-Measurement" class="headerlink" title="Diversity Measurement"></a>Diversity Measurement</h2><ul>
-<li>基于前面的讨论，我们使用与演示池相似度最低的用户问题来度量演示池的多样性。</li>
+<li>基于前面的讨论，我们使用<strong>与演示池相似度最低</strong>的用户问题来度量演示池的多样性。</li>
 <li>形式上$D&#x3D;{d_i}$表示演示池，$U&#x3D;{u}$表示用户问题，$sim(U,D)$表示U和D之间的相似度，以本文中它们编码向量之间的欧氏距离的倒数计算，利用下面公式来衡量示范池$D$​的多样性，称为多样性度量，该指标对应于与演示池中最相似的演示相似度最小的用户问题与任何其他用户问题的相似度。</li>
 </ul>
 <p>$$\mathrm{DM}&#x3D;\min_{u\in U}\max_{d_i\in D}\mathrm{sim}(u,d_i)$$​</p>
-<h2 id="Diversity-of-the-Existing-Labeling-Can-be-Further-Enhanced"><a href="#Diversity-of-the-Existing-Labeling-Can-be-Further-Enhanced" class="headerlink" title="Diversity of the Existing Labeling Can be Further Enhanced"></a>Diversity of the Existing Labeling Can be Further Enhanced</h2><p>使用上面的度量，我们然后度量现有文本到sql标记演示池的多样性。现有标注演示池的DM和性能如图4和图5所示。这些数字显示了DM和性能明显高于现有标记数据的其他演示池。因此，虽然现有的标签表现出较高的多样性，但可以进一步改进，从而提高性能。因此，我们接下来将讨论综合演示的方法，以增强演示池的多样性。</p>
-<p><img src="C:\Users\s\AppData\Roaming\Typora\typora-user-images\image-20240713153855664.png" alt="image-20240713153855664"></p>
-<p><img src="C:\Users\s\AppData\Roaming\Typora\typora-user-images\image-20240713153912054.png" alt="image-20240713153912054"></p>
+<h2 id="Diversity-of-the-Existing-Labeling-Can-be-Further-Enhanced"><a href="#Diversity-of-the-Existing-Labeling-Can-be-Further-Enhanced" class="headerlink" title="Diversity of the Existing Labeling Can be Further Enhanced"></a>Diversity of the Existing Labeling Can be Further Enhanced</h2><ul>
+<li>使用上面的度量，我们然后度量现有文本到sql标记演示池的多样性。现有标注演示池的DM和性能如图4和图5所示。这些数字显示了DM和性能明显高于现有标记数据的其他演示池。因此，虽然现有的标签表现出较高的多样性，但可以进一步改进，从而提高性能。因此，我们接下来将讨论综合演示的方法，以增强演示池的多样性。</li>
+</ul>
+<div style="display: flex; justify-content: space-around;">
+  <img src="C:\Users\s\AppData\Roaming\Typora\typora-user-images\image-20240713153855664.png" style="width: 200px; height: auto; margin: 10px;">
+  <img src="C:\Users\s\AppData\Roaming\Typora\typora-user-images\image-20240713153912054.png" style="width: 200px; height: auto; margin: 10px;">
+</div>
 
+<h1 id="3-Method"><a href="#3-Method" class="headerlink" title="3.Method"></a>3.Method</h1>
     </div>
     
     
