@@ -260,7 +260,7 @@
 <h2 id="2-1-Supervised-fine-tunning-for-Text-to-SQL"><a href="#2-1-Supervised-fine-tunning-for-Text-to-SQL" class="headerlink" title="2.1 Supervised fine-tunning for Text-to-SQL"></a>2.1 Supervised fine-tunning for Text-to-SQL</h2><ul>
 <li><p>在这个小节中，将探索在开源社区实践的Text-to-SQL任务的监督调优过程</p>
 </li>
-<li><p>给定一组数据库$D_i$ 其中包含对问题$$q_i$$和相应的SQL查询$s_i$，目标是使用一组训练数据$T&#x3D;{(q_i,s_i,D_i)}$对大预言模型M进行微调，其中$q_i$和$s_i$表示自然语言问题和及其在数据库$D_i$上关联的SQL查询。监督微调的目标是为了<strong>最小化经验损失</strong>：<br>$$<br>\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i&#x3D;1}^{|T|}\mathcal{L}(M^*(\sigma_f(q_i,D_i,s_i))<br>$$</p>
+<li><p>给定一组数据库$D_i$ 其中包含对问题$q_i$和相应的SQL查询$s_i$，目标是使用一组训练数据$T&#x3D;{(q_i,s_i,D_i)}$对大预言模型M进行微调，其中$q_i$和$s_i$表示自然语言问题和及其在数据库$D_i$上关联的SQL查询。监督微调的目标是为了<strong>最小化经验损失</strong>：$$\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i&#x3D;1}^{|T|}\mathcal{L}(M^*(\sigma_f(q_i,D_i,s_i))$$</p>
 </li>
 </ul>
 
