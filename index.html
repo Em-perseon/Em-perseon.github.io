@@ -260,7 +260,7 @@
 <h2 id="2-1-有监督问题到SQL的微调（Supervised-fine-tunning-for-Text-to-SQL）"><a href="#2-1-有监督问题到SQL的微调（Supervised-fine-tunning-for-Text-to-SQL）" class="headerlink" title="2.1 有监督问题到SQL的微调（Supervised fine-tunning for Text-to-SQL）"></a>2.1 有监督问题到SQL的微调（Supervised fine-tunning for Text-to-SQL）</h2><ul>
 <li><p>在这个小节中，将探索在开源社区实践的Text-to-SQL任务的监督调优过程</p>
 </li>
-<li><p>给定一组数据库$D_i$ 其中包含对问题$q_i$和相应的SQL查询$s_i$，目标是使用一组训练数据$T&#x3D;{(q_i,s_i,D_i)}$对大预言模型M进行微调，其中$q_i$和$s_i$表示自然语言问题和及其在数据库$D_i$上关联的SQL查询。监督微调的目标是为了<strong>最小化经验损失</strong>：$$\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i&#x3D;1}^{|T|}\mathcal{L}(M^*(\sigma_f(q_i,D_i,s_i))$$</p>
+<li><p>给定一组数据库$D_i$ 其中包含对问题$q_i$和相应的SQL查询$s_i$，目标是使用一组训练数据$T&#x3D;$对大预言模型M进行微调，其中$q_i$和$s_i$表示自然语言问题和及其在数据库$D_i$上关联的SQL查询。监督微调的目标是为了<strong>最小化经验损失</strong>：$$\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i&#x3D;1}^{|T|}\mathcal{L}(M^*(\sigma_f(q_i,D_i,s_i))$$</p>
 <ul>
 <li>其中，$\mathcal{L}$是测量实际SQL查询和模型生成的SQL查询之间的差异。$\sigma_f$决定了问题、数据库模式和SQL查询的格式</li>
 </ul>
@@ -279,7 +279,16 @@
 </li>
 </ul>
 <h2 id="2-2-分解监督微调（Decomposed-Supervised-Fine-tuning）"><a href="#2-2-分解监督微调（Decomposed-Supervised-Fine-tuning）" class="headerlink" title="2.2 分解监督微调（Decomposed Supervised Fine-tuning）"></a>2.2 分解监督微调（Decomposed Supervised Fine-tuning）</h2><p>提出了一个两阶段的微调过程，将模式链接和SQL生成分开，旨在提高NL-to-SQL系统的性能</p>
-<h3 id="2-2-1-模式链接微调-（-Schema-linking-Fine-tuning）"><a href="#2-2-1-模式链接微调-（-Schema-linking-Fine-tuning）" class="headerlink" title="2.2.1 模式链接微调 （ Schema-linking Fine-tuning）"></a>2.2.1 模式链接微调 （ Schema-linking Fine-tuning）</h3>
+<h3 id="2-2-1-模式链接微调-（-Schema-linking-Fine-tuning）"><a href="#2-2-1-模式链接微调-（-Schema-linking-Fine-tuning）" class="headerlink" title="2.2.1 模式链接微调 （ Schema-linking Fine-tuning）"></a>2.2.1 模式链接微调 （ Schema-linking Fine-tuning）</h3><ul>
+<li>模式链接涉及识别数据库中相关的列和表，以响应自然语言查询。<ul>
+<li>它已被证明可以增强跨域泛化性并促进复杂查询的创建</li>
+<li>在之前的研究中，模式链接主要是通过上下文学习方法或在SQL生成的微调过程中隐含地完成的</li>
+</ul>
+</li>
+<li>在本文章当中，将模式链接视为一项独特的任务，并显式微调llm，以便在使用自然语言查询时识别相关的表和列。</li>
+<li>给定训练数据集$T&#x3D;{(q_i,s_i,D_i)}$，提取</li>
+</ul>
+
             
         </div>
     </div>
@@ -293,7 +302,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-sql/" style="color: #00a596">LLMs sql</a>
+            <a href="/tags/LLMs-sql/" style="color: #03a9f4">LLMs sql</a>
         </span>
         
     </div>
