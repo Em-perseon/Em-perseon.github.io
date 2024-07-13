@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Archives | XuSibo&#39;s Blog</title>
+    <title>DTS-SQL: Decomposed Text-to-SQL with Small Large Language Models | XuSibo&#39;s Blog</title>
     <meta name="author" content="Rick" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -37,6 +37,10 @@
 
 
 <script src="/js/lib/preview.js"></script>
+
+
+
+
 
 
 
@@ -150,55 +154,72 @@
 </transition>
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>DTS-SQL: Decomposed Text-to-SQL with Small Large Language Models</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/12
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
             
-<div id="archives">
-    
-    <div id="timeline-wrap" ref="timeline">
-        
-        <div class="timeline" data-title="dts-sql:decomposedtext-to-sqlwithsmalllargelanguagemodels">
-            <div class="timeline-tail"></div>
-            <div class="timeline-content">
-                <div class="item-time">2024/7/12</div>
-                <a href="/2024/07/12/DTS-SQL-Decomposed-Text-to-SQL-with-Small-Large-Language-Models/">
-                    <h3>DTS-SQL: Decomposed Text-to-SQL with Small Large Language Models</h3>
+            
+            <span class="tag">
+                
+                <a href="/tags/LLMs-sql/" style="color: #ff7d73">
+                    LLMs sql
                 </a>
-                <div class="info">
-                    
-                    
-                    <span class="tags">
-                        <span class="icon">
-                            <i class="fa-solid fa-tags fa-fw"></i>
-                        </span>
-                        
-                        
-                        <span class="tag">
-                            
-                            <a href="/tags/LLMs-sql/" style="color: #00a596">
-                                LLMs sql
-                            </a>
-                        </span>
-                        
-                    </span>
-                    
-                </div>
-            </div>
-        </div>
-        
-        <div class="timeline" data-title="self-attentivesequentialrecommendation">
-            <div class="timeline-tail"></div>
-            <div class="timeline-content">
-                <div class="item-time">2024/7/12</div>
-                <a href="/2024/07/12/Self-Attentive-Sequential-Recommendation/">
-                    <h3>Self-Attentive Sequential Recommendation</h3>
-                </a>
-                <div class="info">
-                    
-                    
-                </div>
-            </div>
-        </div>
+            </span>
+            
+        </span>
         
     </div>
+    
+    <div class="content" v-pre>
+        <h1 id="1-Abstract"><a href="#1-Abstract" class="headerlink" title="1. Abstract"></a>1. Abstract</h1><p>文章介绍了一种名为DTS-SQL的新技术，它是一种分解式文本到SQL（Text-to-SQL）的方法，旨在减小开源小型语言模型（LLMs）与专有大型语言模型之间的性能差距。<br></p>
+<p>文章链接：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2402.01117">https://arxiv.org/pdf/2402.01117</a><br>代码链接：<a target="_blank" rel="noopener" href="https://anonymous.4open.science/r/DTS-SQL-2A42/README.md">https://anonymous.4open.science/r/DTS-SQL-2A42/README.md</a></p>
+<h1 id="2-Methodology"><a href="#2-Methodology" class="headerlink" title="2. Methodology"></a>2. Methodology</h1><ul>
+<li><p>LLMs的一个显著发展是它们训练后细化，这增强了它们与首选行为的一致性。<br></p>
+<ul>
+<li>训练后细化指的是大型语言模型（LLMs）完成初步的<strong>预训练阶段</strong>之后，进行的进一步训练或调整过程。这个阶段的目的是使模型更好地适应特定的应用场景或任务，提高其性能和输出结果的准确性。</li>
+</ul>
+</li>
+<li><p>目前由于缺乏包含人类或者人工智能反馈的广泛数据集，导致人们导致人们主要关注<strong>Text-to-SQL</strong>的监督微调。这种方法需要一组特定的指令或提示及其相应的输出或响应。<br></p>
+<ul>
+<li>关于为什么要关注<strong>Text-to-SQL</strong>：Text-to-SQL系统能够将自然语言描述转化成对应的SQL查询语句，这项技术能够有效地辅助人们对海量的数据库进行查询。<ul>
+<li>Text-to-SQL就是这样一项转化自然语言描述为SQL查询语句的技术。举个例子：当我们询问智能助手 “贾樟柯导演是在哪出生的啊？”，Text-to-SQL模型就会先根据问句解析出SQL语句“SELECT birth_city FROM director WHERE name &#x3D;”贾樟柯””，再对数据库执行该命令，最后向用户返回查询结果“山西省汾阳市”。<br></li>
+<li>《一文了解Text-to-SQL》文章链接：<a target="_blank" rel="noopener" href="https://www.jiqizhixin.com/articles/2019-12-27-11">https://www.jiqizhixin.com/articles/2019-12-27-11</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>文章研究在Text-to-SQL上下文中对llm进行监督微调的既定方法。介绍了新的两步微调方法，旨在增强文本到sql领域中模型的性能</p>
+</li>
+</ul>
+<h2 id="2-1-Supervised-fine-tunning-for-Text-to-SQL"><a href="#2-1-Supervised-fine-tunning-for-Text-to-SQL" class="headerlink" title="2.1 Supervised fine-tunning for Text-to-SQL"></a>2.1 Supervised fine-tunning for Text-to-SQL</h2><ul>
+<li><p>在这个小节中，将探索在开源社区实践的Text-to-SQL任务的监督调优过程</p>
+</li>
+<li><p>给定一组数据库$$D_i$$ 其中包含对问题$$q_i$$和相应的SQL查询$$s_i$$，目标是使用一组训练数据$$T&#x3D;{(q_i,s_i,D_i)}$$对大预言模型M进行微调，其中$$q_i$$和$$s_i$$表示自然语言问题和及其在数据库$$D_i$$上关联的SQL查询。监督微调的目标是为了<strong>最小化经验损失</strong>：<br>$$<br>\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i&#x3D;1}^{|T|}\mathcal{L}(M^*(\sigma_f(q_i,D_i,s_i))<br>$$</p>
+</li>
+</ul>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
 </div>
 
             <footer id="footer">
@@ -229,6 +250,12 @@
         
     </div>
     <script src="/js/main.js"></script>
+    
+    
+
+
+
+
     
 </body>
 </html>
