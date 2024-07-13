@@ -240,7 +240,7 @@
             <h1 id="1-Abstract"><a href="#1-Abstract" class="headerlink" title="1. Abstract"></a>1. Abstract</h1><p>文章介绍了一种名为DTS-SQL的新技术，它是一种分解式文本到SQL（Text-to-SQL）的方法，旨在减小开源小型语言模型（LLMs）与专有大型语言模型之间的性能差距。<br></p>
 <p>文章链接：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2402.01117">https://arxiv.org/pdf/2402.01117</a><br>代码链接：<a target="_blank" rel="noopener" href="https://anonymous.4open.science/r/DTS-SQL-2A42/README.md">https://anonymous.4open.science/r/DTS-SQL-2A42/README.md</a></p>
 <h1 id="2-Methodology"><a href="#2-Methodology" class="headerlink" title="2. Methodology"></a>2. Methodology</h1><ul>
-<li><p>LLMs的一个显著发展是它们训练后细化，这增强了它们与首选行为的一致性。<br></p>
+<li><p>LLMs的一个显著发展是，其会进行训练后细化，增强了它们与首选行为的一致性。<br></p>
 <ul>
 <li>训练后细化指的是大型语言模型（LLMs）完成初步的<strong>预训练阶段</strong>之后，进行的进一步训练或调整过程。这个阶段的目的是使模型更好地适应特定的应用场景或任务，提高其性能和输出结果的准确性。</li>
 </ul>
@@ -257,13 +257,29 @@
 <li><p>文章研究在Text-to-SQL上下文中对llm进行监督微调的既定方法。介绍了新的两步微调方法，旨在增强文本到sql领域中模型的性能</p>
 </li>
 </ul>
-<h2 id="2-1-Supervised-fine-tunning-for-Text-to-SQL"><a href="#2-1-Supervised-fine-tunning-for-Text-to-SQL" class="headerlink" title="2.1 Supervised fine-tunning for Text-to-SQL"></a>2.1 Supervised fine-tunning for Text-to-SQL</h2><ul>
+<h2 id="2-1-有监督问题到SQL的微调（Supervised-fine-tunning-for-Text-to-SQL）"><a href="#2-1-有监督问题到SQL的微调（Supervised-fine-tunning-for-Text-to-SQL）" class="headerlink" title="2.1 有监督问题到SQL的微调（Supervised fine-tunning for Text-to-SQL）"></a>2.1 有监督问题到SQL的微调（Supervised fine-tunning for Text-to-SQL）</h2><ul>
 <li><p>在这个小节中，将探索在开源社区实践的Text-to-SQL任务的监督调优过程</p>
 </li>
 <li><p>给定一组数据库$D_i$ 其中包含对问题$q_i$和相应的SQL查询$s_i$，目标是使用一组训练数据$T&#x3D;{(q_i,s_i,D_i)}$对大预言模型M进行微调，其中$q_i$和$s_i$表示自然语言问题和及其在数据库$D_i$上关联的SQL查询。监督微调的目标是为了<strong>最小化经验损失</strong>：$$\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i&#x3D;1}^{|T|}\mathcal{L}(M^*(\sigma_f(q_i,D_i,s_i))$$</p>
+<ul>
+<li>其中，$\mathcal{L}$是测量实际SQL查询和模型生成的SQL查询之间的差异。$\sigma_f$决定了问题、数据库模式和SQL查询的格式</li>
+</ul>
+</li>
+<li><p>主要的问题就是，我们事先不知道数据库中的表和哪些表是和要生成的SQL相关</p>
+</li>
+<li><p>因此一种常用的调优方法包括在提示中包括<strong>所有表的模式</strong>以及<strong>问题</strong>和<strong>SQL对</strong>。</p>
+<ul>
+<li>这种方法有两个目的:<ul>
+<li>教模型生成正确的SQL查询</li>
+<li>并从所有提供的表中识别相关的表。</li>
+</ul>
+</li>
+<li>这种同时针对两个目标进行训练的方法使llm的SQL生成任务变得复杂，特别是对于只有几十亿个参数的较小模型。每个任务——生成SQL查询并正确链接到相关模式——都需要自己的推理过程。在大型语言模型中，很大一部分错误可归因于不正确的模式链接，这是该领域的一个主要挑战</li>
+</ul>
 </li>
 </ul>
-
+<h2 id="2-2-分解监督微调（Decomposed-Supervised-Fine-tuning）"><a href="#2-2-分解监督微调（Decomposed-Supervised-Fine-tuning）" class="headerlink" title="2.2 分解监督微调（Decomposed Supervised Fine-tuning）"></a>2.2 分解监督微调（Decomposed Supervised Fine-tuning）</h2><p>提出了一个两阶段的微调过程，将模式链接和SQL生成分开，旨在提高NL-to-SQL系统的性能</p>
+<h3 id="2-2-1-模式链接微调-（-Schema-linking-Fine-tuning）"><a href="#2-2-1-模式链接微调-（-Schema-linking-Fine-tuning）" class="headerlink" title="2.2.1 模式链接微调 （ Schema-linking Fine-tuning）"></a>2.2.1 模式链接微调 （ Schema-linking Fine-tuning）</h3>
             
         </div>
     </div>
@@ -277,7 +293,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-sql/" style="color: #ff7d73">LLMs sql</a>
+            <a href="/tags/LLMs-sql/" style="color: #00a596">LLMs sql</a>
         </span>
         
     </div>
