@@ -208,9 +208,11 @@
         <div class="content" v-pre>
             
             <h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul>
-<li><p>主要研究的是如何提高文本到SQL（Text-to-SQL）任务中示例（demonstration）的多样性，并通过一种无需人工干预的融合方法（FUSED）来实现这一目标。</p>
+<li><p>使用**$\color{red}{大型语言模型(llm)的上下文学习}$<strong>是当前</strong>$\color{red}{Text-to-SQL}$​**的主流方法。先前的研究已经探索了从人工标记的示范池中选择相关的示范，但这些方法<font color='red'>缺乏多样性</font>，并且需要高昂的标记成本。</p>
+</li>
+<li><p>在这项工作中，我们将讨论度量和增强文本到sql演示池的多样性。首先，我们引入了一个<strong>多样性度量</strong>，并提出了现有标签数据的多样性可以进一步增强。受这些发现的启发，我们提出了fuse，迭代地融合演示，以创建基于人类标记的多样化演示池，甚至从头开始使用llm，从而降低标记成本。FUSED在现有标记的基础上实现了3.2%的平均改进，在几个主流数据集上实现了5.0%的从头开始改进，证明了它的有效性</p>
 <ul>
-<li>示例（demonstration）的多样性指的是在文本到SQL（Text-to-SQL）任务中，用于指导语言模型生成SQL查询的示例集合在内容、结构和语义上的差异性和丰富性。<ol>
+<li>多样性指的是在文本到SQL（Text-to-SQL）任务中，用于指导语言模型生成SQL查询的示例集合在内容、结构和语义上的差异性和丰富性。<ol>
 <li><strong>内容多样性</strong>：示例应涵盖不同的主题和信息点，确保模型能够处理各种类型的用户查询。</li>
 <li><strong>结构多样性</strong>：示例应包括不同的SQL语句结构，如不同的查询子句（SELECT、WHERE、GROUP BY等）和操作符，以帮助模型理解并生成各种结构的SQL查询。</li>
 <li><strong>语义多样性</strong>：示例应表达不同的语义意图和逻辑，反映用户查询的不同需求和目标。</li>
@@ -237,7 +239,7 @@
         
         <span class="tag">
             
-            <a href="/tags/sql/" style="color: #00bcd4">sql</a>
+            <a href="/tags/sql/" style="color: #03a9f4">sql</a>
         </span>
         
     </div>
@@ -372,7 +374,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-sql/" style="color: #00bcd4">LLMs sql</a>
+            <a href="/tags/LLMs-sql/" style="color: #00a596">LLMs sql</a>
         </span>
         
     </div>
