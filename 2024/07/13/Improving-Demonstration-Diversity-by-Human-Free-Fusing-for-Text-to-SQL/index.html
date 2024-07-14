@@ -184,7 +184,7 @@
             
             <span class="tag">
                 
-                <a href="/tags/sql/" style="color: #ff7d73">
+                <a href="/tags/sql/" style="color: #00bcd4">
                     sql
                 </a>
             </span>
@@ -225,12 +225,12 @@
 <li>使用上面的度量，我们然后度量现有文本到sql标记演示池的多样性。现有标注演示池的DM和性能如图4和图5所示。这些数字显示了DM和性能明显高于现有标记数据的其他演示池。因此，虽然现有的标签表现出较高的多样性，但可以进一步改进，从而提高性能。因此，我们接下来将讨论综合演示的方法，以增强演示池的多样性。</li>
 </ul>
 <div style="display: flex; justify-content: space-around;">
-  <img src="C:\Users\s\AppData\Roaming\Typora\typora-user-images\image-20240713153855664.png" style="width: 200px; height: auto; margin: 10px;">
-  <img src="C:\Users\s\AppData\Roaming\Typora\typora-user-images\image-20240713153912054.png" style="width: 200px; height: auto; margin: 10px;">
+  <img src="/2024/07/13/Improving-Demonstration-Diversity-by-Human-Free-Fusing-for-Text-to-SQL/0_0.jpg"  style="width: 200px; height: auto; margin: 10px;">
+  <img src="/2024/07/13/Improving-Demonstration-Diversity-by-Human-Free-Fusing-for-Text-to-SQL/undefined"  style="width: 200px; height: auto; margin: 10px;">
 </div>
 
 <h1 id="3-Method"><a href="#3-Method" class="headerlink" title="3.Method"></a>3.Method</h1><p>方法侧重于如何用llm合成给定数据库的新演示。考虑到仅依靠采样生成直接生成演示的多样性较差提出了通过迭代融合不同演示的方法进行合成，如图3所示。在每次迭代中，我们指导模型生成与之前迭代不相似的演示，从而增强多样性。我们从理论上证明了我们的方法可以增强附录D中的DM。</p>
-<p><img src="C:\Users\s\AppData\Roaming\Typora\typora-user-images\image-20240713165722636.png" alt="image-20240713165722636"></p>
+<p><img src="C:\Users\s\AppData\Roaming\Typora\typora-user-images\image-20240713165722636.png" alt="label"></p>
 <p>方法简单解释：首先基于SQL关键字(例如，WHERE, ORDER BY)对演示进行聚类。然后，我们对每个集群的演示进行采样和融合。融合的演示包含了不同于采样演示的WHERE和ORDER BY，从而增强了演示的多样性。在实践中，我们使用编码的用户问题而不是SQL关键字进行合成，因为用户问题比SQL具有更多的语义信息</p>
 <h2 id="3-1整体预览"><a href="#3-1整体预览" class="headerlink" title="3.1整体预览"></a>3.1整体预览</h2>
     </div>
