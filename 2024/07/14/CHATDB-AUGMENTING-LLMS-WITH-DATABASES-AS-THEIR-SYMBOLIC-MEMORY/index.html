@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Improving Demonstration Diversity by Human-Free Fusing for Text-to-SQL | XuSibo&#39;s Blog</title>
+    <title>CHATDB: AUGMENTING LLMS WITH DATABASES AS THEIR SYMBOLIC MEMORY | XuSibo&#39;s Blog</title>
     <meta name="author" content="Rick" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -165,14 +165,14 @@
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
     <div>
-        <h1>Improving Demonstration Diversity by Human-Free Fusing for Text-to-SQL</h1>
+        <h1>CHATDB: AUGMENTING LLMS WITH DATABASES AS THEIR SYMBOLIC MEMORY</h1>
     </div>
     <div class="info">
         <span class="date">
             <span class="icon">
                 <i class="fa-solid fa-calendar fa-fw"></i>
             </span>
-            2024/7/13
+            2024/7/14
         </span>
         
         
@@ -184,8 +184,8 @@
             
             <span class="tag">
                 
-                <a href="/tags/sql/" style="color: #ff7d73">
-                    sql
+                <a href="/tags/LLMs-reasoning-sql/" style="color: #00a596">
+                    LLMs reasoning sql
                 </a>
             </span>
             
@@ -194,45 +194,8 @@
     </div>
     
     <div class="content" v-pre>
-        <h1 id="1-Abstract"><a href="#1-Abstract" class="headerlink" title="1.Abstract"></a>1.Abstract</h1><ul>
-<li><p>使用<strong>大型语言模型(llm)的上下文学习</strong>是当前<strong>Text-to-SQL​</strong>的主流方法。先前的研究已经探索了从人工标记的示范池中选择相关的示范，但这些方法缺乏<strong>多样性</strong>，并且需要高昂的标记成本。</p>
-</li>
-<li><p>在这项工作中，我们将讨论度量和增强文本到sql演示池的多样性。首先，我们引入了一个<strong>多样性度量</strong>，并提出了现有标签数据的多样性可以进一步增强。受这些发现的启发，提出了<strong>fuse</strong>，迭代地融合演示，以创建基于人类标记的多样化演示池，甚至从头开始使用llm，从而降低标记成本。FUSED在现有标记的基础上实现了3.2%的平均改进，在几个主流数据集上实现了5.0%的从头开始改进，证明了它的有效性</p>
-<ul>
-<li>多样性指的是在文本到SQL（Text-to-SQL）任务中，用于指导语言模型生成SQL查询的示例集合在内容、结构和语义上的差异性和丰富性。<ol>
-<li><strong>内容多样性</strong>：示例应涵盖不同的主题和信息点，确保模型能够处理各种类型的用户查询。</li>
-<li><strong>结构多样性</strong>：示例应包括不同的SQL语句结构，如不同的查询子句（SELECT、WHERE、GROUP BY等）和操作符，以帮助模型理解并生成各种结构的SQL查询。</li>
-<li><strong>语义多样性</strong>：示例应表达不同的语义意图和逻辑，反映用户查询的不同需求和目标。</li>
-<li><strong>数据库多样性</strong>：示例应来源于不同的数据库和表结构，以增强模型对不同数据库环境的适应性。</li>
-<li><strong>查询复杂性</strong>：示例应包括从简单到复杂的查询，使模型能够处理不同难度级别的SQL生成任务。</li>
-</ol>
-</li>
-</ul>
-<p>文章链接：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2402.10663">https://arxiv.org/pdf/2402.10663</a><br></p>
-<p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/zirui-HIT/Fused">https://github.com/zirui-HIT/Fused</a></p>
-</li>
-</ul>
-<h1 id="2-Analysis"><a href="#2-Analysis" class="headerlink" title="2.Analysis"></a>2.Analysis</h1><p>提出可以进一步增强现有标记演示池的多样性。首先，我们讨论了示范池的高度多样性的必要性。然后，我们引入了一个度量来量化演示池的多样性。基于这一度量，我们讨论了现有标签数据的多样性可以进一步增强。我们将目前的度量标准与附录A中其他现有度量标准进行比较。</p>
-<h2 id="Necessity-of-the-Diversity"><a href="#Necessity-of-the-Diversity" class="headerlink" title="Necessity of the Diversity"></a>Necessity of the Diversity</h2><ul>
-<li>LLms通过模仿提供的示范来生成答案，也就是，给定一个用户问题，以前的工作从演示池中选择最相似的演示来指导LLMs生成答案，但是，由于用户问题是<strong>不可预测的</strong>，因此演示池应该尽可能多样化，以涵盖各种用户问题。多样性越高，任何用户问题与演示之间的相似性越高，从而更好地指导答案生成;多样性越低，越来越多的用户问题与演示不太相似，从而降低了模型的性能。</li>
-</ul>
-<h2 id="Diversity-Measurement"><a href="#Diversity-Measurement" class="headerlink" title="Diversity Measurement"></a>Diversity Measurement</h2><ul>
-<li>基于前面的讨论，我们使用<strong>与演示池相似度最低</strong>的用户问题来度量演示池的多样性。</li>
-<li>形式上$D&#x3D;{d_i}$表示演示池，$U&#x3D;{u}$表示用户问题，$sim(U,D)$表示U和D之间的相似度，以本文中它们编码向量之间的欧氏距离的倒数计算，利用下面公式来衡量示范池$D$​的多样性，称为多样性度量，该指标对应于与演示池中最相似的演示相似度最小的用户问题与任何其他用户问题的相似度。</li>
-</ul>
-<p>$$\mathrm{DM}&#x3D;\min_{u\in U}\max_{d_i\in D}\mathrm{sim}(u,d_i)$$​</p>
-<h2 id="Diversity-of-the-Existing-Labeling-Can-be-Further-Enhanced"><a href="#Diversity-of-the-Existing-Labeling-Can-be-Further-Enhanced" class="headerlink" title="Diversity of the Existing Labeling Can be Further Enhanced"></a>Diversity of the Existing Labeling Can be Further Enhanced</h2><ul>
-<li>使用上面的度量，我们然后度量现有文本到sql标记演示池的多样性。现有标注演示池的DM和性能如图4和图5所示。这些数字显示了DM和性能明显高于现有标记数据的其他演示池。因此，虽然现有的标签表现出较高的多样性，但可以进一步改进，从而提高性能。因此，我们接下来将讨论综合演示的方法，以增强演示池的多样性。</li>
-</ul>
-<div style="display: flex; justify-content: space-around;">
-  <img src="C:\Users\s\AppData\Roaming\Typora\typora-user-images\image-20240713153855664.png" style="width: 200px; height: auto; margin: 10px;">
-  <img src="C:\Users\s\AppData\Roaming\Typora\typora-user-images\image-20240713153912054.png" style="width: 200px; height: auto; margin: 10px;">
-</div>
+        <h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>具有内存的大型语言模型(LLMs)在计算上是通用的，然而，主流LLMs并没有充分利用内存，而且设计受到生物大脑的严重影响。传统的神经记忆机制由于其近似性质和容易累积错误，无法支持LLMs<strong>模拟复杂推理</strong>。在本文中，我们从现代计算机体系结构中寻求灵感，<strong>以增强具有符号记忆的LLMs</strong>，用于复杂的<strong>多跳推理</strong>。这样一个<strong>符号内存框架</strong>被实例化为一个LLM和一组SQL数据库，其中LLM生成SQL指令来操作SQL数据库。</p>
 
-<h1 id="3-Method"><a href="#3-Method" class="headerlink" title="3.Method"></a>3.Method</h1><p>方法侧重于如何用llm合成给定数据库的新演示。考虑到仅依靠采样生成直接生成演示的多样性较差提出了通过迭代融合不同演示的方法进行合成，如图3所示。在每次迭代中，我们指导模型生成与之前迭代不相似的演示，从而增强多样性。我们从理论上证明了我们的方法可以增强附录D中的DM。</p>
-<p><img src="C:\Users\s\AppData\Roaming\Typora\typora-user-images\image-20240713165722636.png" alt="image-20240713165722636"></p>
-<p>方法简单解释：首先基于SQL关键字(例如，WHERE, ORDER BY)对演示进行聚类。然后，我们对每个集群的演示进行采样和融合。融合的演示包含了不同于采样演示的WHERE和ORDER BY，从而增强了演示的多样性。在实践中，我们使用编码的用户问题而不是SQL关键字进行合成，因为用户问题比SQL具有更多的语义信息</p>
-<h2 id="3-1整体预览"><a href="#3-1整体预览" class="headerlink" title="3.1整体预览"></a>3.1整体预览</h2>
     </div>
     
     

@@ -190,6 +190,46 @@
         
 
 <div class="post">
+    <a href="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/">
+        <h2 class="post-title">CHATDB: AUGMENTING LLMS WITH DATABASES AS THEIR SYMBOLIC MEMORY</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/14
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>具有内存的大型语言模型(LLMs)在计算上是通用的，然而，主流LLMs并没有充分利用内存，而且设计受到生物大脑的严重影响。传统的神经记忆机制由于其近似性质和容易累积错误，无法支持LLMs<strong>模拟复杂推理</strong>。在本文中，我们从现代计算机体系结构中寻求灵感，<strong>以增强具有符号记忆的LLMs</strong>，用于复杂的<strong>多跳推理</strong>。这样一个<strong>符号内存框架</strong>被实例化为一个LLM和一组SQL数据库，其中LLM生成SQL指令来操作SQL数据库。</p>
+
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        <span class="icon">
+            <i class="fa-solid fa-tags fa-fw"></i>
+        </span>
+        
+        
+        
+        <span class="tag">
+            
+            <a href="/tags/LLMs-reasoning-sql/" style="color: #ff7d73">LLMs reasoning sql</a>
+        </span>
+        
+    </div>
+    <a href="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
     <a href="/2024/07/13/Improving-Demonstration-Diversity-by-Human-Free-Fusing-for-Text-to-SQL/">
         <h2 class="post-title">Improving Demonstration Diversity by Human-Free Fusing for Text-to-SQL</h2>
     </a>
@@ -242,7 +282,10 @@
   <img src="C:\Users\s\AppData\Roaming\Typora\typora-user-images\image-20240713153912054.png" style="width: 200px; height: auto; margin: 10px;">
 </div>
 
-<h1 id="3-Method"><a href="#3-Method" class="headerlink" title="3.Method"></a>3.Method</h1>
+<h1 id="3-Method"><a href="#3-Method" class="headerlink" title="3.Method"></a>3.Method</h1><p>方法侧重于如何用llm合成给定数据库的新演示。考虑到仅依靠采样生成直接生成演示的多样性较差提出了通过迭代融合不同演示的方法进行合成，如图3所示。在每次迭代中，我们指导模型生成与之前迭代不相似的演示，从而增强多样性。我们从理论上证明了我们的方法可以增强附录D中的DM。</p>
+<p><img src="C:\Users\s\AppData\Roaming\Typora\typora-user-images\image-20240713165722636.png" alt="image-20240713165722636"></p>
+<p>方法简单解释：首先基于SQL关键字(例如，WHERE, ORDER BY)对演示进行聚类。然后，我们对每个集群的演示进行采样和融合。融合的演示包含了不同于采样演示的WHERE和ORDER BY，从而增强了演示的多样性。在实践中，我们使用编码的用户问题而不是SQL关键字进行合成，因为用户问题比SQL具有更多的语义信息</p>
+<h2 id="3-1整体预览"><a href="#3-1整体预览" class="headerlink" title="3.1整体预览"></a>3.1整体预览</h2>
             
         </div>
     </div>
@@ -256,7 +299,7 @@
         
         <span class="tag">
             
-            <a href="/tags/sql/" style="color: #00a596">sql</a>
+            <a href="/tags/sql/" style="color: #ff7d73">sql</a>
         </span>
         
     </div>
@@ -391,7 +434,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-sql/" style="color: #ff7d73">LLMs sql</a>
+            <a href="/tags/LLMs-sql/" style="color: #00bcd4">LLMs sql</a>
         </span>
         
     </div>
