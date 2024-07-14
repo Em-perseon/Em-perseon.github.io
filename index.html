@@ -207,17 +207,19 @@
     <div class="description">
         <div class="content" v-pre>
             
-            <h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>本文研发了一个DB-GPT，它将llm与传统数据库系统集成在一起，以增强用户体验和可访问性。DB-GPT旨在理解自然语言查询，提供上下文感知响应，并以高精度生成复杂的SQL查询，使其成为从新手到专家的用户不可或缺的工具。DB-GPT的核心创新在于其私有LLMs技术，该技术对特定领域的语料库进行了微调，以维护用户隐私并确保数据安全，同时提供最先进的LLMs的优势。</p>
+            <p>[TOC]</p>
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>本文研发了一个DB-GPT，它将llm与传统数据库系统集成在一起，以增强用户体验和可访问性。DB-GPT旨在理解自然语言查询，提供上下文感知响应，并以高精度生成复杂的SQL查询，使其成为从新手到专家的用户不可或缺的工具。DB-GPT的核心创新在于其私有LLMs技术，该技术对特定领域的语料库进行了微调，以维护用户隐私并确保数据安全，同时提供最先进的LLMs的优势。</p>
 <p>DB-GPT的体系结构：</p>
 <ul>
-<li>一种新颖的检索增强生成(RAG)知识系统</li>
+<li>一种新颖的<strong>检索增强生成(RAG)知识系统</strong></li>
 <li>一种基于用户反馈不断提高性能的自适应学习机制</li>
 <li>一种具有强大数据驱动代理的面向服务的多模型框架(SMMF)</li>
 </ul>
 <p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.17449">https://arxiv.org/pdf/2312.17449</a></p>
 <p>论文代码：<a target="_blank" rel="noopener" href="https://github.com/eosphoros-ai/DB-GPT">https://github.com/eosphoros-ai/DB-GPT</a></p>
 <h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h1><ul>
-<li>如何使用llm授权数据库操作来构建强大的最终用户应用程序仍然是一个悬而未决的问题<ul>
+<li><p>如何使用llm授权数据库操作来构建强大的最终用户应用程序仍然是一个悬而未决的问题</p>
+<ul>
 <li>大多数现有作品采用了一种直接的方法——直接向常用的llm(如GPT-4)提供如何通过少量简短提示或上下文学习进行交互的说明<ul>
 <li>优点：它不太可能过度拟合训练数据，并且易于适应新数据</li>
 <li>缺点：与中等规模llm的微调替代方案相比，性能可能不是最优的</li>
@@ -230,7 +232,131 @@
 </li>
 </ul>
 </li>
-<li><h2 id="本工作：研究出一个DB-GPT，用于llm增强应用程序的智能和生产就绪项目，可以使用私有化技术摄取、构建和访问数据。DB-GPT不仅利用llm固有的自然语言理解和生成能力，还通过代理和插件机制不断优化数据驱动引擎。"><a href="#本工作：研究出一个DB-GPT，用于llm增强应用程序的智能和生产就绪项目，可以使用私有化技术摄取、构建和访问数据。DB-GPT不仅利用llm固有的自然语言理解和生成能力，还通过代理和插件机制不断优化数据驱动引擎。" class="headerlink" title="本工作：研究出一个DB-GPT，用于llm增强应用程序的智能和生产就绪项目，可以使用私有化技术摄取、构建和访问数据。DB-GPT不仅利用llm固有的自然语言理解和生成能力，还通过代理和插件机制不断优化数据驱动引擎。"></a>本工作：研究出一个DB-GPT，用于llm增强应用程序的智能和生产就绪项目，可以使用私有化技术摄取、构建和访问数据。DB-GPT不仅利用llm固有的自然语言理解和生成能力，还通过代理和插件机制不断优化数据驱动引擎。</h2></li>
+<li><p>本工作：研究出一个DB-GPT，用于llm增强应用程序的智能和生产就绪项目，可以使用私有化技术摄取、构建和访问数据。DB-GPT不仅利用llm固有的自然语言理解和生成能力，还通过代理和插件机制不断优化数据驱动引擎。</p>
+</li>
+<li><p>DB-GPT具有以下明显的优点:</p>
+<ul>
+<li>隐私和安全保护：DB-GPT允许用户部署在个人设备或本地服务器上，即使在没有Internet连接的场景下也可以运行。任何时候都不会有数据离开执行环境，完全消除了数据泄漏的风险。此外，代理去识别技术应用于数据处理模块，它作为中介，从数据集中模糊个人标识符，从而降低未经授权访问和利用私人信息的风险。</li>
+<li>多源知识库问答优化：DB-GPT构建了一个管道，将多源非结构化数据(PDF，网页，图像等)提取为中间表示，将其存储在结构化知识库中，检索最相关的部分，并在给定查询时生成全面的自然语言响应。该管道进行了效率优化，生成灵活，并接受双语查询。</li>
+<li>文本到sql的微调：DB-GPT对几种常用的llm进行了微调，用于Text-toSQL任务。DB-GPT在与数据交互时显著降低了不需要SQL专业知识的用户的障碍。</li>
+<li>集成知识代理和插件：“代理”是一个自动推理和决策引擎。作为一个生产就绪的项目，DB-GPT支持具有高级数据分析的会话代理的开发和应用，其中这些自动化决策有助于数据上的交互式用例。它还提供了各种查询和检索服务插件，用作与数据交互的工具。</li>
+</ul>
+<h1 id="2-系统设计"><a href="#2-系统设计" class="headerlink" title="2 系统设计"></a>2 系统设计</h1><p>系统如下图所示：</p>
+<img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714153640078.png" class="" title="image-20240714153640078"></li>
+</ul>
+<h2 id="2-1-用于QA的多源RAG（Retrieval-augmented-Generation）"><a href="#2-1-用于QA的多源RAG（Retrieval-augmented-Generation）" class="headerlink" title="2.1 用于QA的多源RAG（Retrieval-augmented Generation）"></a>2.1 用于QA的多源RAG（Retrieval-augmented Generation）</h2><p>构建一个多源知识库问答，它能够理解自然语言查询，提供上下文感知的回答，并且能够生成复杂且准确的SQL查询，从而提高从新手到专家各个层面用户的数据库交互体验。如图2所示，文章的RAG管道由三个阶段组成:知识构建、知识检索和自适应上下文学习(ICL)</p>
+<img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714153955130.png" class="" title="image-20240714153955130">
+
+<ul>
+<li>知识构建：这是知识检索的第一阶段，涉及将来自不同来源的文档（如PDF文件、网页等）转换为中间表示形式，并将它们存储在结构化的知识库中。<ul>
+<li>知识库K是来自各种文档的集合，从$d_1^{loc},…,d_N^{loc}$，将每个文档$d_n$分为多个段落$p_{n,1}^{loc},…,p_{n,M_n}^{loc}$其中$M_n$表示第$n$个文档的段落索引，并通过一个编码器将$f_key$每个段落嵌入到多维嵌入$e_{n,m}^{loc}$​​中。然后，DB-GPT除了采用现有的基于向量的知识表示，还采用了倒排索引和图形索引技术，以便于准确地找到与上下文相关的数据</li>
+</ul>
+</li>
+<li>知识检索：当用户提出一个语言查询时，系统会将查询嵌入到一个向量中，然后从知识库中检索与查询最相关的K个段落。检索方法可以基于余弦相似度或其他关键词匹配技术。<ul>
+<li>当语言查询$x$出现时，它通过一个编码器$f_{query}$嵌入到向量中，然后我们从知识库当中检索前K个相关的段落，其中K是一个超参数。DG-GPT支持多种检索器模型，如Embeddingretrierver，它根据余弦相似度进行检索（$q^Te&#x2F;||q|||e||$​​）Keywordretriiever，它匹配关键字而不是整个句子。</li>
+</ul>
+</li>
+<li>学习嵌入和搜索：在这个阶段，系统通过训练编码器（encoders）来优化查询和文档段落的嵌入表示，使得相关性强的查询-段落对具有较高的相似度得分。<ul>
+<li>自信地认为一个更高的相似度表示更相关的段落是因为训练了编码器$f_{key}$和$f_{query}$。他们在3.2进行优化了。直觉上，我们想要点积$q^Te$对于查询段对来说是相对较大的，因为它们是相关的。编码器使用Multilingual-E5-base model</li>
+</ul>
+</li>
+<li>自适应ICL与LLM生成：在检索到相关段落后，系统使用自适应上下文学习方法来生成响应。这涉及到根据检索结果的相似度对它们进行排序，然后将最相关的几个结果插入到预定义的提示模板的上下文部分，最后由大型语言模型（LLM）生成回答。</li>
+</ul>
+<img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714160130046.png" class="" title="image-20240714160130046">
+
+<h2 id="2-2-部署和推理-面向服务的多模型框架"><a href="#2-2-部署和推理-面向服务的多模型框架" class="headerlink" title="2.2 部署和推理:面向服务的多模型框架"></a>2.2 部署和推理:面向服务的多模型框架</h2><ul>
+<li><p>在DB-GPT中，为了简化模型适配、提高模型部署效率和优化模型部署性能，提出了面向服务的多模型框架(SMMF)，提供了一种基于云的AI方法，使得开发者和企业能够访问预构建的、预训练的机器学习模型。这种方式简化了模型的获取和使用过程。</p>
+</li>
+<li><p>SMMF由两个主要部分组成</p>
+<ul>
+<li><strong>模型推理层</strong>，它被设计来适应各种大型语言模型（LLM）的推理平台，例如vLLM、HuggingFace Transformers、Text Generation Inference (TGI)和TensorRT等。</li>
+<li><strong>模型部署层</strong>：作为底层推理层和上层模型服务功能之间的中介。它负责管理模型的元数据，并作为广泛部署架构的核心。<ul>
+<li><strong>API服务器和模型处理器</strong>：在模型部署框架层中，API服务器和模型处理器提供强大的模型服务功能，供应用层使用。</li>
+</ul>
+</li>
+<li><strong>模型控制器</strong>：模型控制器负责管理模型的元数据，并作为部署架构的中心节点。</li>
+<li><strong>模型工作器</strong>：模型工作器与推理设备和基础设置建立直接连接，确保实施模型的高效性能。</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-3-多代理的策略"><a href="#2-3-多代理的策略" class="headerlink" title="2.3 多代理的策略"></a>2.3 多代理的策略</h2><p>DB-GPT系统中的多代理策略旨在通过智能代理的协作和专业化，提高数据库操作的效率、灵活性和用户体验，同时保持系统的可扩展性和适应性。</p>
+<p>DB-GPT为不同的数据库操作角色（如数据分析师、软件工程师和数据库架构师）分配特定的代理，每个代理都有其独特的功能和专长。通过一个协调机制，系统能够实现不同代理之间的协作，使它们能够相互通信、共享信息，并进行集体推理。</p>
+<p>DB-GPT基于Text-to-SQL调优的LLM，实现了具有高级数据库交互能力的代理的开发和应用。此外，与LlamaIndex的组件为特定用例提供更明确、约束的行为不同，DB-GPT赋予agent更强的一般推理能力，约束更少。</p>
+<h2 id="2-4-DB插件"><a href="#2-4-DB插件" class="headerlink" title="2.4 DB插件"></a>2.4 DB插件</h2><p>DB-GPT系统中的DB插件旨在通过提供自然语言查询接口、增强LLMs的查询理解与执行能力、集成第三方服务以及支持端到端的数据分析流程，来增强系统与数据库的交互能力。这些插件允许系统更智能地解析和响应用户查询，执行SQL语句，并与外部数据源协同工作，从而提升数据库操作的效率和用户体验，同时保持系统的灵活性和可扩展性。</p>
+<h1 id="3-模型和训练"><a href="#3-模型和训练" class="headerlink" title="3 模型和训练"></a>3 模型和训练</h1><h2 id="3-1-Text-to-SQL-微调"><a href="#3-1-Text-to-SQL-微调" class="headerlink" title="3.1 Text-to-SQL 微调"></a>3.1 Text-to-SQL 微调</h2><ul>
+<li><p>是DB-GPT系统中使LLMs更加精准和高效地理解和生成SQL查询的关键步骤，它通过专门针对数据库查询语言的优化，提升了整个系统的数据库交互能力。</p>
+</li>
+<li><p>模型结构：我们从预训练的Qwen开始，该Qwen使用广泛的英语和汉语语料库进行预训练</p>
+<ul>
+<li>Qwen：通义千问，阿里巴巴的大语言模型</li>
+</ul>
+</li>
+<li><p>数据集和训练：设计了一个特殊的模块DB-GPT- hub，它封装了预处理记录、模型加载和微调的管道。我们在Spider上微调Qwen训练分割，输入包括数据库描述和自然问题(见清单2)，输出是目标SQL。</p>
+</li>
+</ul>
+<img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714200312684.png" class="" title="image-20240714200312684">
+
+<ul>
+<li>关于文本到sql的微调llm的架构和评估的全部细节可以在我们即将发布的另一篇论文中找到。</li>
+</ul>
+<h2 id="3-2-Encoder-in-RAG"><a href="#3-2-Encoder-in-RAG" class="headerlink" title="3.2 Encoder in RAG"></a>3.2 Encoder in RAG</h2><p>Encoder in RAG是实现高效、准确问答功能的基础，它通过将自然语言查询转换为向量表示，并与知识库中的文档进行匹配，从而检索出最相关的信息，为生成准确的回答提供支持。</p>
+<ul>
+<li>模型架构：键和查询编码器$f_{key}$和$f_{query}$被初始化为Multilingual-E5-base模型结构因为我们支持双语的应用<ul>
+<li>他们优化的目标函数如下：</li>
+</ul>
+</li>
+</ul>
+<p>$$\ell&#x3D;\mathbf{q}^\top\mathbf{e}<em>0-\log\sum</em>{i&#x3D;0}^I\exp\left(\mathbf{q}^\top\mathbf{e}_i\right),$$</p>
+<ul>
+<li>其中，$e_0$是已知包含查询相关信息的段落的嵌入，以及其他$I$个嵌入$e_1,…,e_I$属于一组消极段落（模块3.2有说明他们是如何被选择的）。通过优化这个灯饰，对实际相关的查询段落对，点积$q^T$和$e$​​的值会变大<ul>
+<li>这些消极段落是在训练RAG模型的编码器时使用的，用于区分和优化模型对相关段落的选择能力，下面提到<strong>从整个段落池中随机抽取5个消极的响应</strong>的选取方法</li>
+</ul>
+</li>
+<li>数据集和训练：我们使用查询-段落对来训练键和查询编码器，$f_{key}$和$f_{query}$​，这些对是从DatabaseQA中收集的，我们对1000个查询-响应对进行采样，作为积极的对，对于每一个对，我们<strong>从整个段落池中随机抽取5个消极的响应</strong>。最后，我们收集了1000对查询-响应对用于训练和评估。然后将选择的配对分成700对训练配对、100对发展配对和200对测试配对。</li>
+<li>我们将查询-响应对传递给模型，以产生每个对的标量分数，并最大化正对的分数，同时通过交叉熵损失最小化负对的分数。</li>
+</ul>
+<h2 id="3-3-应用和部署细节"><a href="#3-3-应用和部署细节" class="headerlink" title="3.3 应用和部署细节"></a>3.3 应用和部署细节</h2><h1 id="4-Experiments"><a href="#4-Experiments" class="headerlink" title="4 Experiments"></a>4 Experiments</h1><p>提出了旨在评估DB-GPT系统性能的实验，包括文本到sql响应的生成质量(第3.1节)、我们提出的RAG机制的QA性能(第2.1节)和SMMF的效率性能(?)。我们还提供了生成数据分析的定性结果(第2.4节)。</p>
+<h2 id="4-1-Text-to-SQL-Evalution"><a href="#4-1-Text-to-SQL-Evalution" class="headerlink" title="4.1 Text-to-SQL Evalution"></a>4.1 Text-to-SQL Evalution</h2><ul>
+<li><p><strong>数据集：</strong>Spider数据集</p>
+</li>
+<li><p><strong>指标：</strong>执行精度(EX)作为度量标准</p>
+<ul>
+<li>EX在一些数据库实例上将预测的SQL查询的执行输出与实际的SQL查询的执行输出进行比较。EX越高越好</li>
+<li>步骤<ul>
+<li><strong>执行SQL查询</strong>：将模型生成的SQL查询和真实（或基准）SQL查询分别在数据库上执行。</li>
+<li><strong>获取结果集</strong>：记录两个查询的执行结果，通常是从数据库检索到的数据行或记录集。</li>
+<li><strong>比较结果集</strong>：比较两个结果集，确定它们是否相同或在某种程度上相似。</li>
+<li><strong>计算相似度</strong>：使用某种形式的相似度度量（例如，Jaccard相似度、精确匹配、F1分数等）来量化两个结果集之间的相似性。</li>
+<li><strong>确定阈值</strong>：根据任务的具体要求，确定一个阈值来判断何时认为两个结果集是足够相似的。</li>
+<li><strong>生成执行精度分数</strong>：基于比较结果和相似度度量，生成一个0到1之间的分数，表示模型生成的SQL查询的执行精度。在某些情况下，完全一致的结果集可能会得到1.0的分数，而完全不匹配的结果集可能会得到0.0的分数。</li>
+<li><strong>平均执行精度</strong>：如果是在多个查询上评估模型，可能会计算所有查询的平均执行精度，以得到模型整体性能的度量。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714202654325.png" class="" title="image-20240714202654325">
+
+<h2 id="4-2-RAG-Evaluation"><a href="#4-2-RAG-Evaluation" class="headerlink" title="4.2 RAG Evaluation"></a>4.2 RAG Evaluation</h2><ul>
+<li><strong>数据集</strong>：构建了两个QA数据集:DatabaseQA和FinancialQA。<ul>
+<li>对于DatabaseQA，我们从三个代表性数据库系统中收集了1000个pdf格式的公共教程:OceanBase、MySQL、MongoDB</li>
+<li>对于FinancialQA，我们从研究机构发表的1000份文件中取样。对于每个数据集，我们构建了100个问题用于测试，其中的问题由专家标注了难度。</li>
+</ul>
+</li>
+<li><strong>指标：</strong>有三位专家对每个回答进行评分，评分从0到5，得分越高的回答越好，并将他们的平均值作为最终得分。</li>
+</ul>
+<img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714203229767.png" class="" title="image-20240714203229767">
+
+<h2 id="4-3-SMMF-Evaluation"><a href="#4-3-SMMF-Evaluation" class="headerlink" title="4.3 SMMF Evaluation"></a>4.3 SMMF Evaluation</h2><ul>
+<li><p><strong>数据集：</strong>测试在一台服务器上执行，在所有实验中，我们使用相同的提示符，将8个标记作为输入，同时将输出长度设置为256个标记。</p>
+</li>
+<li><p><strong>指标</strong>：</p>
+<ul>
+<li>第一个令牌延迟(FTL))：以毫秒为单位测量，它表示从DB-GPT模型部署框架接收请求到推理框架解码第一个令牌所花费的时间。</li>
+<li>推断延迟(IL):以秒为单位测量，它表示从DBGPT模型部署框架接收请求到推断框架解码完整响应所花费的时间。</li>
+<li>吞吐量:DB-GPT模型部署框架在所有请求中每秒处理的令牌总数。</li>
+</ul>
+</li>
 </ul>
 
             
@@ -390,7 +516,7 @@
         
         <span class="tag">
             
-            <a href="/tags/CoM-LLMs-SQL/" style="color: #00a596">CoM LLMs SQL</a>
+            <a href="/tags/CoM-LLMs-SQL/" style="color: #ff7d73">CoM LLMs SQL</a>
         </span>
         
     </div>
@@ -497,7 +623,7 @@
         
         <span class="tag">
             
-            <a href="/tags/sql/" style="color: #03a9f4">sql</a>
+            <a href="/tags/sql/" style="color: #ff7d73">sql</a>
         </span>
         
     </div>
@@ -602,7 +728,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-sql/" style="color: #03a9f4">LLMs sql</a>
+            <a href="/tags/LLMs-sql/" style="color: #00bcd4">LLMs sql</a>
         </span>
         
     </div>
