@@ -287,6 +287,31 @@
 
 <h2 id="3-4与以往记忆增强llm的比较"><a href="#3-4与以往记忆增强llm的比较" class="headerlink" title="3.4与以往记忆增强llm的比较"></a>3.4与以往记忆增强llm的比较</h2><img src="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/image-20240714120401054.png" class="" title="image-20240714120401054">
 
+<h1 id="4-Evaluation"><a href="#4-Evaluation" class="headerlink" title="4 Evaluation"></a>4 Evaluation</h1><h2 id="4-1实验设置"><a href="#4-1实验设置" class="headerlink" title="4.1实验设置"></a>4.1实验设置</h2><p>构建了一个模拟水果店管理的合成数据集。</p>
+<p>为了评估模型的性能，我们收集了一组50个带有注释标准答案的问题。这些问题的难度各不相同，从需要多跳推理的困难问题到只需要从历史数据中检索信息的简单问题。有15个简单问题和35个难题。每个问题都由模型独立回答。</p>
+<h3 id="4-1-1-模型配置"><a href="#4-1-1-模型配置" class="headerlink" title="4.1.1 模型配置"></a>4.1.1 模型配置</h3><p>ChatDB：使用的LLM为ChatGPT (GPT-3.5 Turbo)，超参数temperature设置为0。我们使用MySQL数据库作为外部符号内存。</p>
+<p>基线：我们使用ChatGPT (GPT-3.5 Turbo)作为基准模型，最大令牌长度为4096。与ChatDB类似，我们将温度设置为0。</p>
+<h3 id="4-1-2-数据集"><a href="#4-1-2-数据集" class="headerlink" title="4.1.2 数据集"></a>4.1.2 数据集</h3><ul>
+<li>合成了一个水果店管理记录的数据集，称为“水果店数据集”。该数据集模拟了商店中的四种常见操作:购买、销售、更改价格和退货。我们确保所有历史记录都是有效的，不会遇到负面库存等问题。我们按时间顺序生成70条记录，总共约3.3万个令牌，这在ChatGPT的最大令牌长度限制(4096个令牌)之内。<ul>
+<li>为什么要限制数据集的令牌长度?如果数据集的令牌长度超过ChatGPT的最大令牌长度，则需要内存。然而，主流的基于向量嵌入的记忆检索方法容易出错。这不可避免地会导致ChatGPT性能的下降，这是不希望的。</li>
+<li>因此，我们故意将数据集的令牌长度设计在ChatGPT的最大令牌长度范围内，以避免使用内存并最大化模型的性能。请注意，ChatDB的性能通常不受数据集令牌长度的影响。因此，如果ChatDB在数据集较小时优于ChatGPT，则表明当数据集较大时，ChatDB也优于内存增强的ChatGPT。</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-1-3处理记录"><a href="#4-1-3处理记录" class="headerlink" title="4.1.3处理记录"></a>4.1.3处理记录</h3><ul>
+<li>对于ChatDB，第一步是初始化数据库。我们需要为特定的任务场景生成合理的数据库模式，并在数据库中创建表。数据库模式的生成可以手工完成，也可以使用llm完成。</li>
+<li>接下来，对于数据集中的每条记录，ChatDB逐个处理它们。使用LLM控制器，ChatDB按照算法1操作外部数据库(即符号内存)。我们提供了ChatDB对Fruit Shop Dataset中的四种常见操作(即购买、销售、更改价格和退货)的响应示例<ul>
+<li>值得强调的是，ChatDB是一条一条地处理记录，因此它对记录总数不敏感。此外，ChatDB中数据库操作的每一步都是象征性的，没有错误。因此，理论上，ChatDB可以处理无限数量的历史记录，而不会牺牲性能。然而，对于ChatGPT或现有的内存增强llm，过长的历史记录会显著降低性能。在这个实验中，对于ChatGPT基线，由于记录不长，我们简单地将它们视为提示的一部分。</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-1-4-回答问题"><a href="#4-1-4-回答问题" class="headerlink" title="4.1.4 回答问题"></a>4.1.4 回答问题</h3><p>ChatDB在回答问题时不再需要记录作为提示符的一部分。处理完记录后，信息被存储在符号存储器中。在算法1之后，ChatDB利用SQL语句执行一系列数据库查询(包括计算)来回答问题。另一方面，ChatGPT将记录作为提示的一部分，并直接提出问题。</p>
+<h2 id="4-2结果"><a href="#4-2结果" class="headerlink" title="4.2结果"></a>4.2结果</h2><p>ChatDB的准确率明显高于ChatGPT。虽然ChatGPT能够回答简单的问题，但它在处理需要多跳推理和精确计算的困难问题时却有所欠缺。因此，ChatGPT对这些难题的准确率很低。相比之下，ChatDB显示出非常高的准确率，强调了将数据库用作符号内存的优势。该方法不仅防止了误差积累，而且提高了llm的多跳推理和精确计算能力。</p>
+<p>ChatDB的优势体现在两个方面</p>
+<ul>
+<li>通过记忆链方法，将复杂的问题分解为多个步骤的存储操作，简化了问题的复杂性。每一步的结果都被准确地存储为中间结果，并用于后续步骤，这极大地帮助了复杂的推理。</li>
+<li>符号存储器可以实现精确的操作和计算。ChatDB通过执行SQL语句，将许多计算任务委托给外部数据库，保证了每一步的准确性，防止了错误的积累。</li>
+</ul>
 
             
         </div>
@@ -301,7 +326,7 @@
         
         <span class="tag">
             
-            <a href="/tags/CoM-LLMs-SQL/" style="color: #ffa2c4">CoM LLMs SQL</a>
+            <a href="/tags/CoM-LLMs-SQL/" style="color: #ff7d73">CoM LLMs SQL</a>
         </span>
         
     </div>
@@ -408,7 +433,7 @@
         
         <span class="tag">
             
-            <a href="/tags/sql/" style="color: #03a9f4">sql</a>
+            <a href="/tags/sql/" style="color: #00bcd4">sql</a>
         </span>
         
     </div>
@@ -513,7 +538,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-sql/" style="color: #00bcd4">LLMs sql</a>
+            <a href="/tags/LLMs-sql/" style="color: #ffa2c4">LLMs sql</a>
         </span>
         
     </div>
