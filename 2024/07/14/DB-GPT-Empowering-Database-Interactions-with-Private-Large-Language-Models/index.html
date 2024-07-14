@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Archives | XuSibo&#39;s Blog</title>
+    <title>DB-GPT Empowering Database Interactions with Private Large Language Models | XuSibo&#39;s Blog</title>
     <meta name="author" content="Rick" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -42,6 +42,10 @@
 
 
 <script src="/js/lib/preview.js"></script>
+
+
+
+
 
 
 
@@ -159,142 +163,71 @@
 </transition>
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>DB-GPT Empowering Database Interactions with Private Large Language Models</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/14
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
             
-<div id="archives">
-    
-    <div id="timeline-wrap" ref="timeline">
-        
-        <div class="timeline" data-title="dts-sql:decomposedtext-to-sqlwithsmalllargelanguagemodels">
-            <div class="timeline-tail"></div>
-            <div class="timeline-content">
-                <div class="item-time">2024/7/12</div>
-                <a href="/2024/07/12/DTS-SQL-Decomposed-Text-to-SQL-with-Small-Large-Language-Models/">
-                    <h3>DTS-SQL: Decomposed Text-to-SQL with Small Large Language Models</h3>
+            
+            <span class="tag">
+                
+                <a href="/tags/LLMs-SQL/" style="color: #03a9f4">
+                    LLMs SQL
                 </a>
-                <div class="info">
-                    
-                    
-                    <span class="tags">
-                        <span class="icon">
-                            <i class="fa-solid fa-tags fa-fw"></i>
-                        </span>
-                        
-                        
-                        <span class="tag">
-                            
-                            <a href="/tags/LLMs-sql/" style="color: #ffa2c4">
-                                LLMs sql
-                            </a>
-                        </span>
-                        
-                    </span>
-                    
-                </div>
-            </div>
-        </div>
-        
-        <div class="timeline" data-title="improvingdemonstrationdiversitybyhuman-freefusingfortext-to-sql">
-            <div class="timeline-tail"></div>
-            <div class="timeline-content">
-                <div class="item-time">2024/7/13</div>
-                <a href="/2024/07/13/Improving-Demonstration-Diversity-by-Human-Free-Fusing-for-Text-to-SQL/">
-                    <h3>Improving Demonstration Diversity by Human-Free Fusing for Text-to-SQL</h3>
-                </a>
-                <div class="info">
-                    
-                    
-                    <span class="tags">
-                        <span class="icon">
-                            <i class="fa-solid fa-tags fa-fw"></i>
-                        </span>
-                        
-                        
-                        <span class="tag">
-                            
-                            <a href="/tags/sql/" style="color: #00a596">
-                                sql
-                            </a>
-                        </span>
-                        
-                    </span>
-                    
-                </div>
-            </div>
-        </div>
-        
-        <div class="timeline" data-title="self-attentive-sequential-recommendation">
-            <div class="timeline-tail"></div>
-            <div class="timeline-content">
-                <div class="item-time">2024/7/14</div>
-                <a href="/2024/07/14/Self-Attentive-Sequential-Recommendation/">
-                    <h3>Self-Attentive-Sequential-Recommendation</h3>
-                </a>
-                <div class="info">
-                    
-                    
-                </div>
-            </div>
-        </div>
-        
-        <div class="timeline" data-title="chatdb-augmenting-llmss-with-databases-as-their-symbolic-memory">
-            <div class="timeline-tail"></div>
-            <div class="timeline-content">
-                <div class="item-time">2024/7/14</div>
-                <a href="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/">
-                    <h3>CHATDB-AUGMENTING-LLMsS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY</h3>
-                </a>
-                <div class="info">
-                    
-                    
-                    <span class="tags">
-                        <span class="icon">
-                            <i class="fa-solid fa-tags fa-fw"></i>
-                        </span>
-                        
-                        
-                        <span class="tag">
-                            
-                            <a href="/tags/CoM-LLMs-SQL/" style="color: #00bcd4">
-                                CoM LLMs SQL
-                            </a>
-                        </span>
-                        
-                    </span>
-                    
-                </div>
-            </div>
-        </div>
-        
-        <div class="timeline" data-title="db-gptempoweringdatabaseinteractionswithprivatelargelanguagemodels">
-            <div class="timeline-tail"></div>
-            <div class="timeline-content">
-                <div class="item-time">2024/7/14</div>
-                <a href="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/">
-                    <h3>DB-GPT Empowering Database Interactions with Private Large Language Models</h3>
-                </a>
-                <div class="info">
-                    
-                    
-                    <span class="tags">
-                        <span class="icon">
-                            <i class="fa-solid fa-tags fa-fw"></i>
-                        </span>
-                        
-                        
-                        <span class="tag">
-                            
-                            <a href="/tags/LLMs-SQL/" style="color: #00a596">
-                                LLMs SQL
-                            </a>
-                        </span>
-                        
-                    </span>
-                    
-                </div>
-            </div>
-        </div>
+            </span>
+            
+        </span>
         
     </div>
+    
+    <div class="content" v-pre>
+        <h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>本文研发了一个DB-GPT，它将llm与传统数据库系统集成在一起，以增强用户体验和可访问性。DB-GPT旨在理解自然语言查询，提供上下文感知响应，并以高精度生成复杂的SQL查询，使其成为从新手到专家的用户不可或缺的工具。DB-GPT的核心创新在于其私有LLMs技术，该技术对特定领域的语料库进行了微调，以维护用户隐私并确保数据安全，同时提供最先进的LLMs的优势。</p>
+<p>DB-GPT的体系结构：</p>
+<ul>
+<li>一种新颖的检索增强生成(RAG)知识系统</li>
+<li>一种基于用户反馈不断提高性能的自适应学习机制</li>
+<li>一种具有强大数据驱动代理的面向服务的多模型框架(SMMF)</li>
+</ul>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.17449">https://arxiv.org/pdf/2312.17449</a></p>
+<p>论文代码：<a target="_blank" rel="noopener" href="https://github.com/eosphoros-ai/DB-GPT">https://github.com/eosphoros-ai/DB-GPT</a></p>
+<h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h1><ul>
+<li>如何使用llm授权数据库操作来构建强大的最终用户应用程序仍然是一个悬而未决的问题<ul>
+<li>大多数现有作品采用了一种直接的方法——直接向常用的llm(如GPT-4)提供如何通过少量简短提示或上下文学习进行交互的说明<ul>
+<li>优点：它不太可能过度拟合训练数据，并且易于适应新数据</li>
+<li>缺点：与中等规模llm的微调替代方案相比，性能可能不是最优的</li>
+</ul>
+</li>
+<li>此外，还有就是将llm驱动的自动推理和决策过程(又名代理)纳入数据库应用程序中。<ul>
+<li>然而，知识代理通常是特定于任务的，而不是任务不可知的，这限制了它们的使用范围。</li>
+<li>同时，虽然很重要，但对以llm为中心的数据库交互的隐私敏感设置的研究还不够。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><h2 id="本工作：研究出一个DB-GPT，用于llm增强应用程序的智能和生产就绪项目，可以使用私有化技术摄取、构建和访问数据。DB-GPT不仅利用llm固有的自然语言理解和生成能力，还通过代理和插件机制不断优化数据驱动引擎。"><a href="#本工作：研究出一个DB-GPT，用于llm增强应用程序的智能和生产就绪项目，可以使用私有化技术摄取、构建和访问数据。DB-GPT不仅利用llm固有的自然语言理解和生成能力，还通过代理和插件机制不断优化数据驱动引擎。" class="headerlink" title="本工作：研究出一个DB-GPT，用于llm增强应用程序的智能和生产就绪项目，可以使用私有化技术摄取、构建和访问数据。DB-GPT不仅利用llm固有的自然语言理解和生成能力，还通过代理和插件机制不断优化数据驱动引擎。"></a>本工作：研究出一个DB-GPT，用于llm增强应用程序的智能和生产就绪项目，可以使用私有化技术摄取、构建和访问数据。DB-GPT不仅利用llm固有的自然语言理解和生成能力，还通过代理和插件机制不断优化数据驱动引擎。</h2></li>
+</ul>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
 </div>
 
             <footer id="footer">
@@ -325,6 +258,12 @@
         
     </div>
     <script src="/js/main.js"></script>
+    
+    
+
+
+
+
     
 </body>
 </html>
