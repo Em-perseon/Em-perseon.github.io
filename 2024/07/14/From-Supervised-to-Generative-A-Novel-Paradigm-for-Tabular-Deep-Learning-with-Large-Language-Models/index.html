@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>From Supervised to Generative A Novel Paradigm for Tabular Deep Learning with Large Language Models | XuSibo&#39;s Blog</title>
+    <meta name="author" content="Rick" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.css" />
+<script src="/js/lib/math.js"></script>
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>XUSIBO&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;XUSIBO&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>From Supervised to Generative A Novel Paradigm for Tabular Deep Learning with Large Language Models</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/14
+        </span>
+        
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ul>
+<li>表格数据是各种关键行业预测建模的基础，包括医疗保健、金融、零售、可持续发展等。<ul>
+<li>表格数据就是以二维表格形式展示的数据</li>
+</ul>
+</li>
+<li>尽管在专业模型方面取得了进展，但对通用模型的需求不断增加，这种模型可以转移知识，从有限的数据中进行推广，并遵循人类的指示。这些都是当前表格深度学习方法尚未完全解决的挑战。</li>
+<li>本文介绍生成式表格学习(GenerativeTabular Learning GTL)，这是一个新的框架，它将大型语言模型(llm)的高级功能(如基于提示的零概率泛化和上下文学习)集成到表格深度学习中<ul>
+<li>GTL利用LLMs对各种表格数据的预训练，增强他们对特定领域知识、数字序列和对准确预测至关重要的统计依赖性的理解。</li>
+</ul>
+</li>
+</ul>
+<p>文章链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.07338">https://arxiv.org/abs/2310.07338</a></p>
+<p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/microsoft/Industrial-Foundation-Models">https://github.com/microsoft/Industrial-Foundation-Models</a></p>
+<h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1 Introduction"></a>1 Introduction</h1><p>表格数据广泛存在于医疗保健、金融、零售、可持续发展和气候等众多关键行业领域，是预测建模的基石。这种建模支持多种现实世界的应用，包括疾病风险分层、信用评估、销量预测、电网稳定性测量、气候估计等。鉴于其重要性，它吸引了机器学习社区的大量研究关注</p>
+<p>虽然在为表格数据中的单个任务开发专门的预测模型方面取得了相当大的进展，采用有效的学习模型，如基于梯度增强决策树[9]的树集成模型和最近的神经网络，但<strong>跨各个领域的丰富多样的应用场景强调了对通用模型的迫切需求</strong>。</p>
+<p>这些模型应该具有无缝转换到新数据集的能力，并表现出强大的泛化能力，特别是在具有少量标签的场景中。</p>
+<p>这种必要性催化了<strong>表格深度学习</strong>作为研究焦点的出现，它探索了在广泛的表格数据上预训练通用神经网络的概念。这种方法旨在创建模型，一旦进行预训练，就可以毫不费力地适应广泛的任务，从而提高它们在不同应用中的效用和效率</p>
+<ul>
+<li>这种形式的适应不仅是用户友好的，而且还极大地增强了模型将在预训练期间获得的知识有效地转移到新的、低资源场景的能力。</li>
+<li>其次，在涉及少量标签的情况下，这些模型表现出有趣的上下文学习能力，这可以通过它们从提示中包含的演示中学习的令人印象深刻的能力来证明</li>
+<li>这种无需微调的能力隐含地利用贝叶斯推理，在前向传播过程中将模型的预训练知识直接扩展到新的数据样本。</li>
+</ul>
+<p>但是，大多数现有的表格数据预训练方法主要坚持监督范式，需要后续的微调过程来适应新的表格任务。</p>
+<p>尽管开创性的努力通过先进的泛化能力来超越这些限制，即对未见任务的零学习和基于新表格实例的上下文学习，但结果往往封装了受限的泛化能力和有限的应用范围。现有模型的有限范围强调了对更全面的表格深度学习范式的需求，这种范式不仅包含而且扩展了在其他前沿基础模型中发现的高级泛化能力。</p>
+<p>然而，将现代大型语言模型的复杂功能(特别是基于提示的零概率泛化和上下文学习)集成到表格深度学习中存在重大挑战。</p>
+<ul>
+<li>一个主要的问题是，LLMs主要是预先接受过语言数据的训练，他们常常很难完全掌握语言格式的表格数据的细微差别。尽管这些模型能够熟练地从文本语料库中获取广泛的世界知识和高级推理技能，但它们往往缺乏理解特定领域知识的能力，而这对于有效的表格深度学习至关重要。这种不足在它们对表示为标记序列的数字特征的处理，以及在识别预测目标和表格特征之间存在的复杂统计依赖关系，以及在上下文演示和预测数据样本之间存在的依赖关系方面尤为明显。这些能力对于理解表格数据集的独特特征并利用它们进行准确的预测建模至关重要。</li>
+<li>为了解决这一缺点，我们引入了生成式表格学习(GTL)——一种新的范式，提倡对LLMs在广泛的表格数据上进行持续的预训练，这些数据以面向教学的语言格式转录，跨越多个领域。</li>
+<li>GTL是精心设计的，旨在增强对表格特征的理解，它们与预测目标和上下文数据示例的相互关系，以及任务指令和表格预测之间的联系。为了简化这个过程，我们创建了特定的文本模板，将表格数据实例转换为面向指令的语言格式。这种转换迎合了各种配置，例如是否包括元信息和上下文示例，并维护数字令牌和目标令牌的位置记录。因此，GTL为模型配备了为表格深度学习量身定制的高级指令跟随能力，使其能够通过解释新任务指令或上下文示例的自然语言提示来生成下游任务。</li>
+</ul>
+<p>总结：</p>
+<ul>
+<li>提出了GTL，这是一种生成式学习范式，将LLMs的高级功能(特别是基于提示的零次泛化和上下文学习)扩展到表格深度学习领域。GTL独特地增强了模型对表格数据的理解，通过继续在以指令为导向的语言格式化的各种表格数据集上进行预训练过程，解决了当前方法中的关键差距。</li>
+<li>为了支持GTL，我们开发了一个全面的数据构造管道，将表格实例转换为面向指令的语言格式。这条管道不仅促进了对表格深度学习中指令跟随能力的进一步研究，而且丰富了LLMs可用的培训和评估资源，旨在提高他们对表格数据的理解和预测准确性。</li>
+<li>为了证明GTL的有效性，我们训练了LLaMA-GTL模型，在表格数据的各种分类和回归任务中展示了其出色的零射击和上下文学习性能。LLaMA-GTL为表格模型的适应性和泛化设定了新的基准，在特定任务中超越了传统方法，甚至超越了GPT-4等最先进的llm。<ul>
+<li>Zero-shot学习（Zero-shot Learning，ZSL）是深度学习领域中的一个重要研究方向，它旨在让机器学习模型能够在没有见过特定类别样本的情况下，对该类别进行识别或分类。换句话说，ZSL试图让模型能够泛化到训练时未见过的类别上。</li>
+</ul>
+</li>
+</ul>
+<h1 id="2-Related-work"><a href="#2-Related-work" class="headerlink" title="2 Related work"></a>2 Related work</h1><h1 id="3-大型语言模型的生成表学习"><a href="#3-大型语言模型的生成表学习" class="headerlink" title="3 大型语言模型的生成表学习"></a>3 大型语言模型的生成表学习</h1><h2 id="3-1-问题形成"><a href="#3-1-问题形成" class="headerlink" title="3.1 问题形成"></a>3.1 问题形成</h2><ul>
+<li>符号。在表学习领域当中，我们通常处理表格任务$\mathcal{T}:\mathcal{X}\to\mathcal{Y}$，这个和一个表例$x\in \mathcal{X}$相联系，这个表由$M$个特征组成，${x_i}_{i&#x3D;1}^M$。同时还有一个预测目标，$y \in \mathcal{Y}$。对于回归任务，$y\subseteq\mathbb{R}^1$；对于分类任务，$\mathcal{Y}&#x3D;{0,1,…,C-1}$​。<ul>
+<li>注意，表格特征通常分为数值类型和分类类型，而我们在这里没有明确区分它们。此外，每个表格任务还可能与各种元信息元素相关联，如任务背景、预测目标解释和特征描述。</li>
+</ul>
+</li>
+<li>我还将任务的综合</li>
+</ul>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 XuSibo&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Rick
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>
