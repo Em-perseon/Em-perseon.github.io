@@ -176,6 +176,21 @@
         </span>
         
         
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/CoM-LLMs-SQL/" style="color: #ffa2c4">
+                    CoM LLMs SQL
+                </a>
+            </span>
+            
+        </span>
+        
     </div>
     
     <div class="content" v-pre>
@@ -224,7 +239,7 @@
 <li><strong>外部符号内存</strong>是指将符号信息存储在外部设备或介质上，而不是仅限于系统内部存储。这种记忆系统利用外部工具来增强和扩展内部记忆能力。</li>
 </ul>
 </li>
-<li><p>在ChatDB框架中，我们提出了<strong>内存链(CoM)<strong>方法来更有效地操作外部符号内存，从而进一步增强llm的推理能力。</strong>记忆链方法</strong>将<strong>用户输入转换为一系列导致最终结果的中间内存操作步骤</strong>。通过记忆链方法，<strong>将一个复杂的问题分解为多个记忆操作步骤</strong>，大大降低了问题解决的复杂性。在ChatDB中，每个中间步骤都涉及一个或多个SQL语句。</p>
+<li><p>在ChatDB框架中，我们提出了<strong>内存链(CoM)<strong>方法来更有效地操作外部符号内存，从而进一步增强llm的推理能力。</strong>内存链方法</strong>将<strong>用户输入转换为一系列导致最终结果的中间内存操作步骤</strong>。通过内存链方法，<strong>将一个复杂的问题分解为多个记忆操作步骤</strong>，大大降低了问题解决的复杂性。在ChatDB中，每个中间步骤都涉及一个或多个SQL语句。</p>
 </li>
 <li><p><strong>总结</strong>：首先，建议<strong>用数据库作为llm的外部符号内存</strong>，允许历史数据的结构化存储，并允许使用SQL语句进行符号和复杂的数据操作。其次，我们的<strong>内存链方法</strong>通过将用户输入转换为多步中间内存操作来实现有效的内存操作，这增强了ChatDB的性能，使其能够以更高的准确性和稳定性处理复杂的多表数据库交互。</p>
 </li>
@@ -237,6 +252,28 @@
 </ul>
 <h2 id="3-2框架概述"><a href="#3-2框架概述" class="headerlink" title="3.2框架概述"></a>3.2框架概述</h2><p>ChatDB框架由三个主要阶段组成：<strong>输入处理</strong>、<strong>记忆链</strong>和<strong>响应总结</strong></p>
 <img src="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-07-14%20112221.jpg" class="" title="屏幕截图 2024-07-14 112221">
+
+<ul>
+<li><strong>输入处理：</strong>如果响应用户输入需要使用内存，ChatDB通过llm生成一系列中间步骤来操作符号内存。否则，我们直接使用llm来生成回复。</li>
+<li><strong>Chain-of-Memory：</strong>ChatDB执行一系列中间内存操作步骤来与符号内存交互。ChatDB根据先前生成的一系列SQL语句依次操作符号内存，包括插入、更新、选择、删除等操作。外部数据库执行相应的SQL语句，更新数据库，并返回结果。值得注意的是，ChatDB在执行内存操作步骤之前，会根据前面SQL语句的结果来决定是否更新内存操作步骤。ChatDB按照相同的过程执行下一步，直到完成对内存的所有操作。</li>
+<li><strong>响应总结：</strong>ChatDB根据一系列内存链步骤的结果总结对用户的最终响应</li>
+</ul>
+<h2 id="3-3内存链"><a href="#3-3内存链" class="headerlink" title="3.3内存链"></a>3.3内存链</h2><p>思维链强调将复杂推理分解为一系列中间步骤。</p>
+<p>通过提供符号内存机制来支持与这些中间步骤相关联的存储，可以将内存链(CoM)视为一种增强思维链的方法。</p>
+<p>内存链的目的是提高llm在操作符号内存时的推理能力和鲁棒性。该方法包括<strong>将用户输入转换为中间内存操作序列</strong>，使llm能够<strong>以符号方式更准确有效地操作内存</strong>。对于涉及与历史数据进行复杂而准确交互的实际应用程序(例如管理设置中的记录保存和数据分析)，操作符号内存的能力特别有价值。</p>
+<p>为了提高我们方法的性能和稳定性，我们采用了上下文学习，提供了几个<strong>内存链步骤序列</strong>和<strong>思维链提示</strong>的提示示例。一个强大而准确的<strong>内存链</strong>过程使llm能够更好地对符号记忆进行推理，并处理更复杂的场景。</p>
+<ul>
+<li>内存链的优点是双重的。<ul>
+<li>首先，它使llm能够以更高的精度执行复杂的数据库操作，增强了它们在符号内存上的多跳推理能力。</li>
+<li>其次，通过将复杂操作分解为一系列中间内存操作，内存链方法增强了llm处理复杂多表交互的能力。</li>
+</ul>
+</li>
+</ul>
+<p>这种方法使LLMs能够更好地处理边缘情况和意外情况，使其成为现实应用程序中很有前途的方法。</p>
+<img src="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-07-14%20115317.jpg" class="" title="屏幕截图 2024-07-14 115317">
+
+<h2 id="3-4与以往记忆增强llm的比较"><a href="#3-4与以往记忆增强llm的比较" class="headerlink" title="3.4与以往记忆增强llm的比较"></a>3.4与以往记忆增强llm的比较</h2><img src="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/image-20240714120401054.png" class="" title="image-20240714120401054">
+
 
     </div>
     
