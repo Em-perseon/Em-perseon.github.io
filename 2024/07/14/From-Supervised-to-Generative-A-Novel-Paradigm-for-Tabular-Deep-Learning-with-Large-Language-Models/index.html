@@ -57,7 +57,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 <body>
     <div id="layout">
         <transition name="fade">
@@ -220,12 +220,12 @@
 </li>
 </ul>
 <h1 id="2-Related-work"><a href="#2-Related-work" class="headerlink" title="2 Related work"></a>2 Related work</h1><h1 id="3-大型语言模型的生成表学习"><a href="#3-大型语言模型的生成表学习" class="headerlink" title="3 大型语言模型的生成表学习"></a>3 大型语言模型的生成表学习</h1><h2 id="3-1-问题形成"><a href="#3-1-问题形成" class="headerlink" title="3.1 问题形成"></a>3.1 问题形成</h2><ul>
-<li><strong>符号：</strong>在表学习领域当中，我们通常处理表格任务$\mathcal{T}:\mathcal{X}\to\mathcal{Y}$，这个和一个表例$x\in \mathcal{X}$相联系，这个表由$M$个特征组成，${x_i}_{i&#x3D;1}^M$。同时还有一个预测目标，$y \in \mathcal{Y}$。对于回归任务，$y\subseteq\mathbb{R}^1$；对于分类任务，$\mathcal{Y}&#x3D;{0,1,…,C-1}$，还将任务$\mathcal{T}$的综合元学习表示为$\mathcal{M}^{\mathcal{T}}$。传统的表格式数据学习方法主要侧重于利用训练数据构建一个判别模型来学习目标与特征之间的依赖关系$p(y|x)$，然而，这种与训练数据紧密相关的模型在适应具有不同数据模式($\widetilde{\mathcal{X}}$)和预测目标($\widetilde{\mathcal{Y}}$)的新表格任务($\widetilde{\mathcal{T}}$)时面临重大挑战。<ul>
+<li><strong>符号：</strong>在表学习领域当中，我们通常处理表格任务$\mathcal{T}:\mathcal{X}\to\mathcal{Y}$，这个和一个表例$x\in \mathcal{X}$相联系，这个表由$M$个特征组成，$\{x_i\}_{i=1}^M$。同时还有一个预测目标，$y \in \mathcal{Y}$。对于回归任务，$y\subseteq\mathbb{R}^1$；对于分类任务，$\mathcal{Y}=\{0,1,…,C-1\}$，还将任务$\mathcal{T}$的综合元学习表示为$\mathcal{M}^{\mathcal{T}}$。传统的表格式数据学习方法主要侧重于利用训练数据构建一个判别模型来学习目标与特征之间的依赖关系$p(y|x)$，然而，这种与训练数据紧密相关的模型在适应具有不同数据模式($\widetilde{\mathcal{X}}$)和预测目标($\widetilde{\mathcal{Y}}$)的新表格任务($\widetilde{\mathcal{T}}$)时面临重大挑战。<ul>
 <li>注意，表格特征通常分为数值类型和分类类型，而我们在这里没有明确区分它们。此外，每个表格任务还可能与各种元信息元素相关联，如任务背景、预测目标解释和特征描述。</li>
 </ul>
 </li>
 <li><strong>Zero-shot learning：</strong>在表格数据领域，零射击学习的典型特征是能够预测来自以前未见过的任务$\widetilde{\mathcal{T}}$的数据样本的结果。这个新任务具有未知的数据模式$\widetilde{\mathcal{X}}$，但它具有元信息$\mathcal{M}^{\widetilde{\mathcal{T}}}$，它<strong>封装了特征和预测目标的含义</strong>。形式上，我们定义了一个零点射击的学习任务作为一个元组$(\mathcal{M}^{\widetilde{\mathcal{T}}},\widetilde{\mathcal{x}}^{new})$，其中$\mathcal{M}^{\widetilde{\mathcal{T}}}$代表了新任务的元信息，$\widetilde{\mathcal{x}}^{new}$代表了一个新我们想要预测的新的数据样本</li>
-<li><strong>In-context Learning：</strong>上下文学习类似Zero-shot learning，但有一个额外的维度，它包括一组来自新任务$\widetilde{\mathcal{T}}$的示例作为演示，表示为$\mathcal{D}^{\widetilde{\mathcal{T}}}&#x3D;&lt;!–swig￼0–&gt;},\mathcal{D}^{\widetilde{\mathcal{T}}},\widetilde{\mathcal{x}}^{new}))$，其中元信息$\mathcal{M}^{\widetilde{\mathcal{T}}}$可以省略，如果模型不利用他，那么通过允许模型在$\widetilde{x}^{new}$上进行预测之前在$D^{\widetilde{\mathcal{T}}}$​上进行进一步的微调，上下文学习可以过渡到few-shot learning<ul>
+<li><strong>In-context Learning：</strong>上下文学习类似Zero-shot learning，但有一个额外的维度，它包括一组来自新任务$\widetilde{\mathcal{T}}$的示例作为演示，表示为<script type="math/tex">\mathcal{D}^{\widetilde{\mathcal{T}}}=\{\widetilde{x}^j,\widetilde{y}^j\}_{j=1}^N</script>，其中$N$象征着上下文示例的数量。将上下文学习任务的输入表示为元组$(\mathcal{M}^{\widetilde{\mathcal{T}}},\mathcal{D}^{\widetilde{\mathcal{T}}},\widetilde{\mathcal{x}}^{new})$，其中元信息$\mathcal{M}^{\widetilde{\mathcal{T}}}$可以省略，如果模型不利用他，那么通过允许模型在$\widetilde{x}^{new}$上进行预测之前在$D^{\widetilde{\mathcal{T}}}$上进行进一步的微调，上下文学习可以过渡到few-shot learning<ul>
 <li>Few-shot learning (FSL) 是一种机器学习方法，旨在用极少量的训练样本进行有效的学习和预测。这种方法特别适用于数据稀缺或难以获取大量标注数据的场景，如医疗图像分析、稀有物种识别等。<ul>
 <li><strong>Meta-Learning（元学习）</strong>：通过学习如何学习，来快速适应新任务。模型在多个任务上进行训练，以便在遇到新任务时能够快速泛化。常见的方法包括 MAML（Model-Agnostic Meta-Learning）。</li>
 <li><strong>Metric Learning（度量学习）</strong>：通过学习一个度量空间，使得相似的样本在该空间中的距离更近，常见的方法包括 Siamese Network 和 Prototypical Network。</li>
@@ -237,7 +237,6 @@
 </li>
 </ul>
 <h2 id="3-2-面向教学语言格式的表格数据构造-Construction-of-Tabular-Data-in-an-Instruction-Oriented-Language-Format"><a href="#3-2-面向教学语言格式的表格数据构造-Construction-of-Tabular-Data-in-an-Instruction-Oriented-Language-Format" class="headerlink" title="3.2 面向教学语言格式的表格数据构造(Construction of Tabular Data in an Instruction-Oriented Language Format)"></a>3.2 面向教学语言格式的表格数据构造(Construction of Tabular Data in an Instruction-Oriented Language Format)</h2><img src="/2024/07/14/From-Supervised-to-Generative-A-Novel-Paradigm-for-Tabular-Deep-Learning-with-Large-Language-Models/image-20240715092817829.png" class="" title="image-20240715092817829">
-
 <p>图1的上半部分描述了用于数据构造的管道。我们的初步步骤是收集大量的表格数据集，这些数据集涵盖了跨多个领域的广泛预测任务（这个过程，在4.1节中有更多的细节）需要同时获取特征和标签，最好包括元信息(可选)。然后，对于每个指定的表格任务$\mathcal{T}$和任何附带的元信息$\mathcal{M}^{\mathcal{T}}$，有必要从原始表格中转换数据样本格式为面向指令的语言格式，以支持后续的GTL过程。</p>
 <p>这种以教学为导向的格式主要由三个部分组成。</p>
 <ul>
@@ -258,7 +257,8 @@
 <li><p>为了解决这个限制，我们引入了t表模板，它使用Markdown表格式来封装表格特性值。这种方法确保了无论添加了多少上下文示例，我们只需要指定一个表头，其中包含针对不同特性的简要标记。特征含义位于Markdown表之前。T-table模板有效地处理表格数据，特别是在上下文学习设置中。然而，这也对llm的长期关联能力提出了挑战，因为它们本质上需要将特征值与其对应的表列链接起来，然后将其与正确的特征含义解释关联起来。</p>
 <ul>
 <li><p>t表模板。T-table模板维护数据样本的表格格式。元信息，如特征描述和标签描述，是在数据之前添加的，并且在引入上下文示例时不会在每个示例中重复。list1展示了t表模板的一个实例，其中包含上下文示例。</p>
-<img src="/2024/07/14/From-Supervised-to-Generative-A-Novel-Paradigm-for-Tabular-Deep-Learning-with-Large-Language-Models/image-20240715101824358.png" class="" title="image-20240715101824358"></li>
+<img src="/2024/07/14/From-Supervised-to-Generative-A-Novel-Paradigm-for-Tabular-Deep-Learning-with-Large-Language-Models/image-20240715101824358.png" class="" title="image-20240715101824358">
+</li>
 </ul>
 </li>
 <li><p>t -匿名模板是t表模板的衍生物，它省略了所有元信息。这是为了模拟一个实际场景，即我们拥有表格数据样本，但缺乏对其背景或特征含义的了解。这种设置更类似于TabPFN，它没有利用关于特征列和任务背景的语义信息。</p>
@@ -271,18 +271,17 @@
 <h2 id="3-3-学习和适应"><a href="#3-3-学习和适应" class="headerlink" title="3.3 学习和适应"></a>3.3 学习和适应</h2><p>图1的底部直观地描述了GTL的训练和适应。</p>
 <p><strong>面向指令的标记化语言数据的符号</strong>：下面我们主要利用T-lang模板为一个标记化的面向指令的语言样本派生符号。回顾上一节，用于表格数据的面向指令的语言格式主要包含三个组件，包括<strong>任务指令</strong>、<strong>特性描述</strong>和<strong>回答提示</strong>。</p>
 <ol>
-<li><p>形式上，我们将第一部分的标记化结果表示为：$t^b&#x3D;[t_1^b,…,t^b_{|t^b|}]$，其中$|·|$表示序列的长度。此外，我们将$t-th$长度的特征表示为$t^{f_i}&#x3D;[l^{fi},t^{x_i},r^{f_i}]$，其中，$l^{f_i}&#x3D;[l^{f_i}<em>1,…,l^{f_i}</em>{|l^{f_i}|}]$，包括所有标记的特征描述在左边的这个特性值，$t^{x_i}&#x3D;[t^{x_i},…,t^{x_i}_{|t^{x_i}|}]$表示特征值$x_i$的符号序列，$r^{f_i}&#x3D;[r^{f_i}<em>1,…,r^{f_i}</em>{|r^{f_i}|}]$包括剩余令牌特征描述的特征值。</p>
+<li><p>形式上，我们将第一部分的标记化结果表示为：$t^b=[t_1^b,…,t^b_{|t^b|}]$，其中$|·|$表示序列的长度。此外，我们将$t-th$长度的特征表示为$t^{f_i}=[l^{fi},t^{x_i},r^{f_i}]$，其中，$l^{f_i}=[l^{f_i}_1,…,l^{f_i}_{|l^{f_i}|}]$，包括所有标记的特征描述在左边的这个特性值，$t^{x_i}=[t^{x_i},…,t^{x_i}_{|t^{x_i}|}]$表示特征值$x_i$的符号序列，$r^{f_i}=[r^{f_i}_1,…,r^{f_i}_{|r^{f_i}|}]$包括剩余令牌特征描述的特征值。</p>
 </li>
-<li><p>通过连接所有特征的标记序列，我们得到的整体特征序列为：$t^f&#x3D;[t^{f_1},…t^{f_M}]$。最后，回答提示为$t^{\mathcal{a}}&#x3D;[l^{\mathcal{a}},t^y]$，其中$l^a&#x3D;[l^a_1,…,l^a_{|l^a|}]$代表答案提示之前的令牌$t^y&#x3D;[t^y_1,…,t^y_{|t^y|}]$。</p>
+<li><p>通过连接所有特征的标记序列，我们得到的整体特征序列为：$t^f=[t^{f_1},…t^{f_M}]$。最后，回答提示为$t^{\mathcal{a}}=[l^{\mathcal{a}},t^y]$，其中$l^a=[l^a_1,…,l^a_{|l^a|}]$代表答案提示之前的令牌$t^y=[t^y_1,…,t^y_{|t^y|}]$。</p>
 </li>
 <li><p>这样，我们可以表达一个表示例$x$和对应的目标值$y$作为一个序列令牌</p>
 </li>
 </ol>
-<p>$$[t^b,t^f,t^a]&#x3D;[t^b,l^{f_1},t^{x_1},r^{f_1},…,l^{f_M},t^{x_M},r^{f_M},t^y]$$</p>
-<ul>
-<li>系统地集合任务背景$(t^b)$，特征意义$({l^{f_i},r_{f_i}}^M_{i&#x3D;1})$和特征值$({t^{x_i}}^M_{i&#x3D;1})$并且支持不同的预测目标通过一个变长序列$(t^y)$。</li>
+<script type="math/tex; mode=display">[t^b,t^f,t^a]=[t^b,l^{f_1},t^{x_1},r^{f_1},...,l^{f_M},t^{x_M},r^{f_M},t^y]</script><ul>
+<li>系统地集合任务背景$(t^b)$，特征意义$(\{l^{f_i},r_{f_i}\}^M_{i=1})$和特征值$(\{t^{x_i}\}^M_{i=1})$并且支持不同的预测目标通过一个变长序列$(t^y)$。</li>
 </ul>
-<ol start="4">
+<ol>
 <li>请注意，上面的标记化符号也适用于其他模板，比如T-table，只是用不同的方式指定特征含义。此外，我们需要标记当前表格数据样本的特征值标记和预测目标标记的位置，以支持后续的GTL过程。</li>
 </ol>
 <p><strong>GTL的目标：</strong>基于标记化数据的符号，将GTL设计为表征以下联合分布：</p>

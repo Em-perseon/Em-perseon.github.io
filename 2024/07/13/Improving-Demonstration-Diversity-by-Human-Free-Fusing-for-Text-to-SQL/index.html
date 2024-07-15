@@ -57,7 +57,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 <body>
     <div id="layout">
         <transition name="fade">
@@ -184,7 +184,7 @@
             
             <span class="tag">
                 
-                <a href="/tags/sql/" style="color: #ff7d73">
+                <a href="/tags/sql/" style="color: #ffa2c4">
                     sql
                 </a>
             </span>
@@ -218,9 +218,9 @@
 </ul>
 <h2 id="Diversity-Measurement"><a href="#Diversity-Measurement" class="headerlink" title="Diversity Measurement"></a>Diversity Measurement</h2><ul>
 <li>基于前面的讨论，我们使用<strong>与演示池相似度最低</strong>的用户问题来度量演示池的多样性。</li>
-<li>形式上$D&#x3D;{d_i}$表示演示池，$U&#x3D;{u}$表示用户问题，$sim(U,D)$表示U和D之间的相似度，以本文中它们编码向量之间的欧氏距离的倒数计算，利用下面公式来衡量示范池$D$​的多样性，称为多样性度量，该指标对应于与演示池中最相似的演示相似度最小的用户问题与任何其他用户问题的相似度。</li>
+<li>形式上$D=\{d_i\}$表示演示池，$U=\{u\}$表示用户问题，$sim(U,D)$表示U和D之间的相似度，以本文中它们编码向量之间的欧氏距离的倒数计算，利用下面公式来衡量示范池$D$​的多样性，称为多样性度量，该指标对应于与演示池中最相似的演示相似度最小的用户问题与任何其他用户问题的相似度。</li>
 </ul>
-<p>$$\mathrm{DM}&#x3D;\min_{u\in U}\max_{d_i\in D}\mathrm{sim}(u,d_i)$$​</p>
+<p><script type="math/tex">\mathrm{DM}=\min_{u\in U}\max_{d_i\in D}\mathrm{sim}(u,d_i)</script>​</p>
 <h2 id="Diversity-of-the-Existing-Labeling-Can-be-Further-Enhanced"><a href="#Diversity-of-the-Existing-Labeling-Can-be-Further-Enhanced" class="headerlink" title="Diversity of the Existing Labeling Can be Further Enhanced"></a>Diversity of the Existing Labeling Can be Further Enhanced</h2><ul>
 <li>使用上面的度量，我们然后度量现有文本到sql标记演示池的多样性。现有标注演示池的DM和性能如图4和图5所示。这些数字显示了DM和性能明显高于现有标记数据的其他演示池。因此，虽然现有的标签表现出较高的多样性，但可以进一步改进，从而提高性能。因此，我们接下来将讨论综合演示的方法，以增强演示池的多样性。</li>
 </ul>

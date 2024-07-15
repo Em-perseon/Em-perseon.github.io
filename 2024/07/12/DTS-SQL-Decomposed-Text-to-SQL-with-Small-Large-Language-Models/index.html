@@ -57,7 +57,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 <body>
     <div id="layout">
         <transition name="fade">
@@ -184,7 +184,7 @@
             
             <span class="tag">
                 
-                <a href="/tags/LLMs-sql/" style="color: #03a9f4">
+                <a href="/tags/LLMs-sql/" style="color: #ff7d73">
                     LLMs sql
                 </a>
             </span>
@@ -205,29 +205,26 @@
 <li><p>目前由于缺乏包含人类或者人工智能反馈的广泛数据集，导致人们导致人们主要关注<strong>Text-to-SQL</strong>的监督微调。这种方法需要一组特定的指令或提示及其相应的输出或响应。<br></p>
 <ul>
 <li>关于为什么要关注<strong>Text-to-SQL</strong>：Text-to-SQL系统能够将自然语言描述转化成对应的SQL查询语句，这项技术能够有效地辅助人们对海量的数据库进行查询。<ul>
-<li>Text-to-SQL就是这样一项转化自然语言描述为SQL查询语句的技术。举个例子：当我们询问智能助手 “贾樟柯导演是在哪出生的啊？”，Text-to-SQL模型就会先根据问句解析出SQL语句“SELECT birth_city FROM director WHERE name &#x3D;”贾樟柯””，再对数据库执行该命令，最后向用户返回查询结果“山西省汾阳市”。<br></li>
+<li>Text-to-SQL就是这样一项转化自然语言描述为SQL查询语句的技术。举个例子：当我们询问智能助手 “贾樟柯导演是在哪出生的啊？”，Text-to-SQL模型就会先根据问句解析出SQL语句“SELECT birth_city FROM director WHERE name =”贾樟柯””，再对数据库执行该命令，最后向用户返回查询结果“山西省汾阳市”。<br></li>
 <li>《一文了解Text-to-SQL》文章链接：<a target="_blank" rel="noopener" href="https://www.jiqizhixin.com/articles/2019-12-27-11">https://www.jiqizhixin.com/articles/2019-12-27-11</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><p>文章研究在Text-to-SQL上下文中对llm进行监督微调的既定方法。介绍了新的两步微调方法，旨在增强文本到sql领域中模型的性能</p>
-</li>
+<li>文章研究在Text-to-SQL上下文中对llm进行监督微调的既定方法。介绍了新的两步微调方法，旨在增强文本到sql领域中模型的性能</li>
 </ul>
 <h2 id="2-1有监督问题到SQL的微调（Supervised-fine-tunning-for-Text-to-SQL）"><a href="#2-1有监督问题到SQL的微调（Supervised-fine-tunning-for-Text-to-SQL）" class="headerlink" title="2.1有监督问题到SQL的微调（Supervised fine-tunning for Text-to-SQL）"></a>2.1有监督问题到SQL的微调（Supervised fine-tunning for Text-to-SQL）</h2><ul>
-<li><p>在这个小节中，将探索在开源社区实践的Text-to-SQL任务的监督调优过程</p>
-</li>
-<li><p>给定一组数据库$D_i$ 其中包含对问题$q_i$和相应的SQL查询$s_i$，目标是使用一组训练数据$T&#x3D;$对大预言模型M进行微调，其中$q_i$和$s_i$表示自然语言问题和及其在数据库$D_i$上关联的SQL查询。监督微调的目标是为了<strong>最小化经验损失</strong>：$$\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i&#x3D;1}^{|T|}\mathcal{L}(M^*(\sigma_f(q_i,D_i,s_i))$$</p>
+<li>在这个小节中，将探索在开源社区实践的Text-to-SQL任务的监督调优过程</li>
+<li><p>给定一组数据库$D_i$ 其中包含对问题$q_i$和相应的SQL查询$s_i$，目标是使用一组训练数据$T=\{(q_i,s_i,D_i)\}$对大预言模型M进行微调，其中$q_i$和$s_i$表示自然语言问题和及其在数据库$D_i$上关联的SQL查询。监督微调的目标是为了<strong>最小化经验损失</strong>：$\min_{\sigma, M} \frac{1}{|T|} \sum_{i=1}^{|T|} \mathcal{L}(M(\sigma_f(q_i, D_i, s_i)))$</p>
 <ul>
 <li>其中，$\mathcal{L}$是测量实际SQL查询和模型生成的SQL查询之间的差异。</li>
 <li>$\sigma_f$​​决定了问题、数据库模式和SQL查询的格式</li>
-<li>$M^*$表示经过微调（fine-tuning）后的模型参数，M表示model，然后*表示经过微调</li>
+<li>$M^<em>$表示经过微调（fine-tuning）后的模型参数，M表示model，然后</em>表示经过微调</li>
 </ul>
 </li>
 <li><p>主要的问题就是，我们事先不知道数据库中的表和哪些表是和要生成的SQL相关</p>
 </li>
-<li><p>因此一种常用的调优方法包括在提示中包括<strong>所有表的模式</strong>以及<strong>问题</strong>和<strong>SQL对</strong>。</p>
-<ul>
+<li>因此一种常用的调优方法包括在提示中包括<strong>所有表的模式</strong>以及<strong>问题</strong>和<strong>SQL对</strong>。<ul>
 <li>这种方法有两个目的:<ul>
 <li>教模型生成正确的SQL查询</li>
 <li>并从所有提供的表中识别相关的表。</li>
@@ -245,14 +242,14 @@
 </ul>
 </li>
 <li>在本文章当中，将模式链接视为一项独特的任务，并显式微调llm，以便在使用自然语言查询时识别相关的表和列。</li>
-<li>给定训练数据集$T&#x3D;{(q_i,s_i,D_i)}$，提取 SQL查询中所使用的所有列和表，创建一个新的数据集$T&#x3D;{(q_i,T_i,C_i,D_i)}$，其中$T_i$和$C_i$表示SQL查询$s_i$中使用的表和列表。在模式链接的监督微调过程中，主要的目标也是最小化经验损失，由下式进行定义：$$\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i&#x3D;1}^{|T|}\mathcal{L}(M^*(\sigma_s(q_i,T_i,C_i,D_i))$$<ul>
+<li>给定训练数据集$T=\{(q_i,s_i,D_i)\}$，提取 SQL查询中所使用的所有列和表，创建一个新的数据集$T=\{(q_i,T_i,C_i,D_i)\}$，其中$T_i$和$C_i$表示SQL查询$s_i$中使用的表和列表。在模式链接的监督微调过程中，主要的目标也是最小化经验损失，由下式进行定义：<script type="math/tex">\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i=1}^{|T|}\mathcal{L}(M^*(\sigma_s(q_i,T_i,C_i,D_i))</script><ul>
 <li>其中，$\mathcal{L}$表示模型下一个token预测的损失，将预测的列表和表名词与实际的基础真值名称进行比较</li>
 </ul>
 </li>
 </ul>
 <h3 id="2-2-2-SQL生成微调（SQL-Generation-Fine-tuning）"><a href="#2-2-2-SQL生成微调（SQL-Generation-Fine-tuning）" class="headerlink" title="2.2.2 SQL生成微调（SQL Generation Fine-tuning）"></a>2.2.2 SQL生成微调（SQL Generation Fine-tuning）</h3><ul>
 <li>当确定了用于生成SQL的适当表之后，下一步就是利用一个基于问题和正确表的模式构造SQL查询模型。由于我们已经使用模式链接模块确定了可能正确的表，因此不需要在SQL生成模型的输入中包含所有表。</li>
-<li>与之前微调llm的方法相反，我们从训练数据集$T&#x3D;{(q_i.s_i,D_i)}$中提取与基本真实SQL查询对应的相关表。然后对LLM进行微调，同时最小化下面的损失函数：$$\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i&#x3D;1}^{|T|}\mathcal{L}(M^*(\sigma_g(q_i,T_i,s_i)) $$<ul>
+<li>与之前微调llm的方法相反，我们从训练数据集$T=\{(q_i.s_i,D_i)\}$中提取与基本真实SQL查询对应的相关表。然后对LLM进行微调，同时最小化下面的损失函数：<script type="math/tex">\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i=1}^{|T|}\mathcal{L}(M^*(\sigma_g(q_i,T_i,s_i))</script><ul>
 <li>其中损失函数和2.1定义的是一样的，文本到sql训练过程的这种分解允许llm以单一目标进行训练。通过分离模式链接和SQL查询生成任务，我们改进了训练过程，实现了更集中、更有效的微调。</li>
 </ul>
 </li>

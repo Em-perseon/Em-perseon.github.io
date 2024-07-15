@@ -55,7 +55,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 <body>
     <div id="layout">
         <transition name="fade">
@@ -248,12 +248,12 @@
 </li>
 </ul>
 <h1 id="2-Related-work"><a href="#2-Related-work" class="headerlink" title="2 Related work"></a>2 Related work</h1><h1 id="3-大型语言模型的生成表学习"><a href="#3-大型语言模型的生成表学习" class="headerlink" title="3 大型语言模型的生成表学习"></a>3 大型语言模型的生成表学习</h1><h2 id="3-1-问题形成"><a href="#3-1-问题形成" class="headerlink" title="3.1 问题形成"></a>3.1 问题形成</h2><ul>
-<li><strong>符号：</strong>在表学习领域当中，我们通常处理表格任务$\mathcal{T}:\mathcal{X}\to\mathcal{Y}$，这个和一个表例$x\in \mathcal{X}$相联系，这个表由$M$个特征组成，${x_i}_{i&#x3D;1}^M$。同时还有一个预测目标，$y \in \mathcal{Y}$。对于回归任务，$y\subseteq\mathbb{R}^1$；对于分类任务，$\mathcal{Y}&#x3D;{0,1,…,C-1}$，还将任务$\mathcal{T}$的综合元学习表示为$\mathcal{M}^{\mathcal{T}}$。传统的表格式数据学习方法主要侧重于利用训练数据构建一个判别模型来学习目标与特征之间的依赖关系$p(y|x)$，然而，这种与训练数据紧密相关的模型在适应具有不同数据模式($\widetilde{\mathcal{X}}$)和预测目标($\widetilde{\mathcal{Y}}$)的新表格任务($\widetilde{\mathcal{T}}$)时面临重大挑战。<ul>
+<li><strong>符号：</strong>在表学习领域当中，我们通常处理表格任务$\mathcal{T}:\mathcal{X}\to\mathcal{Y}$，这个和一个表例$x\in \mathcal{X}$相联系，这个表由$M$个特征组成，$\{x_i\}_{i=1}^M$。同时还有一个预测目标，$y \in \mathcal{Y}$。对于回归任务，$y\subseteq\mathbb{R}^1$；对于分类任务，$\mathcal{Y}=\{0,1,…,C-1\}$，还将任务$\mathcal{T}$的综合元学习表示为$\mathcal{M}^{\mathcal{T}}$。传统的表格式数据学习方法主要侧重于利用训练数据构建一个判别模型来学习目标与特征之间的依赖关系$p(y|x)$，然而，这种与训练数据紧密相关的模型在适应具有不同数据模式($\widetilde{\mathcal{X}}$)和预测目标($\widetilde{\mathcal{Y}}$)的新表格任务($\widetilde{\mathcal{T}}$)时面临重大挑战。<ul>
 <li>注意，表格特征通常分为数值类型和分类类型，而我们在这里没有明确区分它们。此外，每个表格任务还可能与各种元信息元素相关联，如任务背景、预测目标解释和特征描述。</li>
 </ul>
 </li>
 <li><strong>Zero-shot learning：</strong>在表格数据领域，零射击学习的典型特征是能够预测来自以前未见过的任务$\widetilde{\mathcal{T}}$的数据样本的结果。这个新任务具有未知的数据模式$\widetilde{\mathcal{X}}$，但它具有元信息$\mathcal{M}^{\widetilde{\mathcal{T}}}$，它<strong>封装了特征和预测目标的含义</strong>。形式上，我们定义了一个零点射击的学习任务作为一个元组$(\mathcal{M}^{\widetilde{\mathcal{T}}},\widetilde{\mathcal{x}}^{new})$，其中$\mathcal{M}^{\widetilde{\mathcal{T}}}$代表了新任务的元信息，$\widetilde{\mathcal{x}}^{new}$代表了一个新我们想要预测的新的数据样本</li>
-<li><strong>In-context Learning：</strong>上下文学习类似Zero-shot learning，但有一个额外的维度，它包括一组来自新任务$\widetilde{\mathcal{T}}$的示例作为演示，表示为$\mathcal{D}^{\widetilde{\mathcal{T}}}&#x3D;&lt;!–swig￼0–&gt;},\mathcal{D}^{\widetilde{\mathcal{T}}},\widetilde{\mathcal{x}}^{new}))$，其中元信息$\mathcal{M}^{\widetilde{\mathcal{T}}}$可以省略，如果模型不利用他，那么通过允许模型在$\widetilde{x}^{new}$上进行预测之前在$D^{\widetilde{\mathcal{T}}}$​上进行进一步的微调，上下文学习可以过渡到few-shot learning<ul>
+<li><strong>In-context Learning：</strong>上下文学习类似Zero-shot learning，但有一个额外的维度，它包括一组来自新任务$\widetilde{\mathcal{T}}$的示例作为演示，表示为<script type="math/tex">\mathcal{D}^{\widetilde{\mathcal{T}}}=\{\widetilde{x}^j,\widetilde{y}^j\}_{j=1}^N</script>，其中$N$象征着上下文示例的数量。将上下文学习任务的输入表示为元组$(\mathcal{M}^{\widetilde{\mathcal{T}}},\mathcal{D}^{\widetilde{\mathcal{T}}},\widetilde{\mathcal{x}}^{new})$，其中元信息$\mathcal{M}^{\widetilde{\mathcal{T}}}$可以省略，如果模型不利用他，那么通过允许模型在$\widetilde{x}^{new}$上进行预测之前在$D^{\widetilde{\mathcal{T}}}$上进行进一步的微调，上下文学习可以过渡到few-shot learning<ul>
 <li>Few-shot learning (FSL) 是一种机器学习方法，旨在用极少量的训练样本进行有效的学习和预测。这种方法特别适用于数据稀缺或难以获取大量标注数据的场景，如医疗图像分析、稀有物种识别等。<ul>
 <li><strong>Meta-Learning（元学习）</strong>：通过学习如何学习，来快速适应新任务。模型在多个任务上进行训练，以便在遇到新任务时能够快速泛化。常见的方法包括 MAML（Model-Agnostic Meta-Learning）。</li>
 <li><strong>Metric Learning（度量学习）</strong>：通过学习一个度量空间，使得相似的样本在该空间中的距离更近，常见的方法包括 Siamese Network 和 Prototypical Network。</li>
@@ -265,7 +265,6 @@
 </li>
 </ul>
 <h2 id="3-2-面向教学语言格式的表格数据构造-Construction-of-Tabular-Data-in-an-Instruction-Oriented-Language-Format"><a href="#3-2-面向教学语言格式的表格数据构造-Construction-of-Tabular-Data-in-an-Instruction-Oriented-Language-Format" class="headerlink" title="3.2 面向教学语言格式的表格数据构造(Construction of Tabular Data in an Instruction-Oriented Language Format)"></a>3.2 面向教学语言格式的表格数据构造(Construction of Tabular Data in an Instruction-Oriented Language Format)</h2><img src="/2024/07/14/From-Supervised-to-Generative-A-Novel-Paradigm-for-Tabular-Deep-Learning-with-Large-Language-Models/image-20240715092817829.png" class="" title="image-20240715092817829">
-
 <p>图1的上半部分描述了用于数据构造的管道。我们的初步步骤是收集大量的表格数据集，这些数据集涵盖了跨多个领域的广泛预测任务（这个过程，在4.1节中有更多的细节）需要同时获取特征和标签，最好包括元信息(可选)。然后，对于每个指定的表格任务$\mathcal{T}$和任何附带的元信息$\mathcal{M}^{\mathcal{T}}$，有必要从原始表格中转换数据样本格式为面向指令的语言格式，以支持后续的GTL过程。</p>
 <p>这种以教学为导向的格式主要由三个部分组成。</p>
 <ul>
@@ -286,7 +285,8 @@
 <li><p>为了解决这个限制，我们引入了t表模板，它使用Markdown表格式来封装表格特性值。这种方法确保了无论添加了多少上下文示例，我们只需要指定一个表头，其中包含针对不同特性的简要标记。特征含义位于Markdown表之前。T-table模板有效地处理表格数据，特别是在上下文学习设置中。然而，这也对llm的长期关联能力提出了挑战，因为它们本质上需要将特征值与其对应的表列链接起来，然后将其与正确的特征含义解释关联起来。</p>
 <ul>
 <li><p>t表模板。T-table模板维护数据样本的表格格式。元信息，如特征描述和标签描述，是在数据之前添加的，并且在引入上下文示例时不会在每个示例中重复。list1展示了t表模板的一个实例，其中包含上下文示例。</p>
-<img src="/2024/07/14/From-Supervised-to-Generative-A-Novel-Paradigm-for-Tabular-Deep-Learning-with-Large-Language-Models/image-20240715101824358.png" class="" title="image-20240715101824358"></li>
+<img src="/2024/07/14/From-Supervised-to-Generative-A-Novel-Paradigm-for-Tabular-Deep-Learning-with-Large-Language-Models/image-20240715101824358.png" class="" title="image-20240715101824358">
+</li>
 </ul>
 </li>
 <li><p>t -匿名模板是t表模板的衍生物，它省略了所有元信息。这是为了模拟一个实际场景，即我们拥有表格数据样本，但缺乏对其背景或特征含义的了解。这种设置更类似于TabPFN，它没有利用关于特征列和任务背景的语义信息。</p>
@@ -299,18 +299,17 @@
 <h2 id="3-3-学习和适应"><a href="#3-3-学习和适应" class="headerlink" title="3.3 学习和适应"></a>3.3 学习和适应</h2><p>图1的底部直观地描述了GTL的训练和适应。</p>
 <p><strong>面向指令的标记化语言数据的符号</strong>：下面我们主要利用T-lang模板为一个标记化的面向指令的语言样本派生符号。回顾上一节，用于表格数据的面向指令的语言格式主要包含三个组件，包括<strong>任务指令</strong>、<strong>特性描述</strong>和<strong>回答提示</strong>。</p>
 <ol>
-<li><p>形式上，我们将第一部分的标记化结果表示为：$t^b&#x3D;[t_1^b,…,t^b_{|t^b|}]$，其中$|·|$表示序列的长度。此外，我们将$t-th$长度的特征表示为$t^{f_i}&#x3D;[l^{fi},t^{x_i},r^{f_i}]$，其中，$l^{f_i}&#x3D;[l^{f_i}<em>1,…,l^{f_i}</em>{|l^{f_i}|}]$，包括所有标记的特征描述在左边的这个特性值，$t^{x_i}&#x3D;[t^{x_i},…,t^{x_i}_{|t^{x_i}|}]$表示特征值$x_i$的符号序列，$r^{f_i}&#x3D;[r^{f_i}<em>1,…,r^{f_i}</em>{|r^{f_i}|}]$包括剩余令牌特征描述的特征值。</p>
+<li><p>形式上，我们将第一部分的标记化结果表示为：$t^b=[t_1^b,…,t^b_{|t^b|}]$，其中$|·|$表示序列的长度。此外，我们将$t-th$长度的特征表示为$t^{f_i}=[l^{fi},t^{x_i},r^{f_i}]$，其中，$l^{f_i}=[l^{f_i}_1,…,l^{f_i}_{|l^{f_i}|}]$，包括所有标记的特征描述在左边的这个特性值，$t^{x_i}=[t^{x_i},…,t^{x_i}_{|t^{x_i}|}]$表示特征值$x_i$的符号序列，$r^{f_i}=[r^{f_i}_1,…,r^{f_i}_{|r^{f_i}|}]$包括剩余令牌特征描述的特征值。</p>
 </li>
-<li><p>通过连接所有特征的标记序列，我们得到的整体特征序列为：$t^f&#x3D;[t^{f_1},…t^{f_M}]$。最后，回答提示为$t^{\mathcal{a}}&#x3D;[l^{\mathcal{a}},t^y]$，其中$l^a&#x3D;[l^a_1,…,l^a_{|l^a|}]$代表答案提示之前的令牌$t^y&#x3D;[t^y_1,…,t^y_{|t^y|}]$。</p>
+<li><p>通过连接所有特征的标记序列，我们得到的整体特征序列为：$t^f=[t^{f_1},…t^{f_M}]$。最后，回答提示为$t^{\mathcal{a}}=[l^{\mathcal{a}},t^y]$，其中$l^a=[l^a_1,…,l^a_{|l^a|}]$代表答案提示之前的令牌$t^y=[t^y_1,…,t^y_{|t^y|}]$。</p>
 </li>
 <li><p>这样，我们可以表达一个表示例$x$和对应的目标值$y$作为一个序列令牌</p>
 </li>
 </ol>
-<p>$$[t^b,t^f,t^a]&#x3D;[t^b,l^{f_1},t^{x_1},r^{f_1},…,l^{f_M},t^{x_M},r^{f_M},t^y]$$</p>
-<ul>
-<li>系统地集合任务背景$(t^b)$，特征意义$({l^{f_i},r_{f_i}}^M_{i&#x3D;1})$和特征值$({t^{x_i}}^M_{i&#x3D;1})$并且支持不同的预测目标通过一个变长序列$(t^y)$。</li>
+<script type="math/tex; mode=display">[t^b,t^f,t^a]=[t^b,l^{f_1},t^{x_1},r^{f_1},...,l^{f_M},t^{x_M},r^{f_M},t^y]</script><ul>
+<li>系统地集合任务背景$(t^b)$，特征意义$(\{l^{f_i},r_{f_i}\}^M_{i=1})$和特征值$(\{t^{x_i}\}^M_{i=1})$并且支持不同的预测目标通过一个变长序列$(t^y)$。</li>
 </ul>
-<ol start="4">
+<ol>
 <li>请注意，上面的标记化符号也适用于其他模板，比如T-table，只是用不同的方式指定特征含义。此外，我们需要标记当前表格数据样本的特征值标记和预测目标标记的位置，以支持后续的GTL过程。</li>
 </ol>
 <p><strong>GTL的目标：</strong>基于标记化数据的符号，将GTL设计为表征以下联合分布：</p>
@@ -379,18 +378,18 @@
 <li>集成知识代理和插件：“代理”是一个自动推理和决策引擎。作为一个生产就绪的项目，DB-GPT支持具有高级数据分析的会话代理的开发和应用，其中这些自动化决策有助于数据上的交互式用例。它还提供了各种查询和检索服务插件，用作与数据交互的工具。</li>
 </ul>
 <h1 id="2-系统设计"><a href="#2-系统设计" class="headerlink" title="2 系统设计"></a>2 系统设计</h1><p>系统如下图所示：</p>
-<img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714153640078.png" class="" title="image-20240714153640078"></li>
+<img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714153640078.png" class="" title="image-20240714153640078">
+</li>
 </ul>
 <h2 id="2-1-用于QA的多源RAG（Retrieval-augmented-Generation）"><a href="#2-1-用于QA的多源RAG（Retrieval-augmented-Generation）" class="headerlink" title="2.1 用于QA的多源RAG（Retrieval-augmented Generation）"></a>2.1 用于QA的多源RAG（Retrieval-augmented Generation）</h2><p>构建一个多源知识库问答，它能够理解自然语言查询，提供上下文感知的回答，并且能够生成复杂且准确的SQL查询，从而提高从新手到专家各个层面用户的数据库交互体验。如图2所示，文章的RAG管道由三个阶段组成:知识构建、知识检索和自适应上下文学习(ICL)</p>
 <img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714153955130.png" class="" title="image-20240714153955130">
-
 <ul>
 <li>知识构建：这是知识检索的第一阶段，涉及将来自不同来源的文档（如PDF文件、网页等）转换为中间表示形式，并将它们存储在结构化的知识库中。<ul>
 <li>知识库K是来自各种文档的集合，从$d_1^{loc},…,d_N^{loc}$，将每个文档$d_n$分为多个段落$p_{n,1}^{loc},…,p_{n,M_n}^{loc}$其中$M_n$表示第$n$个文档的段落索引，并通过一个编码器将$f_key$每个段落嵌入到多维嵌入$e_{n,m}^{loc}$​​中。然后，DB-GPT除了采用现有的基于向量的知识表示，还采用了倒排索引和图形索引技术，以便于准确地找到与上下文相关的数据</li>
 </ul>
 </li>
 <li>知识检索：当用户提出一个语言查询时，系统会将查询嵌入到一个向量中，然后从知识库中检索与查询最相关的K个段落。检索方法可以基于余弦相似度或其他关键词匹配技术。<ul>
-<li>当语言查询$x$出现时，它通过一个编码器$f_{query}$嵌入到向量中，然后我们从知识库当中检索前K个相关的段落，其中K是一个超参数。DG-GPT支持多种检索器模型，如Embeddingretrierver，它根据余弦相似度进行检索（$q^Te&#x2F;||q|||e||$​​）Keywordretriiever，它匹配关键字而不是整个句子。</li>
+<li>当语言查询$x$出现时，它通过一个编码器$f_{query}$嵌入到向量中，然后我们从知识库当中检索前K个相关的段落，其中K是一个超参数。DG-GPT支持多种检索器模型，如Embeddingretrierver，它根据余弦相似度进行检索（$q^Te/||q|||e||$​​）Keywordretriiever，它匹配关键字而不是整个句子。</li>
 </ul>
 </li>
 <li>学习嵌入和搜索：在这个阶段，系统通过训练编码器（encoders）来优化查询和文档段落的嵌入表示，使得相关性强的查询-段落对具有较高的相似度得分。<ul>
@@ -400,7 +399,6 @@
 <li>自适应ICL与LLM生成：在检索到相关段落后，系统使用自适应上下文学习方法来生成响应。这涉及到根据检索结果的相似度对它们进行排序，然后将最相关的几个结果插入到预定义的提示模板的上下文部分，最后由大型语言模型（LLM）生成回答。</li>
 </ul>
 <img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714160130046.png" class="" title="image-20240714160130046">
-
 <h2 id="2-2-部署和推理-面向服务的多模型框架"><a href="#2-2-部署和推理-面向服务的多模型框架" class="headerlink" title="2.2 部署和推理:面向服务的多模型框架"></a>2.2 部署和推理:面向服务的多模型框架</h2><ul>
 <li><p>在DB-GPT中，为了简化模型适配、提高模型部署效率和优化模型部署性能，提出了面向服务的多模型框架(SMMF)，提供了一种基于云的AI方法，使得开发者和企业能够访问预构建的、预训练的机器学习模型。这种方式简化了模型的获取和使用过程。</p>
 </li>
@@ -428,11 +426,9 @@
 <li>Qwen：通义千问，阿里巴巴的大语言模型</li>
 </ul>
 </li>
-<li><p>数据集和训练：设计了一个特殊的模块DB-GPT- hub，它封装了预处理记录、模型加载和微调的管道。我们在Spider上微调Qwen训练分割，输入包括数据库描述和自然问题(见清单2)，输出是目标SQL。</p>
-</li>
+<li>数据集和训练：设计了一个特殊的模块DB-GPT- hub，它封装了预处理记录、模型加载和微调的管道。我们在Spider上微调Qwen训练分割，输入包括数据库描述和自然问题(见清单2)，输出是目标SQL。</li>
 </ul>
 <img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714200312684.png" class="" title="image-20240714200312684">
-
 <ul>
 <li>关于文本到sql的微调llm的架构和评估的全部细节可以在我们即将发布的另一篇论文中找到。</li>
 </ul>
@@ -443,8 +439,7 @@
 </ul>
 </li>
 </ul>
-<p>$$\ell&#x3D;\mathbf{q}^\top\mathbf{e}<em>0-\log\sum</em>{i&#x3D;0}^I\exp\left(\mathbf{q}^\top\mathbf{e}_i\right),$$</p>
-<ul>
+<script type="math/tex; mode=display">\ell=\mathbf{q}^\top\mathbf{e}_0-\log\sum_{i=0}^I\exp\left(\mathbf{q}^\top\mathbf{e}_i\right),</script><ul>
 <li>其中，$e_0$是已知包含查询相关信息的段落的嵌入，以及其他$I$个嵌入$e_1,…,e_I$属于一组消极段落（模块3.2有说明他们是如何被选择的）。通过优化这个灯饰，对实际相关的查询段落对，点积$q^T$和$e$​​的值会变大<ul>
 <li>这些消极段落是在训练RAG模型的编码器时使用的，用于区分和优化模型对相关段落的选择能力，下面提到<strong>从整个段落池中随机抽取5个消极的响应</strong>的选取方法</li>
 </ul>
@@ -473,7 +468,6 @@
 </li>
 </ul>
 <img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714202654325.png" class="" title="image-20240714202654325">
-
 <h2 id="4-2-RAG-Evaluation"><a href="#4-2-RAG-Evaluation" class="headerlink" title="4.2 RAG Evaluation"></a>4.2 RAG Evaluation</h2><ul>
 <li><strong>数据集</strong>：构建了两个QA数据集:DatabaseQA和FinancialQA。<ul>
 <li>对于DatabaseQA，我们从三个代表性数据库系统中收集了1000个pdf格式的公共教程:OceanBase、MySQL、MongoDB</li>
@@ -483,7 +477,6 @@
 <li><strong>指标：</strong>有三位专家对每个回答进行评分，评分从0到5，得分越高的回答越好，并将他们的平均值作为最终得分。</li>
 </ul>
 <img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714203229767.png" class="" title="image-20240714203229767">
-
 <h2 id="4-3-SMMF-Evaluation"><a href="#4-3-SMMF-Evaluation" class="headerlink" title="4.3 SMMF Evaluation"></a>4.3 SMMF Evaluation</h2><ul>
 <li><p><strong>数据集：</strong>测试在一台服务器上执行，在所有实验中，我们使用相同的提示符，将8个标记作为输入，同时将输出长度设置为256个标记。</p>
 </li>
@@ -509,7 +502,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-SQL/" style="color: #00bcd4">LLMs SQL</a>
+            <a href="/tags/LLMs-SQL/" style="color: #03a9f4">LLMs SQL</a>
         </span>
         
     </div>
@@ -558,7 +551,6 @@
 <li>使用数据库作为llm的新型符号内存。整个框架命名为ChatDB。结构如下图所示：</li>
 </ul>
 <img src="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-07-14%20102945.jpg" class="" title="屏幕截图 2024-07-14 102945">
-
 <p>图1:ChatDB的总体工作流程。LLM控制器控制对存储器的读写操作。存储器存储历史信息并提供相关的历史信息，以帮助响应用户输入。在ChatDB中，我们专注于用数据库作为符号内存来增强llm</p>
 <ul>
 <li><p>具体组成</p>
@@ -579,7 +571,7 @@
 <li><strong>外部符号内存</strong>是指将符号信息存储在外部设备或介质上，而不是仅限于系统内部存储。这种记忆系统利用外部工具来增强和扩展内部记忆能力。</li>
 </ul>
 </li>
-<li><p>在ChatDB框架中，我们提出了<strong>内存链(CoM)<strong>方法来更有效地操作外部符号内存，从而进一步增强llm的推理能力。</strong>内存链方法</strong>将<strong>用户输入转换为一系列导致最终结果的中间内存操作步骤</strong>。通过内存链方法，<strong>将一个复杂的问题分解为多个记忆操作步骤</strong>，大大降低了问题解决的复杂性。在ChatDB中，每个中间步骤都涉及一个或多个SQL语句。</p>
+<li><p>在ChatDB框架中，我们提出了<strong>内存链(CoM)</strong>方法来更有效地操作外部符号内存，从而进一步增强llm的推理能力。<strong>内存链方法</strong>将<strong>用户输入转换为一系列导致最终结果的中间内存操作步骤</strong>。通过内存链方法，<strong>将一个复杂的问题分解为多个记忆操作步骤</strong>，大大降低了问题解决的复杂性。在ChatDB中，每个中间步骤都涉及一个或多个SQL语句。</p>
 </li>
 <li><p><strong>总结</strong>：首先，建议<strong>用数据库作为llm的外部符号内存</strong>，允许历史数据的结构化存储，并允许使用SQL语句进行符号和复杂的数据操作。其次，我们的<strong>内存链方法</strong>通过将用户输入转换为多步中间内存操作来实现有效的内存操作，这增强了ChatDB的性能，使其能够以更高的准确性和稳定性处理复杂的多表数据库交互。</p>
 </li>
@@ -592,7 +584,6 @@
 </ul>
 <h2 id="3-2框架概述"><a href="#3-2框架概述" class="headerlink" title="3.2框架概述"></a>3.2框架概述</h2><p>ChatDB框架由三个主要阶段组成：<strong>输入处理</strong>、<strong>记忆链</strong>和<strong>响应总结</strong></p>
 <img src="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-07-14%20112221.jpg" class="" title="屏幕截图 2024-07-14 112221">
-
 <ul>
 <li><strong>输入处理：</strong>如果响应用户输入需要使用内存，ChatDB通过llm生成一系列中间步骤来操作符号内存。否则，我们直接使用llm来生成回复。</li>
 <li><strong>Chain-of-Memory：</strong>ChatDB执行一系列中间内存操作步骤来与符号内存交互。ChatDB根据先前生成的一系列SQL语句依次操作符号内存，包括插入、更新、选择、删除等操作。外部数据库执行相应的SQL语句，更新数据库，并返回结果。值得注意的是，ChatDB在执行内存操作步骤之前，会根据前面SQL语句的结果来决定是否更新内存操作步骤。ChatDB按照相同的过程执行下一步，直到完成对内存的所有操作。</li>
@@ -611,9 +602,7 @@
 </ul>
 <p>这种方法使LLMs能够更好地处理边缘情况和意外情况，使其成为现实应用程序中很有前途的方法。</p>
 <img src="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-07-14%20115317.jpg" class="" title="屏幕截图 2024-07-14 115317">
-
 <h2 id="3-4与以往记忆增强llm的比较"><a href="#3-4与以往记忆增强llm的比较" class="headerlink" title="3.4与以往记忆增强llm的比较"></a>3.4与以往记忆增强llm的比较</h2><img src="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/image-20240714120401054.png" class="" title="image-20240714120401054">
-
 <h1 id="4-Evaluation"><a href="#4-Evaluation" class="headerlink" title="4 Evaluation"></a>4 Evaluation</h1><h2 id="4-1实验设置"><a href="#4-1实验设置" class="headerlink" title="4.1实验设置"></a>4.1实验设置</h2><p>构建了一个模拟水果店管理的合成数据集。</p>
 <p>为了评估模型的性能，我们收集了一组50个带有注释标准答案的问题。这些问题的难度各不相同，从需要多跳推理的困难问题到只需要从历史数据中检索信息的简单问题。有15个简单问题和35个难题。每个问题都由模型独立回答。</p>
 <h3 id="4-1-1-模型配置"><a href="#4-1-1-模型配置" class="headerlink" title="4.1.1 模型配置"></a>4.1.1 模型配置</h3><p>ChatDB：使用的LLM为ChatGPT (GPT-3.5 Turbo)，超参数temperature设置为0。我们使用MySQL数据库作为外部符号内存。</p>
@@ -653,7 +642,7 @@
         
         <span class="tag">
             
-            <a href="/tags/CoM-LLMs-SQL/" style="color: #00a596">CoM LLMs SQL</a>
+            <a href="/tags/CoM-LLMs-SQL/" style="color: #ffa2c4">CoM LLMs SQL</a>
         </span>
         
     </div>
@@ -702,9 +691,9 @@
 </ul>
 <h2 id="Diversity-Measurement"><a href="#Diversity-Measurement" class="headerlink" title="Diversity Measurement"></a>Diversity Measurement</h2><ul>
 <li>基于前面的讨论，我们使用<strong>与演示池相似度最低</strong>的用户问题来度量演示池的多样性。</li>
-<li>形式上$D&#x3D;{d_i}$表示演示池，$U&#x3D;{u}$表示用户问题，$sim(U,D)$表示U和D之间的相似度，以本文中它们编码向量之间的欧氏距离的倒数计算，利用下面公式来衡量示范池$D$​的多样性，称为多样性度量，该指标对应于与演示池中最相似的演示相似度最小的用户问题与任何其他用户问题的相似度。</li>
+<li>形式上$D=\{d_i\}$表示演示池，$U=\{u\}$表示用户问题，$sim(U,D)$表示U和D之间的相似度，以本文中它们编码向量之间的欧氏距离的倒数计算，利用下面公式来衡量示范池$D$​的多样性，称为多样性度量，该指标对应于与演示池中最相似的演示相似度最小的用户问题与任何其他用户问题的相似度。</li>
 </ul>
-<p>$$\mathrm{DM}&#x3D;\min_{u\in U}\max_{d_i\in D}\mathrm{sim}(u,d_i)$$​</p>
+<p><script type="math/tex">\mathrm{DM}=\min_{u\in U}\max_{d_i\in D}\mathrm{sim}(u,d_i)</script>​</p>
 <h2 id="Diversity-of-the-Existing-Labeling-Can-be-Further-Enhanced"><a href="#Diversity-of-the-Existing-Labeling-Can-be-Further-Enhanced" class="headerlink" title="Diversity of the Existing Labeling Can be Further Enhanced"></a>Diversity of the Existing Labeling Can be Further Enhanced</h2><ul>
 <li>使用上面的度量，我们然后度量现有文本到sql标记演示池的多样性。现有标注演示池的DM和性能如图4和图5所示。这些数字显示了DM和性能明显高于现有标记数据的其他演示池。因此，虽然现有的标签表现出较高的多样性，但可以进一步改进，从而提高性能。因此，我们接下来将讨论综合演示的方法，以增强演示池的多样性。</li>
 </ul>
@@ -730,7 +719,7 @@
         
         <span class="tag">
             
-            <a href="/tags/sql/" style="color: #ffa2c4">sql</a>
+            <a href="/tags/sql/" style="color: #ff7d73">sql</a>
         </span>
         
     </div>
@@ -766,29 +755,26 @@
 <li><p>目前由于缺乏包含人类或者人工智能反馈的广泛数据集，导致人们导致人们主要关注<strong>Text-to-SQL</strong>的监督微调。这种方法需要一组特定的指令或提示及其相应的输出或响应。<br></p>
 <ul>
 <li>关于为什么要关注<strong>Text-to-SQL</strong>：Text-to-SQL系统能够将自然语言描述转化成对应的SQL查询语句，这项技术能够有效地辅助人们对海量的数据库进行查询。<ul>
-<li>Text-to-SQL就是这样一项转化自然语言描述为SQL查询语句的技术。举个例子：当我们询问智能助手 “贾樟柯导演是在哪出生的啊？”，Text-to-SQL模型就会先根据问句解析出SQL语句“SELECT birth_city FROM director WHERE name &#x3D;”贾樟柯””，再对数据库执行该命令，最后向用户返回查询结果“山西省汾阳市”。<br></li>
+<li>Text-to-SQL就是这样一项转化自然语言描述为SQL查询语句的技术。举个例子：当我们询问智能助手 “贾樟柯导演是在哪出生的啊？”，Text-to-SQL模型就会先根据问句解析出SQL语句“SELECT birth_city FROM director WHERE name =”贾樟柯””，再对数据库执行该命令，最后向用户返回查询结果“山西省汾阳市”。<br></li>
 <li>《一文了解Text-to-SQL》文章链接：<a target="_blank" rel="noopener" href="https://www.jiqizhixin.com/articles/2019-12-27-11">https://www.jiqizhixin.com/articles/2019-12-27-11</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><p>文章研究在Text-to-SQL上下文中对llm进行监督微调的既定方法。介绍了新的两步微调方法，旨在增强文本到sql领域中模型的性能</p>
-</li>
+<li>文章研究在Text-to-SQL上下文中对llm进行监督微调的既定方法。介绍了新的两步微调方法，旨在增强文本到sql领域中模型的性能</li>
 </ul>
 <h2 id="2-1有监督问题到SQL的微调（Supervised-fine-tunning-for-Text-to-SQL）"><a href="#2-1有监督问题到SQL的微调（Supervised-fine-tunning-for-Text-to-SQL）" class="headerlink" title="2.1有监督问题到SQL的微调（Supervised fine-tunning for Text-to-SQL）"></a>2.1有监督问题到SQL的微调（Supervised fine-tunning for Text-to-SQL）</h2><ul>
-<li><p>在这个小节中，将探索在开源社区实践的Text-to-SQL任务的监督调优过程</p>
-</li>
-<li><p>给定一组数据库$D_i$ 其中包含对问题$q_i$和相应的SQL查询$s_i$，目标是使用一组训练数据$T&#x3D;$对大预言模型M进行微调，其中$q_i$和$s_i$表示自然语言问题和及其在数据库$D_i$上关联的SQL查询。监督微调的目标是为了<strong>最小化经验损失</strong>：$$\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i&#x3D;1}^{|T|}\mathcal{L}(M^*(\sigma_f(q_i,D_i,s_i))$$</p>
+<li>在这个小节中，将探索在开源社区实践的Text-to-SQL任务的监督调优过程</li>
+<li><p>给定一组数据库$D_i$ 其中包含对问题$q_i$和相应的SQL查询$s_i$，目标是使用一组训练数据$T=\{(q_i,s_i,D_i)\}$对大预言模型M进行微调，其中$q_i$和$s_i$表示自然语言问题和及其在数据库$D_i$上关联的SQL查询。监督微调的目标是为了<strong>最小化经验损失</strong>：$\min_{\sigma, M} \frac{1}{|T|} \sum_{i=1}^{|T|} \mathcal{L}(M(\sigma_f(q_i, D_i, s_i)))$</p>
 <ul>
 <li>其中，$\mathcal{L}$是测量实际SQL查询和模型生成的SQL查询之间的差异。</li>
 <li>$\sigma_f$​​决定了问题、数据库模式和SQL查询的格式</li>
-<li>$M^*$表示经过微调（fine-tuning）后的模型参数，M表示model，然后*表示经过微调</li>
+<li>$M^<em>$表示经过微调（fine-tuning）后的模型参数，M表示model，然后</em>表示经过微调</li>
 </ul>
 </li>
 <li><p>主要的问题就是，我们事先不知道数据库中的表和哪些表是和要生成的SQL相关</p>
 </li>
-<li><p>因此一种常用的调优方法包括在提示中包括<strong>所有表的模式</strong>以及<strong>问题</strong>和<strong>SQL对</strong>。</p>
-<ul>
+<li>因此一种常用的调优方法包括在提示中包括<strong>所有表的模式</strong>以及<strong>问题</strong>和<strong>SQL对</strong>。<ul>
 <li>这种方法有两个目的:<ul>
 <li>教模型生成正确的SQL查询</li>
 <li>并从所有提供的表中识别相关的表。</li>
@@ -806,14 +792,14 @@
 </ul>
 </li>
 <li>在本文章当中，将模式链接视为一项独特的任务，并显式微调llm，以便在使用自然语言查询时识别相关的表和列。</li>
-<li>给定训练数据集$T&#x3D;{(q_i,s_i,D_i)}$，提取 SQL查询中所使用的所有列和表，创建一个新的数据集$T&#x3D;{(q_i,T_i,C_i,D_i)}$，其中$T_i$和$C_i$表示SQL查询$s_i$中使用的表和列表。在模式链接的监督微调过程中，主要的目标也是最小化经验损失，由下式进行定义：$$\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i&#x3D;1}^{|T|}\mathcal{L}(M^*(\sigma_s(q_i,T_i,C_i,D_i))$$<ul>
+<li>给定训练数据集$T=\{(q_i,s_i,D_i)\}$，提取 SQL查询中所使用的所有列和表，创建一个新的数据集$T=\{(q_i,T_i,C_i,D_i)\}$，其中$T_i$和$C_i$表示SQL查询$s_i$中使用的表和列表。在模式链接的监督微调过程中，主要的目标也是最小化经验损失，由下式进行定义：<script type="math/tex">\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i=1}^{|T|}\mathcal{L}(M^*(\sigma_s(q_i,T_i,C_i,D_i))</script><ul>
 <li>其中，$\mathcal{L}$表示模型下一个token预测的损失，将预测的列表和表名词与实际的基础真值名称进行比较</li>
 </ul>
 </li>
 </ul>
 <h3 id="2-2-2-SQL生成微调（SQL-Generation-Fine-tuning）"><a href="#2-2-2-SQL生成微调（SQL-Generation-Fine-tuning）" class="headerlink" title="2.2.2 SQL生成微调（SQL Generation Fine-tuning）"></a>2.2.2 SQL生成微调（SQL Generation Fine-tuning）</h3><ul>
 <li>当确定了用于生成SQL的适当表之后，下一步就是利用一个基于问题和正确表的模式构造SQL查询模型。由于我们已经使用模式链接模块确定了可能正确的表，因此不需要在SQL生成模型的输入中包含所有表。</li>
-<li>与之前微调llm的方法相反，我们从训练数据集$T&#x3D;{(q_i.s_i,D_i)}$中提取与基本真实SQL查询对应的相关表。然后对LLM进行微调，同时最小化下面的损失函数：$$\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i&#x3D;1}^{|T|}\mathcal{L}(M^*(\sigma_g(q_i,T_i,s_i)) $$<ul>
+<li>与之前微调llm的方法相反，我们从训练数据集$T=\{(q_i.s_i,D_i)\}$中提取与基本真实SQL查询对应的相关表。然后对LLM进行微调，同时最小化下面的损失函数：<script type="math/tex">\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i=1}^{|T|}\mathcal{L}(M^*(\sigma_g(q_i,T_i,s_i))</script><ul>
 <li>其中损失函数和2.1定义的是一样的，文本到sql训练过程的这种分解允许llm以单一目标进行训练。通过分离模式链接和SQL查询生成任务，我们改进了训练过程，实现了更集中、更有效的微调。</li>
 </ul>
 </li>
@@ -835,7 +821,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-sql/" style="color: #03a9f4">LLMs sql</a>
+            <a href="/tags/LLMs-sql/" style="color: #00a596">LLMs sql</a>
         </span>
         
     </div>
