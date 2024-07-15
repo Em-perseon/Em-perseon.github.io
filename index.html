@@ -313,6 +313,19 @@
 <li>请注意，上面的标记化符号也适用于其他模板，比如T-table，只是用不同的方式指定特征含义。此外，我们需要标记当前表格数据样本的特征值标记和预测目标标记的位置，以支持后续的GTL过程。</li>
 </ol>
 <p><strong>GTL的目标：</strong>基于标记化数据的符号，将GTL设计为表征以下联合分布：</p>
+<script type="math/tex; mode=display">p(x,y)=p(t^x,t^y|t^m)=p(t^y|t^x,t^m)\prod_{i=1}^Mp(t^{x_i}|t^{<x_i})</script><ul>
+<li>引入额外的符号，以确保公式$t^{m} = [t^{b},l^{f_{1}},r^{f_{1}},\cdots,l^{f_{M}},r^{f_{M}},l^{a}]$，代表所有元信息，$t^{x}=[t^{x_{1}},\cdots,t^{x_{M}}]$代表所有标记相关的特征值，并且$t^{&lt;x_i}$包含所有$[t^b,t^f,t^a]=[t^b,l^{f_1},t^{x_1},r^{f_1},…,l^{f_M},t^{x_M},r^{f_M},t^y]$等式中$t^{x_1}$前面的令牌</li>
+</ul>
+<ol>
+<li>这里$p(x,y)$代表在初始特征和标签空间的联合分布，而$p(t^x,t^y|t^m)$表示相同的联合分布条件在所有元信息使用文本表示，这可以进一步解耦自回归为$p(t^y|t^x,t^m)\prod_{i=1}^Mp(t^{x_i}|t^{&lt;x_i})$​</li>
+<li>因此，利用llm，特别是那些使用自回归体系结构的llm，来描述这种解耦公式是很直接的。唯一需要的修改是掩盖元信息令牌上的损失。虽然GTL使用类似于llm的下一个令牌预测损失，但它与自回归预训练不同,。具体来说，GTL明确地刺激llm识别预测目标令牌和功能令牌之间的复杂依赖关系。它鼓励捕获当前特征和上下文示例之间的复杂关系，并促进建立不同语言指令和数值数据之间的有效联系</li>
+</ol>
+<p><strong>适应下游任务：</strong>对于一个LLM，我们将其在GTL过程之后的变体称为LLM-GTL。</p>
+<ul>
+<li>在适应新任务时，无论数据模式或任务类型如何，LLM-GTL都可以通过简单地指定提示符来促进直接推理。例如，如果目标是最优地利用先验知识对语义丰富的任务进行零概率推理，则可以使用T-lang模板来转换数据样本，然后将其输入LLM-GTL以生成输出。</li>
+<li>在需要包含更多上下文示例并需要利用关于表格任务的元信息的情况下，t表模板成为最佳实践。</li>
+<li>此外，即使在缺乏元信息的情况下，LLM-GTL仍然可以通过t -匿名模板提供预测，依靠在GTL过程中获得的固有统计学习。</li>
+</ul>
 
             
         </div>
@@ -502,7 +515,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-SQL/" style="color: #03a9f4">LLMs SQL</a>
+            <a href="/tags/LLMs-SQL/" style="color: #00bcd4">LLMs SQL</a>
         </span>
         
     </div>
@@ -719,7 +732,7 @@
         
         <span class="tag">
             
-            <a href="/tags/sql/" style="color: #ff7d73">sql</a>
+            <a href="/tags/sql/" style="color: #03a9f4">sql</a>
         </span>
         
     </div>
@@ -765,7 +778,7 @@
 </ul>
 <h2 id="2-1有监督问题到SQL的微调（Supervised-fine-tunning-for-Text-to-SQL）"><a href="#2-1有监督问题到SQL的微调（Supervised-fine-tunning-for-Text-to-SQL）" class="headerlink" title="2.1有监督问题到SQL的微调（Supervised fine-tunning for Text-to-SQL）"></a>2.1有监督问题到SQL的微调（Supervised fine-tunning for Text-to-SQL）</h2><ul>
 <li>在这个小节中，将探索在开源社区实践的Text-to-SQL任务的监督调优过程</li>
-<li><p>给定一组数据库$D_i$ 其中包含对问题$q_i$和相应的SQL查询$s_i$，目标是使用一组训练数据$T=\{(q_i,s_i,D_i)\}$对大预言模型M进行微调，其中$q_i$和$s_i$表示自然语言问题和及其在数据库$D_i$上关联的SQL查询。监督微调的目标是为了<strong>最小化经验损失</strong>：$\min_{\sigma, M} \frac{1}{|T|} \sum_{i=1}^{|T|} \mathcal{L}(M(\sigma_f(q_i, D_i, s_i)))$</p>
+<li><p>给定一组数据库$D_i$ 其中包含对问题$q_i$和相应的SQL查询$s_i$，目标是使用一组训练数据$T=\{(q_i,s_i,D_i)\}$对大预言模型M进行微调，其中$q_i$和$s_i$表示自然语言问题和及其在数据库$D_i$上关联的SQL查询。监督微调的目标是为了<strong>最小化经验损失</strong>：<br>$\min_{\sigma, M} \frac{1}{|T|} \sum_{i=1}^{|T|} \mathcal{L}(M(\sigma_f(q_i, D_i, s_i)))$</p>
 <ul>
 <li>其中，$\mathcal{L}$是测量实际SQL查询和模型生成的SQL查询之间的差异。</li>
 <li>$\sigma_f$​​决定了问题、数据库模式和SQL查询的格式</li>
@@ -821,7 +834,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-sql/" style="color: #00a596">LLMs sql</a>
+            <a href="/tags/LLMs-sql/" style="color: #ffa2c4">LLMs sql</a>
         </span>
         
     </div>
