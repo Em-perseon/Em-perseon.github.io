@@ -583,7 +583,19 @@
 <ul>
 <li><p>假设我们有以下查询-响应数据集</p>
 <p>假设我们有一个包含1000个查询-响应对的初始数据集：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;% codeblock [title] [lang:python] [option: value] %&#125;</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="comment"># 示例数据</span></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">&#x27;query&#x27;</span>: [<span class="string">f&#x27;query_<span class="subst">&#123;i&#125;</span>&#x27;</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">1001</span>)],</span><br><span class="line">    <span class="string">&#x27;response&#x27;</span>: [<span class="string">f&#x27;response_<span class="subst">&#123;i&#125;</span>&#x27;</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">1001</span>)]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建DataFrame</span></span><br><span class="line">df = pd.DataFrame(data)</span><br><span class="line"></span><br><span class="line">&#123;% endcodeblock %&#125;</span><br></pre></td></tr></table></figure>
+
+    
+      import pandas as pd
+      import random
+    
+      data = {
+          'query': [f'query_{i}' for i in range(1, 1001)],
+          'response': [f'response_{i}' for i in range(1, 1001)]
+      }
+    
+      df = pd.DataFrame(data)
+    
+      
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例数据</span></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">&#x27;query&#x27;</span>: [<span class="string">f&#x27;query_<span class="subst">&#123;i&#125;</span>&#x27;</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">1001</span>)],</span><br><span class="line">    <span class="string">&#x27;response&#x27;</span>: [<span class="string">f&#x27;response_<span class="subst">&#123;i&#125;</span>&#x27;</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">1001</span>)]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建DataFrame</span></span><br><span class="line">df = pd.DataFrame(data)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>采样消极响应</p>
@@ -796,7 +808,7 @@
         
         <span class="tag">
             
-            <a href="/tags/CoM-LLMs-SQL/" style="color: #ffa2c4">CoM LLMs SQL</a>
+            <a href="/tags/CoM-LLMs-SQL/" style="color: #03a9f4">CoM LLMs SQL</a>
         </span>
         
     </div>
@@ -874,7 +886,7 @@
         
         <span class="tag">
             
-            <a href="/tags/sql/" style="color: #00bcd4">sql</a>
+            <a href="/tags/sql/" style="color: #00a596">sql</a>
         </span>
         
     </div>
