@@ -184,7 +184,7 @@
             
             <span class="tag">
                 
-                <a href="/tags/sql/" style="color: #ff7d73">
+                <a href="/tags/sql/" style="color: #03a9f4">
                     sql
                 </a>
             </span>
@@ -194,7 +194,8 @@
     </div>
     
     <div class="content" v-pre>
-        <h1 id="1-Abstract"><a href="#1-Abstract" class="headerlink" title="1.Abstract"></a>1.Abstract</h1><ul>
+        <p>[TOC]</p>
+<h1 id="1-Abstract"><a href="#1-Abstract" class="headerlink" title="1.Abstract"></a>1.Abstract</h1><ul>
 <li><p>使用<strong>大型语言模型(llm)的上下文学习</strong>是当前<strong>Text-to-SQL​</strong>的主流方法。先前的研究已经探索了从人工标记的示范池中选择相关的示范，但这些方法缺乏<strong>多样性</strong>，并且需要高昂的标记成本。</p>
 </li>
 <li><p>在这项工作中，我们将讨论度量和增强文本到sql演示池的多样性。首先，我们引入了一个<strong>多样性度量</strong>，并提出了现有标签数据的多样性可以进一步增强。受这些发现的启发，提出了<strong>fuse</strong>，迭代地融合演示，以创建基于人类标记的多样化演示池，甚至从头开始使用llm，从而降低标记成本。FUSED在现有标记的基础上实现了3.2%的平均改进，在几个主流数据集上实现了5.0%的从头开始改进，证明了它的有效性</p>

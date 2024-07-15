@@ -432,7 +432,7 @@
         <div class="content" v-pre>
             
             <p>[TOC]</p>
-<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>本文研发了一个DB-GPT，它将llm与传统数据库系统集成在一起，以增强用户体验和可访问性。DB-GPT旨在理解自然语言查询，提供上下文感知响应，并以高精度生成复杂的SQL查询，使其成为从新手到专家的用户不可或缺的工具。DB-GPT的核心创新在于其私有LLMs技术，该技术对特定领域的语料库进行了微调，以维护用户隐私并确保数据安全，同时提供最先进的LLMs的优势。</p>
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>本文研发了一个DB-GPT，它将llm与传统数据库系统集成在一起，以增强用户体验和可访问性。DB-GPT旨在<strong>理解自然语言查询</strong>，<strong>提供上下文感知响应</strong>，并以<strong>高精度生成复杂的SQL查询</strong>，使其成为从新手到专家的用户不可或缺的工具。DB-GPT的核心创新在于其私有LLMs技术，该技术对特定领域的语料库进行了<strong>微调</strong>，以维护用户隐私并确保数据安全，同时提供最先进的LLMs的优势。</p>
 <p>DB-GPT的体系结构：</p>
 <ul>
 <li>一种新颖的<strong>检索增强生成(RAG)知识系统</strong></li>
@@ -458,12 +458,12 @@
 </li>
 <li><p>本工作：研究出一个DB-GPT，用于llm增强应用程序的智能和生产就绪项目，可以使用私有化技术摄取、构建和访问数据。DB-GPT不仅利用llm固有的自然语言理解和生成能力，还通过代理和插件机制不断优化数据驱动引擎。</p>
 </li>
-<li><p>DB-GPT具有以下明显的优点:</p>
+<li><p>DB-GPT具有以下明显的<strong>优点</strong>:</p>
 <ul>
-<li>隐私和安全保护：DB-GPT允许用户部署在个人设备或本地服务器上，即使在没有Internet连接的场景下也可以运行。任何时候都不会有数据离开执行环境，完全消除了数据泄漏的风险。此外，代理去识别技术应用于数据处理模块，它作为中介，从数据集中模糊个人标识符，从而降低未经授权访问和利用私人信息的风险。</li>
-<li>多源知识库问答优化：DB-GPT构建了一个管道，将多源非结构化数据(PDF，网页，图像等)提取为中间表示，将其存储在结构化知识库中，检索最相关的部分，并在给定查询时生成全面的自然语言响应。该管道进行了效率优化，生成灵活，并接受双语查询。</li>
-<li>文本到sql的微调：DB-GPT对几种常用的llm进行了微调，用于Text-toSQL任务。DB-GPT在与数据交互时显著降低了不需要SQL专业知识的用户的障碍。</li>
-<li>集成知识代理和插件：“代理”是一个自动推理和决策引擎。作为一个生产就绪的项目，DB-GPT支持具有高级数据分析的会话代理的开发和应用，其中这些自动化决策有助于数据上的交互式用例。它还提供了各种查询和检索服务插件，用作与数据交互的工具。</li>
+<li>隐私和安全保护：DB-GPT允许用户<strong>部署在个人设备或本地服务器上</strong>，即使在没有Internet连接的场景下也可以运行。任何时候都不会有数据离开执行环境，完全消除了数据泄漏的风险。此外，代理去识别技术应用于数据处理模块，它作为中介，从数据集中模糊个人标识符，从而降低未经授权访问和利用私人信息的风险。</li>
+<li><strong>多源知识库问答优化：</strong>DB-GPT构建了一个管道，将<strong>多源非结构化数据(PDF，网页，图像等)提取为中间表示</strong>，将其存储在结构化知识库中，检索最相关的部分，并在给定查询时生成全面的自然语言响应。该管道进行了效率优化，生成灵活，并接受双语查询。</li>
+<li>文本到sql的微调：DB-GPT对<strong>几种常用的llm进行了微调</strong>，用于Text-toSQL任务。DB-GPT在与数据交互时显著降低了不需要SQL专业知识的用户的障碍。</li>
+<li><strong>集成知识代理和插件：</strong>“代理”是一个自动推理和决策引擎。作为一个生产就绪的项目，DB-GPT支持具有高级数据分析的会话代理的开发和应用，其中这些自动化决策有助于数据上的交互式用例。它还提供了各种查询和检索服务插件，用作与数据交互的工具。</li>
 </ul>
 <h1 id="2-系统设计"><a href="#2-系统设计" class="headerlink" title="2 系统设计"></a>2 系统设计</h1><p>系统如下图所示：</p>
 <img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714153640078.png" class="" title="image-20240714153640078">
@@ -476,15 +476,44 @@
 <li>知识库K是来自各种文档的集合，从$d_1^{loc},…,d_N^{loc}$，将每个文档$d_n$分为多个段落$p_{n,1}^{loc},…,p_{n,M_n}^{loc}$其中$M_n$表示第$n$个文档的段落索引，并通过一个编码器将$f_key$每个段落嵌入到多维嵌入$e_{n,m}^{loc}$​​中。然后，DB-GPT除了采用现有的基于向量的知识表示，还采用了倒排索引和图形索引技术，以便于准确地找到与上下文相关的数据</li>
 </ul>
 </li>
-<li>知识检索：当用户提出一个语言查询时，系统会将查询嵌入到一个向量中，然后从知识库中检索与查询最相关的K个段落。检索方法可以基于余弦相似度或其他关键词匹配技术。<ul>
-<li>当语言查询$x$出现时，它通过一个编码器$f_{query}$嵌入到向量中，然后我们从知识库当中检索前K个相关的段落，其中K是一个超参数。DG-GPT支持多种检索器模型，如Embeddingretrierver，它根据余弦相似度进行检索（$q^Te/||q|||e||$​​）Keywordretriiever，它匹配关键字而不是整个句子。</li>
+<li>知识检索：当用户提出一个语言查询时，<strong>系统会将查询嵌入到一个向量中，然后从知识库中检索与查询最相关的K个段落</strong>。检索方法可以基于余弦相似度或其他关键词匹配技术。<ul>
+<li>当语言查询$x$出现时，它通过一个<strong>编码器$f_{query}$嵌入到向量</strong>中，然后我们从知识库当中<strong>检索前K个相关的段落</strong>，其中K是一个超参数。DG-GPT支持多种检索器模型，如Embeddingretrierver，它根据余弦相似度进行检索（$q^Te/||q|||e||$​​）Keywordretriiever，它匹配<strong>关键字</strong>而不是整个句子。</li>
 </ul>
 </li>
 <li>学习嵌入和搜索：在这个阶段，系统通过训练编码器（encoders）来优化查询和文档段落的嵌入表示，使得相关性强的查询-段落对具有较高的相似度得分。<ul>
-<li>自信地认为一个更高的相似度表示更相关的段落是因为训练了编码器$f_{key}$和$f_{query}$。他们在3.2进行优化了。直觉上，我们想要点积$q^Te$对于查询段对来说是相对较大的，因为它们是相关的。编码器使用Multilingual-E5-base model</li>
+<li>自信地认为一个更高的相似度表示更相关的段落是因为训练了编码器$f_{key}$和$f_{query}$。他们在3.2进行优化了。直觉上，我们想要点积$q^Te$​对于查询段对来说是相对较大的，因为它们是相关的。编码器使用<strong>Multilingual-E5-base model</strong><ul>
+<li>Multilingual-E5-base 是一种多语言嵌入模型，属于 Hugging Face 及其社区发布的语言模型系列之一。该模型基于跨语言嵌入技术，能够处理和生成多种语言的文本表示。</li>
 </ul>
 </li>
-<li>自适应ICL与LLM生成：在检索到相关段落后，系统使用自适应上下文学习方法来生成响应。这涉及到根据检索结果的相似度对它们进行排序，然后将最相关的几个结果插入到预定义的提示模板的上下文部分，最后由大型语言模型（LLM）生成回答。</li>
+</ul>
+</li>
+<li><p>自适应ICL与LLM生成：在检索到相关段落后，系统使用自适应上下文学习方法来生成响应。这涉及到根据检索结果的相似度对它们进行排序，然后将最相关的几个结果插入到预定义的提示模板的上下文部分，最后由大型语言模型（LLM）生成回答。</p>
+<ul>
+<li>自适应上下文学习方法（Adaptive Context Learning，ACL）是一种动态调整和优化上下文内容以提高大语言模型（LLM）生成回答准确性和相关性的方法。在自适应上下文学习方法中，系统会根据检索到的相关段落，<strong>按照一定的策略和标准对其进行筛选和排序，将最相关的段落插入到预定义的提示模板中</strong>，从而为LLM提供最佳的上下文信息。</li>
+<li><p>示例：</p>
+<ul>
+<li><p>假设有一个查询 “什么是机器学习？”，系统在知识库中检索到以下段落：</p>
+<ul>
+<li>段落A：机器学习是一种人工智能的分支，旨在通过经验和数据进行学习和改进。</li>
+<li>段落B：深度学习是机器学习的一个子领域，它使用神经网络进行数据处理。</li>
+<li>段落C：机器学习包括监督学习、无监督学习和强化学习等多种类型。</li>
+</ul>
+</li>
+<li><p>经过排序和筛选，系统选择段落A和段落C作为最相关的上下文。然后将这些段落插入到<strong>提示模板</strong>中，如：</p>
+<ul>
+<li>问题：什么是机器学习？<br>上下文：<ol>
+<li>机器学习是一种人工智能的分支，旨在通过经验和数据进行学习和改进。</li>
+<li>机器学习包括监督学习、无监督学习和强化学习等多种类型。<br>回答：</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>将上述提示模板输入LLM，由模型生成最终的回答，也就想要的SQL部分。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714160130046.png" class="" title="image-20240714160130046">
 <h2 id="2-2-部署和推理-面向服务的多模型框架"><a href="#2-2-部署和推理-面向服务的多模型框架" class="headerlink" title="2.2 部署和推理:面向服务的多模型框架"></a>2.2 部署和推理:面向服务的多模型框架</h2><ul>
@@ -503,8 +532,14 @@
 </li>
 </ul>
 <h2 id="2-3-多代理的策略"><a href="#2-3-多代理的策略" class="headerlink" title="2.3 多代理的策略"></a>2.3 多代理的策略</h2><p>DB-GPT系统中的多代理策略旨在通过智能代理的协作和专业化，提高数据库操作的效率、灵活性和用户体验，同时保持系统的可扩展性和适应性。</p>
-<p>DB-GPT为不同的数据库操作角色（如数据分析师、软件工程师和数据库架构师）分配特定的代理，每个代理都有其独特的功能和专长。通过一个协调机制，系统能够实现不同代理之间的协作，使它们能够相互通信、共享信息，并进行集体推理。</p>
-<p>DB-GPT基于Text-to-SQL调优的LLM，实现了具有高级数据库交互能力的代理的开发和应用。此外，与LlamaIndex的组件为特定用例提供更明确、约束的行为不同，DB-GPT赋予agent更强的一般推理能力，约束更少。</p>
+<p>DB-GPT为不同的数据库操作角色（如数据分析师、软件工程师和数据库架构师）分配<strong>特定的代理</strong>，每个代理都有其独特的功能和专长。通过一个协调机制，系统能够实现不同代理之间的协作，使它们能够相互通信、共享信息，并进行集体推理。</p>
+<ul>
+<li>就是我数据分析师，给的就是一个专门用来进行数据分析的DB-GPT</li>
+</ul>
+<p>DB-GPT基于Text-to-SQL调优的LLM，<strong>实现了具有高级数据库交互能力的代理的开发和应用</strong>。此外，与LlamaIndex的组件为特定用例提供更明确、约束的行为不同，DB-GPT赋予agent更强的一般推理能力，约束更少。</p>
+<ul>
+<li>LlamaIndex 是一个工具，用于连接大语言模型（LLM）和外部数据源，使 LLM 能够高效地访问和利用这些数据源中的信息进行任务处理。LlamaIndex 的主要功能包括数据索引、查询处理和信息检索，旨在增强 LLM 的回答能力和准确性。</li>
+</ul>
 <h2 id="2-4-DB插件"><a href="#2-4-DB插件" class="headerlink" title="2.4 DB插件"></a>2.4 DB插件</h2><p>DB-GPT系统中的DB插件旨在通过提供自然语言查询接口、增强LLMs的查询理解与执行能力、集成第三方服务以及支持端到端的数据分析流程，来增强系统与数据库的交互能力。这些插件允许系统更智能地解析和响应用户查询，执行SQL语句，并与外部数据源协同工作，从而提升数据库操作的效率和用户体验，同时保持系统的灵活性和可扩展性。</p>
 <h1 id="3-模型和训练"><a href="#3-模型和训练" class="headerlink" title="3 模型和训练"></a>3 模型和训练</h1><h2 id="3-1-Text-to-SQL-微调"><a href="#3-1-Text-to-SQL-微调" class="headerlink" title="3.1 Text-to-SQL 微调"></a>3.1 Text-to-SQL 微调</h2><ul>
 <li><p>是DB-GPT系统中使LLMs更加精准和高效地理解和生成SQL查询的关键步骤，它通过专门针对数据库查询语言的优化，提升了整个系统的数据库交互能力。</p>
@@ -514,7 +549,16 @@
 <li>Qwen：通义千问，阿里巴巴的大语言模型</li>
 </ul>
 </li>
-<li>数据集和训练：设计了一个特殊的模块DB-GPT- hub，它封装了预处理记录、模型加载和微调的管道。我们在Spider上微调Qwen训练分割，输入包括数据库描述和自然问题(见清单2)，输出是目标SQL。</li>
+<li>数据集和训练：设计了一个特殊的模块DB-GPT- hub，它封装了预处理记录、模型加载和微调的管道。我们在Spider上微调Qwen训练分割，输入包括数据库描述和自然问题(见清单2)，输出是目标SQL。<ul>
+<li>Spider 数据集是一个广泛用于研究和评估 Text-to-SQL 模型的基准数据集。该数据集由耶鲁大学的研究团队创建，旨在推动自然语言处理领域中将自然语言查询转换为 SQL 查询的研究和进展。<ul>
+<li><strong>多样性</strong>：数据集中包含了来自不同领域的多个数据库，涵盖广泛的主题和结构。每个数据库都有不同的表和关系，提供了丰富多样的查询场景。</li>
+<li><strong>复杂性</strong>：Spider 数据集中的查询从简单到复杂不等，涵盖了基础的单表查询、复杂的多表联接查询、嵌套查询等。这使得它对模型的语义理解和生成能力提出了较高的要求。</li>
+<li><strong>语义丰富</strong>：自然语言查询包含丰富的语义信息，需要模型能够正确理解查询意图和细节。</li>
+<li><strong>SQL 多样性</strong>：数据集中的 SQL 查询语句多样，涵盖了不同类型的 SQL 操作和函数，要求模型具备生成多种 SQL 结构的能力。</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <img src="/2024/07/14/DB-GPT-Empowering-Database-Interactions-with-Private-Large-Language-Models/image-20240714200312684.png" class="" title="image-20240714200312684">
 <ul>
@@ -528,12 +572,33 @@
 </li>
 </ul>
 <script type="math/tex; mode=display">\ell=\mathbf{q}^\top\mathbf{e}_0-\log\sum_{i=0}^I\exp\left(\mathbf{q}^\top\mathbf{e}_i\right),</script><ul>
-<li>其中，$e_0$是已知包含查询相关信息的段落的嵌入，以及其他$I$个嵌入$e_1,…,e_I$属于一组消极段落（模块3.2有说明他们是如何被选择的）。通过优化这个灯饰，对实际相关的查询段落对，点积$q^T$和$e$​​的值会变大<ul>
-<li>这些消极段落是在训练RAG模型的编码器时使用的，用于区分和优化模型对相关段落的选择能力，下面提到<strong>从整个段落池中随机抽取5个消极的响应</strong>的选取方法</li>
+<li><p>其中，$e_0$是已知包含查询相关信息的段落的嵌入，以及其他$I$个嵌入$e_1,…,e_I$属于一组消极段落（模块3.2有说明他们是如何被选择的）。通过优化这个灯饰，对实际相关的查询段落对，点积$q^T$和$e$​​的值会变大</p>
+<ul>
+<li>这些消极段落是在训练RAG模型的编码器时使用的，用于区分和优化模型对相关段落的选择能力，下面有提到<strong>从整个段落池中随机抽取5个消极的响应</strong>的选取方法</li>
 </ul>
 </li>
-<li>数据集和训练：我们使用查询-段落对来训练键和查询编码器，$f_{key}$和$f_{query}$​，这些对是从DatabaseQA中收集的，我们对1000个查询-响应对进行采样，作为积极的对，对于每一个对，我们<strong>从整个段落池中随机抽取5个消极的响应</strong>。最后，我们收集了1000对查询-响应对用于训练和评估。然后将选择的配对分成700对训练配对、100对发展配对和200对测试配对。</li>
-<li>我们将查询-响应对传递给模型，以产生每个对的标量分数，并最大化正对的分数，同时通过交叉熵损失最小化负对的分数。</li>
+<li><p>数据集和训练：我们使用查询-段落对来训练键和查询编码器，$f_{key}$和$f_{query}$​​，这些对是从DatabaseQA中收集的，我们对1000个查询-响应对进行采样，作为积极的对，对于每一个对，我们<strong>从整个段落池中随机抽取5个消极的响应</strong>。最后，我们收集了1000对查询-响应对用于训练和评估。然后将选择的配对分成700对训练配对、100对发展配对和200对测试配对。</p>
+<ul>
+<li><p>大概的代码流程：</p>
+<ul>
+<li><p>假设我们有以下查询-响应数据集</p>
+<p>假设我们有一个包含1000个查询-响应对的初始数据集：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例数据</span></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">&#x27;query&#x27;</span>: [<span class="string">f&#x27;query_<span class="subst">&#123;i&#125;</span>&#x27;</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">1001</span>)],</span><br><span class="line">    <span class="string">&#x27;response&#x27;</span>: [<span class="string">f&#x27;response_<span class="subst">&#123;i&#125;</span>&#x27;</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">1001</span>)]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建DataFrame</span></span><br><span class="line">df = pd.DataFrame(data)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>采样消极响应</p>
+<p>接下来，我们为每个查询-响应对随机采样5个消极响应：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 采样消极响应</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sample_negative_responses</span>(<span class="params">df, num_negatives=<span class="number">5</span></span>):</span><br><span class="line">    queries = df[<span class="string">&#x27;query&#x27;</span>].tolist()</span><br><span class="line">    responses = df[<span class="string">&#x27;response&#x27;</span>].tolist()</span><br><span class="line">    negative_samples = []</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> query, response <span class="keyword">in</span> <span class="built_in">zip</span>(queries, responses):</span><br><span class="line">        <span class="comment"># 从所有响应中排除正确的响应</span></span><br><span class="line">        negative_pool = [resp <span class="keyword">for</span> resp <span class="keyword">in</span> responses <span class="keyword">if</span> resp != response]</span><br><span class="line">        <span class="comment"># 随机抽取5个消极响应</span></span><br><span class="line">        negative_responses = random.sample(negative_pool, num_negatives)</span><br><span class="line">        <span class="keyword">for</span> neg_response <span class="keyword">in</span> negative_responses:</span><br><span class="line">            negative_samples.append(&#123;<span class="string">&#x27;query&#x27;</span>: query, <span class="string">&#x27;response&#x27;</span>: neg_response, <span class="string">&#x27;label&#x27;</span>: <span class="number">0</span>&#125;)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> negative_samples</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取消极响应对</span></span><br><span class="line">negative_samples = sample_negative_responses(df)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建训练、发展和测试数据集</p>
+<p>我们将原始的1000个积极对和生成的5000个消极对混合在一起，并将它们分成训练、发展和测试数据集：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建积极响应对并标注</span></span><br><span class="line">positive_samples = [&#123;<span class="string">&#x27;query&#x27;</span>: row[<span class="string">&#x27;query&#x27;</span>], <span class="string">&#x27;response&#x27;</span>: row[<span class="string">&#x27;response&#x27;</span>], <span class="string">&#x27;label&#x27;</span>: <span class="number">1</span>&#125; <span class="keyword">for</span> _, row <span class="keyword">in</span> df.iterrows()]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并积极和消极响应对</span></span><br><span class="line">all_samples = positive_samples + negative_samples</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打乱所有样本</span></span><br><span class="line">random.shuffle(all_samples)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建DataFrame</span></span><br><span class="line">all_samples_df = pd.DataFrame(all_samples)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 划分数据集</span></span><br><span class="line">train_size = <span class="number">700</span></span><br><span class="line">dev_size = <span class="number">100</span></span><br><span class="line">test_size = <span class="number">200</span></span><br><span class="line"></span><br><span class="line">train_df = all_samples_df.iloc[:train_size]</span><br><span class="line">dev_df = all_samples_df.iloc[train_size:train_size + dev_size]</span><br><span class="line">test_df = all_samples_df.iloc[train_size + dev_size:train_size + dev_size + test_size]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;训练集大小: <span class="subst">&#123;<span class="built_in">len</span>(train_df)&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;发展集大小: <span class="subst">&#123;<span class="built_in">len</span>(dev_df)&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;测试集大小: <span class="subst">&#123;<span class="built_in">len</span>(test_df)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>我们将查询-响应对传递给模型，以产生每个对的标量分数，并最大化正对的分数，同时通过交叉熵损失最小化负对的分数。</p>
+</li>
 </ul>
 <h2 id="3-3-应用和部署细节"><a href="#3-3-应用和部署细节" class="headerlink" title="3.3 应用和部署细节"></a>3.3 应用和部署细节</h2><h1 id="4-Experiments"><a href="#4-Experiments" class="headerlink" title="4 Experiments"></a>4 Experiments</h1><p>提出了旨在评估DB-GPT系统性能的实验，包括文本到sql响应的生成质量(第3.1节)、我们提出的RAG机制的QA性能(第2.1节)和SMMF的效率性能(?)。我们还提供了生成数据分析的定性结果(第2.4节)。</p>
 <h2 id="4-1-Text-to-SQL-Evalution"><a href="#4-1-Text-to-SQL-Evalution" class="headerlink" title="4.1 Text-to-SQL Evalution"></a>4.1 Text-to-SQL Evalution</h2><ul>
@@ -590,7 +655,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-SQL/" style="color: #ffa2c4">LLMs SQL</a>
+            <a href="/tags/LLMs-SQL/" style="color: #00bcd4">LLMs SQL</a>
         </span>
         
     </div>
@@ -730,7 +795,7 @@
         
         <span class="tag">
             
-            <a href="/tags/CoM-LLMs-SQL/" style="color: #ff7d73">CoM LLMs SQL</a>
+            <a href="/tags/CoM-LLMs-SQL/" style="color: #00a596">CoM LLMs SQL</a>
         </span>
         
     </div>
@@ -755,7 +820,8 @@
     <div class="description">
         <div class="content" v-pre>
             
-            <h1 id="1-Abstract"><a href="#1-Abstract" class="headerlink" title="1.Abstract"></a>1.Abstract</h1><ul>
+            <p>[TOC]</p>
+<h1 id="1-Abstract"><a href="#1-Abstract" class="headerlink" title="1.Abstract"></a>1.Abstract</h1><ul>
 <li><p>使用<strong>大型语言模型(llm)的上下文学习</strong>是当前<strong>Text-to-SQL​</strong>的主流方法。先前的研究已经探索了从人工标记的示范池中选择相关的示范，但这些方法缺乏<strong>多样性</strong>，并且需要高昂的标记成本。</p>
 </li>
 <li><p>在这项工作中，我们将讨论度量和增强文本到sql演示池的多样性。首先，我们引入了一个<strong>多样性度量</strong>，并提出了现有标签数据的多样性可以进一步增强。受这些发现的启发，提出了<strong>fuse</strong>，迭代地融合演示，以创建基于人类标记的多样化演示池，甚至从头开始使用llm，从而降低标记成本。FUSED在现有标记的基础上实现了3.2%的平均改进，在几个主流数据集上实现了5.0%的从头开始改进，证明了它的有效性</p>
@@ -909,7 +975,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-sql/" style="color: #00bcd4">LLMs sql</a>
+            <a href="/tags/LLMs-sql/" style="color: #03a9f4">LLMs sql</a>
         </span>
         
     </div>
