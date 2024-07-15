@@ -238,6 +238,20 @@
 <li>建议使用个性化知识库作为llm的符号存储器，将面向实体的知识封装为三种表示形式。与只有三元组的KBs相比，这扩大了符号记忆的知识范围。</li>
 <li>用实验证明了提出的方法的有效性。结果强调了使用KBs作为llm符号存储器的效用和潜力。</li>
 </ul>
+<h1 id="3-Methods"><a href="#3-Methods" class="headerlink" title="3 Methods"></a>3 Methods</h1><h2 id="3-1-任务定义"><a href="#3-1-任务定义" class="headerlink" title="3.1 任务定义"></a>3.1 任务定义</h2><p>KnowledgeGPT为llm提供了来自各种知识库(KBs)的外部知识，包括作为可写符号内存的个性化知识库(PKB)。在给定用户以自然语言输入的情况下，KnowledgeGPT承担两项主要任务，即知识检索和知识存储。在知识检索任务中，模型通过提供的知识库进行检索，检索相关的知识来回答用户的查询。在知识存储任务中，模型从用户输入中提取知识并插入到PKB中。</p>
+<h2 id="3-2-知识检索"><a href="#3-2-知识检索" class="headerlink" title="3.2 知识检索"></a>3.2 知识检索</h2><p>KnowledgeGPT采用三步流程，用知识库中的知识回答用户的查询，如图3所示。首先，它生成一段搜索代码，作为特定于查询的KB访问的逻辑形式。然后，执行搜索代码来检索相关知识。最后，KnowledGPT读取检索到的知识并回答查询。</p>
+<img src="/2024/07/15/KnowledGPT-Enhancing-Large-Language-Models-with-Retrieval-and-Storage-Access-on/image-20240715161553479.png" class="" title="image-20240715161553479">
+<p>我们利用思想程序(PoT)提示方法(Chen et al .， 2022)，该方法采用Python代码作为llm生成的搜索语言。在本文中，我们使用GPT-4 (OpenAI, 2023)作为LLM。代码封装在一个搜索函数中，如图3中黄色部分所示，其中包括内置的Python函数和三个定制的KB函数，旨在促进llm与KB的交互:</p>
+<ul>
+<li>get_entity_info：它接受实体作为输入并返回其百科全书式的描述</li>
+<li>find_entity_or_avlue：它接受由实体和关系组成的查询作为输入，并输出相应实体或值的列表。</li>
+<li>find_relationship：它接受两个实体作为输入，并返回它们之间关系的列表。</li>
+</ul>
+<p>特别地，每个实体或关系都表示为候选别名列表，而不是单个名称，以便有效地处理同义词。除了上述输出外，这些KB函数还返回一条记录函数调用和结果的消息。</p>
+<p>然后，通过连接来自各个KB函数调用的消息来获得搜索函数的总体输出。</p>
+<p>然后执行搜索函数，从KBs中检索期望的知识。代码将在执行前进行装饰，例如，使用try-except语句和特定于kb的访问器对象，如第3.2.1节所述。对每个KB分别并行执行搜索函数，并将它们的结果连接起来。</p>
+<p>最后，将检索到的知识提供给llm, llm的任务是响应用户的查询，并得到检索到的知识的支持。</p>
+<p>提示符如第7节所示。在llm判断问题不需要外部知识或检索到的知识不足以进行查询的情况下，llm将忽略检索到的信息，并独立处理用户查询</p>
 
             
         </div>
@@ -576,7 +590,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-SQL/" style="color: #ff7d73">LLMs SQL</a>
+            <a href="/tags/LLMs-SQL/" style="color: #ffa2c4">LLMs SQL</a>
         </span>
         
     </div>
@@ -716,7 +730,7 @@
         
         <span class="tag">
             
-            <a href="/tags/CoM-LLMs-SQL/" style="color: #00a596">CoM LLMs SQL</a>
+            <a href="/tags/CoM-LLMs-SQL/" style="color: #ff7d73">CoM LLMs SQL</a>
         </span>
         
     </div>
@@ -793,7 +807,7 @@
         
         <span class="tag">
             
-            <a href="/tags/sql/" style="color: #00bcd4">sql</a>
+            <a href="/tags/sql/" style="color: #ff7d73">sql</a>
         </span>
         
     </div>
@@ -895,7 +909,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-sql/" style="color: #00a596">LLMs sql</a>
+            <a href="/tags/LLMs-sql/" style="color: #00bcd4">LLMs sql</a>
         </span>
         
     </div>
