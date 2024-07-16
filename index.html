@@ -583,30 +583,21 @@
 <ul>
 <li><p>假设我们有以下查询-响应数据集</p>
 <p>假设我们有一个包含1000个查询-响应对的初始数据集：</p>
-
-    
-      import pandas as pd
-      import random
-    
-      data = {
-          'query': [f'query_{i}' for i in range(1, 1001)],
-          'response': [f'response_{i}' for i in range(1, 1001)]
-      }
-    
-      df = pd.DataFrame(data)
-    
-      
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例数据</span></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">&#x27;query&#x27;</span>: [<span class="string">f&#x27;query_<span class="subst">&#123;i&#125;</span>&#x27;</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">1001</span>)],</span><br><span class="line">    <span class="string">&#x27;response&#x27;</span>: [<span class="string">f&#x27;response_<span class="subst">&#123;i&#125;</span>&#x27;</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">1001</span>)]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建DataFrame</span></span><br><span class="line">df = pd.DataFrame(data)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>采样消极响应</p>
-<p>接下来，我们为每个查询-响应对随机采样5个消极响应：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 采样消极响应</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sample_negative_responses</span>(<span class="params">df, num_negatives=<span class="number">5</span></span>):</span><br><span class="line">    queries = df[<span class="string">&#x27;query&#x27;</span>].tolist()</span><br><span class="line">    responses = df[<span class="string">&#x27;response&#x27;</span>].tolist()</span><br><span class="line">    negative_samples = []</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> query, response <span class="keyword">in</span> <span class="built_in">zip</span>(queries, responses):</span><br><span class="line">        <span class="comment"># 从所有响应中排除正确的响应</span></span><br><span class="line">        negative_pool = [resp <span class="keyword">for</span> resp <span class="keyword">in</span> responses <span class="keyword">if</span> resp != response]</span><br><span class="line">        <span class="comment"># 随机抽取5个消极响应</span></span><br><span class="line">        negative_responses = random.sample(negative_pool, num_negatives)</span><br><span class="line">        <span class="keyword">for</span> neg_response <span class="keyword">in</span> negative_responses:</span><br><span class="line">            negative_samples.append(&#123;<span class="string">&#x27;query&#x27;</span>: query, <span class="string">&#x27;response&#x27;</span>: neg_response, <span class="string">&#x27;label&#x27;</span>: <span class="number">0</span>&#125;)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> negative_samples</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取消极响应对</span></span><br><span class="line">negative_samples = sample_negative_responses(df)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>创建训练、发展和测试数据集</p>
-<p>我们将原始的1000个积极对和生成的5000个消极对混合在一起，并将它们分成训练、发展和测试数据集：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建积极响应对并标注</span></span><br><span class="line">positive_samples = [&#123;<span class="string">&#x27;query&#x27;</span>: row[<span class="string">&#x27;query&#x27;</span>], <span class="string">&#x27;response&#x27;</span>: row[<span class="string">&#x27;response&#x27;</span>], <span class="string">&#x27;label&#x27;</span>: <span class="number">1</span>&#125; <span class="keyword">for</span> _, row <span class="keyword">in</span> df.iterrows()]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并积极和消极响应对</span></span><br><span class="line">all_samples = positive_samples + negative_samples</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打乱所有样本</span></span><br><span class="line">random.shuffle(all_samples)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建DataFrame</span></span><br><span class="line">all_samples_df = pd.DataFrame(all_samples)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 划分数据集</span></span><br><span class="line">train_size = <span class="number">700</span></span><br><span class="line">dev_size = <span class="number">100</span></span><br><span class="line">test_size = <span class="number">200</span></span><br><span class="line"></span><br><span class="line">train_df = all_samples_df.iloc[:train_size]</span><br><span class="line">dev_df = all_samples_df.iloc[train_size:train_size + dev_size]</span><br><span class="line">test_df = all_samples_df.iloc[train_size + dev_size:train_size + dev_size + test_size]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;训练集大小: <span class="subst">&#123;<span class="built_in">len</span>(train_df)&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;发展集大小: <span class="subst">&#123;<span class="built_in">len</span>(dev_df)&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;测试集大小: <span class="subst">&#123;<span class="built_in">len</span>(test_df)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例数据</span></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">&#x27;query&#x27;</span>: [<span class="string">f&#x27;query_<span class="subst">&#123;i&#125;</span>&#x27;</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">1001</span>)],</span><br><span class="line">    <span class="string">&#x27;response&#x27;</span>: [<span class="string">f&#x27;response_<span class="subst">&#123;i&#125;</span>&#x27;</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">1001</span>)]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建DataFrame</span></span><br><span class="line">df = pd.DataFrame(data)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>采样消极响应</p>
+<p>接下来，我们为每个查询-响应对随机采样5个消极响应：</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 采样消极响应</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sample_negative_responses</span>(<span class="params">df, num_negatives=<span class="number">5</span></span>):</span><br><span class="line">    queries = df[<span class="string">&#x27;query&#x27;</span>].tolist()</span><br><span class="line">    responses = df[<span class="string">&#x27;response&#x27;</span>].tolist()</span><br><span class="line">    negative_samples = []</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> query, response <span class="keyword">in</span> <span class="built_in">zip</span>(queries, responses):</span><br><span class="line">        <span class="comment"># 从所有响应中排除正确的响应</span></span><br><span class="line">        negative_pool = [resp <span class="keyword">for</span> resp <span class="keyword">in</span> responses <span class="keyword">if</span> resp != response]</span><br><span class="line">        <span class="comment"># 随机抽取5个消极响应</span></span><br><span class="line">        negative_responses = random.sample(negative_pool, num_negatives)</span><br><span class="line">        <span class="keyword">for</span> neg_response <span class="keyword">in</span> negative_responses:</span><br><span class="line">            negative_samples.append(&#123;<span class="string">&#x27;query&#x27;</span>: query, <span class="string">&#x27;response&#x27;</span>: neg_response, <span class="string">&#x27;label&#x27;</span>: <span class="number">0</span>&#125;)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> negative_samples</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取消极响应对</span></span><br><span class="line">negative_samples = sample_negative_responses(df)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>创建训练、发展和测试数据集</p>
+<p>我们将原始的1000个积极对和生成的5000个消极对混合在一起，并将它们分成训练、发展和测试数据集：</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建积极响应对并标注</span></span><br><span class="line">positive_samples = [&#123;<span class="string">&#x27;query&#x27;</span>: row[<span class="string">&#x27;query&#x27;</span>], <span class="string">&#x27;response&#x27;</span>: row[<span class="string">&#x27;response&#x27;</span>], <span class="string">&#x27;label&#x27;</span>: <span class="number">1</span>&#125; <span class="keyword">for</span> _, row <span class="keyword">in</span> df.iterrows()]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并积极和消极响应对</span></span><br><span class="line">all_samples = positive_samples + negative_samples</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打乱所有样本</span></span><br><span class="line">random.shuffle(all_samples)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建DataFrame</span></span><br><span class="line">all_samples_df = pd.DataFrame(all_samples)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 划分数据集</span></span><br><span class="line">train_size = <span class="number">700</span></span><br><span class="line">dev_size = <span class="number">100</span></span><br><span class="line">test_size = <span class="number">200</span></span><br><span class="line"></span><br><span class="line">train_df = all_samples_df.iloc[:train_size]</span><br><span class="line">dev_df = all_samples_df.iloc[train_size:train_size + dev_size]</span><br><span class="line">test_df = all_samples_df.iloc[train_size + dev_size:train_size + dev_size + test_size]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;训练集大小: <span class="subst">&#123;<span class="built_in">len</span>(train_df)&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;发展集大小: <span class="subst">&#123;<span class="built_in">len</span>(dev_df)&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;测试集大小: <span class="subst">&#123;<span class="built_in">len</span>(test_df)&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 </li>
@@ -668,7 +659,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-SQL/" style="color: #00bcd4">LLMs SQL</a>
+            <a href="/tags/LLMs-SQL/" style="color: #ff7d73">LLMs SQL</a>
         </span>
         
     </div>
@@ -696,7 +687,7 @@
             <h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>具有内存的大型语言模型(LLMs)在计算上是通用的，然而，主流LLMs并没有<strong>充分利用内存</strong>，而且设计受到生物大脑的严重影响。传统的神经记忆机制由于其<strong>近似性质</strong>和<strong>容易累积错误</strong>，无法支持LLMs<strong>模拟复杂推理</strong>。在本文中，我们从现代计算机体系结构中寻求灵感，以<strong>增强具有符号记忆的LLMs</strong>，用于复杂的<strong>多跳推理</strong>。这样一个符号内存框架被实例化为一个LLMs和一组SQL数据库，其中LLMs生成SQL指令来操作SQL数据库。</p>
 <ul>
 <li>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.03901">https://arxiv.org/abs/2306.03901</a></li>
-<li>代码链接：<a target="_blank" rel="noopener" href="https://github.com/huchenxucs/C">https://github.com/huchenxucs/C</a></li>
+<li>代码链接：<a target="_blank" rel="noopener" href="https://github.com/huchenxucs/ChatDB">https://github.com/huchenxucs/ChatDB</a></li>
 </ul>
 <h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.Introduction</h1><p>LLMs存在以下局限性：</p>
 <ul>
@@ -714,7 +705,7 @@
 </li>
 <li><p>解决方法：</p>
 <ul>
-<li>使用数据库作为llm的新型符号内存。整个框架命名为ChatDB。结构如下图所示：</li>
+<li>使用SQL语言作为llm的<strong>新型符号内存</strong>。整个框架命名为ChatDB。结构如下图所示：</li>
 </ul>
 <img src="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-07-14%20102945.jpg" class="" title="屏幕截图 2024-07-14 102945">
 <p>图1:ChatDB的总体工作流程。LLM控制器控制对存储器的读写操作。存储器存储历史信息并提供相关的历史信息，以帮助响应用户输入。在ChatDB中，我们专注于用数据库作为符号内存来增强llm</p>
@@ -729,12 +720,12 @@
 </li>
 </ul>
 </li>
-<li><p>在ChatDB中，我们着重于使用数据库作为<strong>符号内存</strong>，它允许通过执行符号语言(即SQL语句)来结构化地存储历史信息。这些SQL语句是由LLM生成的。在需要精确记录、修改、查询、删除和分析历史数据的场景中，将数据库合并为符号内存特别有用。例如，商店经理需要维护日常销售记录，而使用纯文本或矩阵作为内存是不合适的</p>
+<li><p>在ChatDB中，我们着重于<strong>使用数据库作为符号内存</strong>，它允许通过<strong>执行符号语言(即SQL语句)来结构化地存储历史信息</strong>。这些SQL语句是<strong>由LLM生成的</strong>。在需要精确记录、修改、查询、删除和分析历史数据的场景中，将数据库合并为符号内存特别有用。例如，商店经理需要维护日常销售记录，而使用纯文本或矩阵作为内存是不合适的</p>
 </li>
-<li><p>然而，使用数据库作为外部符号内存是非常合适的。数据库可以使用SQL语句进行精确的操作，包括数据的插入、删除、更新和选择。因此，使用数据库作为外部符号存储器确保了管理和操作历史数据的准确性和效率，显著提高了llm在需要高精度和长期数据记录和处理的场景中的性能。</p>
+<li><p>然而，使用数<strong>据库作为外部符号内存</strong>是非常合适的。数据库可以使用SQL语句进行精确的操作，包括数据的插入、删除、更新和选择。因此，使用数据库作为外部符号存储器确保了管理和操作历史数据的准确性和效率，显著提高了llm在需要高精度和长期数据记录和处理的场景中的性能。</p>
 <ul>
-<li><strong>符号内存</strong>是指大脑或人工智能系统中存储和处理符号信息的能力。这些符号可以是文字、数字、图像或其他代表信息的标记。</li>
-<li><strong>外部符号内存</strong>是指将符号信息存储在外部设备或介质上，而不是仅限于系统内部存储。这种记忆系统利用外部工具来增强和扩展内部记忆能力。</li>
+<li><strong>符号内存</strong>是指大脑或人工智能系统中存储和处理符号信息的能力。<strong>就是利用SQL去处理数据</strong></li>
+<li><strong>外部符号内存</strong>是指将符号信息存储在外部设备或介质上，而不是仅限于系统内部存储。<strong>是数据库本身，用来存储数据的地方</strong></li>
 </ul>
 </li>
 <li><p>在ChatDB框架中，我们提出了<strong>内存链(CoM)</strong>方法来更有效地操作外部符号内存，从而进一步增强llm的推理能力。<strong>内存链方法</strong>将<strong>用户输入转换为一系列导致最终结果的中间内存操作步骤</strong>。通过内存链方法，<strong>将一个复杂的问题分解为多个记忆操作步骤</strong>，大大降低了问题解决的复杂性。在ChatDB中，每个中间步骤都涉及一个或多个SQL语句。</p>
@@ -749,22 +740,39 @@
 </li>
 </ul>
 <h2 id="3-2框架概述"><a href="#3-2框架概述" class="headerlink" title="3.2框架概述"></a>3.2框架概述</h2><p>ChatDB框架由三个主要阶段组成：<strong>输入处理</strong>、<strong>记忆链</strong>和<strong>响应总结</strong></p>
-<img src="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-07-14%20112221.jpg" class="" title="屏幕截图 2024-07-14 112221">
+<img src="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/image-20240715224432295.png" class="" title="image-20240715224432295">
 <ul>
-<li><strong>输入处理：</strong>如果响应用户输入需要使用内存，ChatDB通过llm生成一系列中间步骤来操作符号内存。否则，我们直接使用llm来生成回复。</li>
-<li><strong>Chain-of-Memory：</strong>ChatDB执行一系列中间内存操作步骤来与符号内存交互。ChatDB根据先前生成的一系列SQL语句依次操作符号内存，包括插入、更新、选择、删除等操作。外部数据库执行相应的SQL语句，更新数据库，并返回结果。值得注意的是，ChatDB在执行内存操作步骤之前，会根据前面SQL语句的结果来决定是否更新内存操作步骤。ChatDB按照相同的过程执行下一步，直到完成对内存的所有操作。</li>
-<li><strong>响应总结：</strong>ChatDB根据一系列内存链步骤的结果总结对用户的最终响应</li>
+<li><strong>输入处理：</strong>如果响应用户输入需要使用内存，ChatDB通过<strong>llm生成一系列中间步骤来操作符号内存</strong>。否则，我们直接使用llm来生成回复。</li>
+<li><strong>Chain-of-Memory：</strong>ChatDB执行一系列中间内存操作步骤来与符号内存交互。ChatDB根据<strong>先前生成的一系列SQL语句依次操作符号内存</strong>，包括插入、更新、选择、删除等操作。外部数据库执行相应的SQL语句，更新数据库，并返回结果。值得注意的是，ChatDB在执行内存操作步骤之前，<strong>会根据前面SQL语句的结果来决定是否更新内存操作步骤</strong>。ChatDB按照相同的过程执行下一步，直到完成对内存的所有操作。</li>
+<li><strong>响应总结：</strong>ChatDB根据一系列<strong>内存链步骤的结果总结对用户的最终响应</strong></li>
 </ul>
 <h2 id="3-3内存链"><a href="#3-3内存链" class="headerlink" title="3.3内存链"></a>3.3内存链</h2><p>思维链强调将复杂推理分解为一系列中间步骤。</p>
 <p>通过提供符号内存机制来支持与这些中间步骤相关联的存储，可以将内存链(CoM)视为一种增强思维链的方法。</p>
 <p>内存链的目的是提高llm在操作符号内存时的推理能力和鲁棒性。该方法包括<strong>将用户输入转换为中间内存操作序列</strong>，使llm能够<strong>以符号方式更准确有效地操作内存</strong>。对于涉及与历史数据进行复杂而准确交互的实际应用程序(例如管理设置中的记录保存和数据分析)，操作符号内存的能力特别有价值。</p>
-<p>为了提高我们方法的性能和稳定性，我们采用了上下文学习，提供了几个<strong>内存链步骤序列</strong>和<strong>思维链提示</strong>的提示示例。一个强大而准确的<strong>内存链</strong>过程使llm能够更好地对符号记忆进行推理，并处理更复杂的场景。</p>
+<p>为了提高我们方法的性能和稳定性，我们采用了<strong>上下文学习</strong>，提供了几个<strong>内存链步骤序列</strong>和<strong>思维链提示</strong>的提示示例。一个强大而准确的<strong>内存链</strong>过程使llm能够更好地对符号记忆进行推理，并处理更复杂的场景。</p>
 <ul>
-<li>内存链的优点是双重的。<ul>
-<li>首先，它使llm能够以更高的精度执行复杂的数据库操作，增强了它们在符号内存上的多跳推理能力。</li>
-<li>其次，通过将复杂操作分解为一系列中间内存操作，内存链方法增强了llm处理复杂多表交互的能力。</li>
+<li><p><strong>上下文学习</strong>是指模型在给定的上下文环境中学习和推理的能力。通过提供额外的上下文信息，模型能够更准确地理解输入内容并作出相应的反应。</p>
+</li>
+<li><p><strong>思维链提示</strong>是指在模型推理过程中，通过提供明确的思维过程提示，引导模型逐步进行复杂推理。这种方法能够帮助模型在多步骤推理中保持逻辑一致性和准确性。</p>
+<ul>
+<li><p><strong>示例：</strong> 假设我们有一个数学问题求解系统，帮助学生解决复杂的数学问题。</p>
+<p><strong>问题：</strong> “如果一个数的三倍加上五等于二十，求这个数。”</p>
+<p><strong>思维链提示：</strong></p>
+<ol>
+<li>设这个数为 xxx。</li>
+<li>写出等式 3x+5=203x + 5 = 203x+5=20。</li>
+<li>解方程 3x=20−53x = 20 - 53x=20−5。</li>
+<li>解得 3x=153x = 153x=15。</li>
+<li>求得 x=5x = 5x=5。</li>
+</ol>
+</li>
 </ul>
 </li>
+</ul>
+<p>内存链的优点是双重的。</p>
+<ul>
+<li>首先，它使llm能够以更高的精度执行复杂的数据库操作，增强了它们在符号内存上的多跳推理能力。</li>
+<li>其次，通过将复杂操作分解为一系列中间内存操作，内存链方法增强了llm处理复杂多表交互的能力。</li>
 </ul>
 <p>这种方法使LLMs能够更好地处理边缘情况和意外情况，使其成为现实应用程序中很有前途的方法。</p>
 <img src="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-07-14%20115317.jpg" class="" title="屏幕截图 2024-07-14 115317">
@@ -808,7 +816,7 @@
         
         <span class="tag">
             
-            <a href="/tags/CoM-LLMs-SQL/" style="color: #03a9f4">CoM LLMs SQL</a>
+            <a href="/tags/CoM-LLMs-SQL/" style="color: #ff7d73">CoM LLMs SQL</a>
         </span>
         
     </div>
@@ -988,7 +996,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-sql/" style="color: #00a596">LLMs sql</a>
+            <a href="/tags/LLMs-sql/" style="color: #00bcd4">LLMs sql</a>
         </span>
         
     </div>
