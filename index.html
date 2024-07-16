@@ -238,10 +238,19 @@
 <li>建议使用个性化知识库作为llm的符号存储器，将面向实体的知识封装为三种表示形式。与只有三元组的KBs相比，这扩大了符号记忆的知识范围。</li>
 <li>用实验证明了提出的方法的有效性。结果强调了使用KBs作为llm符号存储器的效用和潜力。</li>
 </ul>
-<h1 id="3-Methods"><a href="#3-Methods" class="headerlink" title="3 Methods"></a>3 Methods</h1><h2 id="3-1-任务定义"><a href="#3-1-任务定义" class="headerlink" title="3.1 任务定义"></a>3.1 任务定义</h2><p>KnowledgeGPT为llm提供了来自各种知识库(KBs)的外部知识，包括作为可写符号内存的个性化知识库(PKB)。在给定用户以自然语言输入的情况下，KnowledgeGPT承担两项主要任务，即知识检索和知识存储。在知识检索任务中，模型通过提供的知识库进行检索，检索相关的知识来回答用户的查询。在知识存储任务中，模型从用户输入中提取知识并插入到PKB中。</p>
-<h2 id="3-2-知识检索"><a href="#3-2-知识检索" class="headerlink" title="3.2 知识检索"></a>3.2 知识检索</h2><p>KnowledgeGPT采用三步流程，用知识库中的知识回答用户的查询，如图3所示。首先，它生成一段搜索代码，作为特定于查询的KB访问的逻辑形式。然后，执行搜索代码来检索相关知识。最后，KnowledGPT读取检索到的知识并回答查询。</p>
+<h1 id="3-Methods"><a href="#3-Methods" class="headerlink" title="3 Methods"></a>3 Methods</h1><h2 id="3-1-任务定义"><a href="#3-1-任务定义" class="headerlink" title="3.1 任务定义"></a>3.1 任务定义</h2><p>KnowledGPT是一个综合性框架，旨在将大型语言模型（LLMs）与各种知识库（KBs）结合起来。它通过补充外部知识来增强LLMs的能力，包括一个个性化的知识库（PKB）作为可写的符号记忆。具体来说，KnowledGPT在处理用户输入的自然语言时，主要承担以下两个任务：</p>
+<ol>
+<li><strong>知识检索（Knowledge Retrieval）</strong>：模型在提供的知识库中搜索相关信息，以回答用户的查询。</li>
+<li><strong>知识存储（Knowledge Storage）</strong>：模型从用户输入中提取知识，并将其插入到个性化知识库中。</li>
+</ol>
+<h2 id="3-2-知识检索"><a href="#3-2-知识检索" class="headerlink" title="3.2 知识检索"></a>3.2 知识检索</h2><p>KnowledgeGPT采用三步流程，用知识库中的知识回答用户的查询，如图3所示。</p>
+<ul>
+<li>首先，它生成一段搜索代码，作为特定于查询的KB访问的逻辑形式。</li>
+<li>然后，执行搜索代码来检索相关知识。</li>
+<li>最后，KnowledGPT读取检索到的知识并回答查询。</li>
+</ul>
 <img src="/2024/07/15/KnowledGPT-Enhancing-Large-Language-Models-with-Retrieval-and-Storage-Access-on/image-20240715161553479.png" class="" title="image-20240715161553479">
-<p>我们利用思想程序(PoT)提示方法(Chen et al .， 2022)，该方法采用Python代码作为llm生成的搜索语言。在本文中，我们使用GPT-4 (OpenAI, 2023)作为LLM。代码封装在一个搜索函数中，如图3中黄色部分所示，其中包括内置的Python函数和三个定制的KB函数，旨在促进llm与KB的交互:</p>
+<p>我们利用思想程序(PoT)提示方法(Chen et al .， 2022)，该方法采用Python代码作为llm生成的搜索语言。在本文中，我们使用GPT-4 (OpenAI, 2023)作为LLM。代码封装在一个<strong>搜索函数</strong>中，如图3中黄色部分所示，其中包括内置的Python函数和三个定制的<strong>KB函数</strong>，旨在促进llm与KB的交互:</p>
 <ul>
 <li>get_entity_info：它接受实体作为输入并返回其百科全书式的描述</li>
 <li>find_entity_or_avlue：它接受由实体和关系组成的查询作为输入，并输出相应实体或值的列表。</li>
@@ -252,6 +261,120 @@
 <p>然后执行搜索函数，从KBs中检索期望的知识。代码将在执行前进行装饰，例如，使用try-except语句和特定于kb的访问器对象，如第3.2.1节所述。对每个KB分别并行执行搜索函数，并将它们的结果连接起来。</p>
 <p>最后，将检索到的知识提供给llm, llm的任务是响应用户的查询，并得到检索到的知识的支持。</p>
 <p>提示符如第7节所示。在llm判断问题不需要外部知识或检索到的知识不足以进行查询的情况下，llm将忽略检索到的信息，并独立处理用户查询</p>
+<h3 id="3-2-1-代码应用"><a href="#3-2-1-代码应用" class="headerlink" title="3.2.1 代码应用"></a>3.2.1 代码应用</h3><p>介绍执行生成的代码的KB函数的实现。在两个级别实现这些功能：<strong>统一级别</strong>和<strong>特定于kb的级别</strong>。</p>
+<ul>
+<li>统一层的功能为不同KBs的操作提供了统一的接口：其中包括生成的三个KB函数(<code>get_entity_info</code>、<code>find_entity_or_value</code>、<code>find_relationship</code>)由LLMs生成，以及一个entity_linking函数，用于将llm生成的实体别名与KBs中的实体对齐。</li>
+<li>特定于KB级别的函数通过调用相应的api来实现对每个特定KB的操作。基本上，我们只需要为每个KB实现三个函数：<code>_get_entity_info</code>，<code>_entity_linking</code>，<code>_get_entity_triples</code>。在本文中，我们用下划线来表示这些函数。</li>
+<li>在执行之前，我们修饰生成的代码。我们用try-except语句包装代码，这样，如果代码在后续步骤中出现故障，搜索函数仍然会从成功的步骤返回有价值的结果。此外，我们将用户查询作为全局变量传递给搜索函数。</li>
+</ul>
+<h3 id="3-2-2-实体联系"><a href="#3-2-2-实体联系" class="headerlink" title="3.2.2 实体联系"></a>3.2.2 实体联系</h3><ol>
+<li><strong>实体链接的重要性</strong>：<ul>
+<li>实体链接是集成大型语言模型（LLMs）与知识库（KBs）的关键步骤。由于一个实体可能有多个别名或提及方式，而一个名词短语也可能指代不同的实体，因此需要确定查询中指的是KB中的哪个具体实体。</li>
+</ul>
+</li>
+<li><strong>实体链接过程</strong>：<ul>
+<li>描述了实体链接的三个主要步骤：<ol>
+<li>使用KB特定的<code>_entity_linking</code>函数获取候选实体，这涉及到利用实体链接API和搜索API。</li>
+<li>调用<code>_get_entity_info</code>函数收集候选实体的信息，并对每条信息进行截断以满足长度限制。</li>
+<li>将LLM提供的功能输入（包括查询、实体和关系的别名）和候选实体及其信息一起提供给LLM，让LLM确定最合适的实体。</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-2-3-获取实体信息"><a href="#3-2-3-获取实体信息" class="headerlink" title="3.2.3 获取实体信息"></a>3.2.3 获取实体信息</h3><p>介绍了KnowledGPT如何检索和利用知识库（KB）中特定实体的详细信息。</p>
+<ol>
+<li><strong>函数目的</strong>：<code>get_entity_info</code> 函数的目的是检索KB中与特定实体相关的信息，包括实体的描述和三元组信息。</li>
+<li><strong>实体链接</strong>：函数首先使用实体链接步骤来将输入的实体别名与KB中的实体对应起来，这是通过在前一节3.2.2中讨论的<code>entity_linking</code>函数实现的。</li>
+<li><strong>调用KB特定函数</strong>：一旦确定了正确的实体，<code>get_entity_info</code> 函数会调用KB特定的<code>_get_entity_info</code> 函数来获取该实体的详细信息。</li>
+<li><strong>信息内容</strong>：获取的信息通常包括实体的描述（例如，实体是谁或是什么）和与实体相关的三元组（即实体的属性或与其他实体的关系）。</li>
+<li><strong>处理三元组</strong>：通过调用<code>_get_entity_triples</code> 函数来收集与实体相关的所有三元组。三元组是知识库中表示知识的基本单位，通常包括实体、关系和值。</li>
+<li><strong>信息截断</strong>：对于收集到的每条实体信息，可能会进行截断以满足长度限制，确保信息简洁且相关。</li>
+<li><strong>信息整合</strong>：将从KB检索到的信息整合成一种格式，使其可以被LLMs用来生成对用户查询的回答。</li>
+<li><strong>上下文使用</strong>：描述了如何将检索到的实体信息用于回答查询，包括在多跳查询中如何利用这些信息来构建更复杂的答案。</li>
+</ol>
+<h3 id="3-2-4-找到实体或者值"><a href="#3-2-4-找到实体或者值" class="headerlink" title="3.2.4 找到实体或者值"></a>3.2.4 找到实体或者值</h3><p>介绍了KnowledGPT如何根据用户查询中的实体和关系来检索相应的实体或属性值。</p>
+<ol>
+<li><strong>功能目的</strong>：<ul>
+<li><code>find_entity_or_value</code> 函数旨在根据给定的查询，检索与特定实体和关系相关的实体或值。这可以用于回答涉及特定属性或与其他实体关系的查询。</li>
+</ul>
+</li>
+<li><strong>处理流程</strong>：<ul>
+<li>函数通过一系列步骤来处理查询，包括调用实体链接函数来确定查询中提及的实体，然后搜索与该实体相关的信息。<ul>
+<li><strong>实体链接</strong>：<ul>
+<li>在开始检索之前，首先使用实体链接来将查询中的实体别名与知识库中的实体对应起来。</li>
+</ul>
+</li>
+<li><strong>检索三元组</strong>：<ul>
+<li>调用内部的 <code>_find_entity_or_value</code> 函数，该函数负责检索与实体相关的所有三元组。三元组是知识库中用来表示实体属性或关系的一组三个元素（主体、谓词、对象）。</li>
+</ul>
+</li>
+<li><strong>关系相似度</strong>：<ul>
+<li>对检索到的三元组中的关系，根据它们与查询中的关系别名的相似度进行排序。这里使用句子嵌入的余弦相似度，而不是符号度量，以便考虑关系的同义词。</li>
+</ul>
+</li>
+<li><strong>选择最相关的关系</strong>：<ul>
+<li>选择与输入关系别名相似度最高的三元组，并返回相应的实体或属性值。</li>
+</ul>
+</li>
+<li><strong>描述搜索</strong>：<ul>
+<li>如果没有找到相关的三元组，函数会在实体描述中进一步搜索关系，如果关系在描述中出现，则返回对应的句子；如果没有找到，返回整个描述。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-2-5-找到关系"><a href="#3-2-5-找到关系" class="headerlink" title="3.2.5 找到关系"></a>3.2.5 找到关系</h3><p>介绍了KnowledGPT如何检索两个实体之间的关系</p>
+<ol>
+<li><p><strong>功能目的</strong>：</p>
+<ul>
+<li><code>find_relationship</code> 函数的目标是确定用户查询中提到的两个实体之间的联系或关系。</li>
+</ul>
+</li>
+<li><p><strong>检索流程</strong>：</p>
+<ul>
+<li>该函数通过检索与第一个实体相关的信息，然后寻找第二个实体的信息来确定它们之间的关系。<ul>
+<li><strong>与<code>find_entity_or_value</code>的相似性</strong>：<ul>
+<li><code>find_relationship</code> 函数在操作方式上与 <code>find_entity_or_value</code> 类似，但区别在于它在检索过程中寻找第二个实体而不是关系。</li>
+</ul>
+</li>
+<li><strong>处理失败的搜索</strong>：<ul>
+<li>如果初次搜索未能找到第二个实体，函数会交换两个实体的位置并再次进行搜索，以确定它们之间的关系。</li>
+</ul>
+</li>
+<li><strong>实体相似度度量</strong>：<ul>
+<li>与关系相似度使用余弦相似度不同，实体相似度通过Levenshtein距离来计算，这是一种衡量两个序列编辑距离的方法。</li>
+</ul>
+</li>
+<li><strong>相似度计算</strong>：<ul>
+<li>实体相似度的计算方法为：如果两个实体名称有重叠的单词，则相似度为 100 减去编辑距离；如果没有重叠，则相似度为 0。</li>
+</ul>
+</li>
+<li><strong>多跳搜索</strong>：<ul>
+<li>描述了如何通过多跳搜索来处理复杂的关系查询，这可能涉及到在知识库中进行多次检索以找到间接关系。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="3-3-知识存储"><a href="#3-3-知识存储" class="headerlink" title="3.3 知识存储"></a>3.3 知识存储</h2><p>介绍了 KnowledGPT 如何存储知识</p>
+<p>尽管公共知识库（KB）提供了丰富的世界知识，但它们仍无法覆盖用户感兴趣的所有知识。为了满足用户个人的知识需求，KnowledGPT 引入了一个<strong>个性化的知识库</strong>（Personalized KB，简称 PKB），作为大型语言模型（LLMs）的符号化记忆，使用户能够存储和访问专门知识。PKB 通过从用户提供的文档中提取知识来填充。当用户打算将知识添加到 PKB 时，系统会提示 LLMs 从他们提供的文档中提取知识。</p>
+<p>KnowledGPT 考虑了三种形式的知识表示，包括实体描述、关系三元组和实体方面信息，如图 2 所示。与仅提取三元组的 RET-LLM（Modarressi 等人，2023 年）或 LangChain 的 KG-Index（Chase，2022 年）和 Llama Index（Liu，2022 年）不同。实体描述和关系三元组已在 Wikipedia 和 Wikidata 等知识库中广泛采用，但它们仅表示了有限部分的知识。例如，如果我们想了解苏格拉底作为士兵的经历，苏格拉底 Wikipedia 页面上的大部分内容可能几乎没有帮助，而且这些内容也很难表示为三元组。因此，作者们提出了一种称为实体方面信息的额外知识表示形式，作为 LLMs 符号记忆的变体。这是一种三元组的变化，其中对象是一段长文本，通过实体和一个方面来描述和检索。例如，一个记录可能被索引为（”苏格拉底”，”军事服务”），对应于描述 “苏格拉底曾作为希腊重装步兵……”。以这种形式表示的知识也将通过 get_entity_or_value 函数被检索。</p>
+<p>鉴于 PKB 的规模与公共 KB 相比很小，作者们考虑了 PKB 实体链接的不同策略。主要区别有三方面：</p>
+<ul>
+<li>首先，基于确切匹配和嵌入相似性为 PKB 定义了实体搜索 API。嵌入相似性有助于识别众所周知的实体别名，例如 Chanelle Scott Calica 和 Shystie。</li>
+<li>其次，在提取过程中，提取的实体提及不会与 PKB 中现有的实体对齐。因此，一个实体可能在不同文档中被提取为不同的提及。因此，对于实体链接，KnowledGPT 返回多个匹配的实体。</li>
+<li>第三，实体将带有一个别名列表被提取，并提供给 LLMs 用于实体链接。对于 get_entity_or_value 函数，由于关系也可以作为不同的表达式提取，我们选择检索超过某个阈值相似度分数的关系，而不是仅检索最高分的关系。</li>
+</ul>
+<h1 id="4-Experiments"><a href="#4-Experiments" class="headerlink" title="4 Experiments"></a>4 Experiments</h1><h2 id="4-1-实验设置"><a href="#4-1-实验设置" class="headerlink" title="4.1 实验设置"></a>4.1 实验设置</h2><p>描述了用于实验的知识库和语言模型。知识库包括 Wikipedia、Wikidata、CN-DBPedia 和个性化知识库（PKB）。语言模型主要使用 OpenAI 提供的 GPT-4。</p>
+<h2 id="4-2-对流行知识库的查询"><a href="#4-2-对流行知识库的查询" class="headerlink" title="4.2 对流行知识库的查询"></a>4.2 对流行知识库的查询</h2><p>手工制作了一组问题，这些问题需要从 CN-DBPedia 获取知识。这些问题包括单跳和多跳关系查询、关系预测、多样化指令、混合查询和值比较。实验结果表明，GPT-4 和 ChatGPT 在不需要知识库的情况下直接回答问题时表现良好，但当涉及到不太知名的实体时，它们也常常产生错误信息。KnowledGPT 显著提高了任务的成功率，尤其是在代码生成和实体链接方面。</p>
+<h2 id="4-3-基于知识的问答"><a href="#4-3-基于知识的问答" class="headerlink" title="4.3 基于知识的问答"></a>4.3 基于知识的问答</h2><p>评估了 KnowledGPT 在零样本知识库问答（zero-shot KBQA）上的性能。他们创建了两个数据集，NLPCC-100 用于单跳查询，NLPCC-MH-59 用于多跳查询。KnowledGPT 在这两个数据集上的表现超过了基于 BM25 和嵌入相似性的检索方法，以及之前在 NLPCC-2016 KBQA 数据集上训练的 SPE 方法。</p>
+<h2 id="4-4-作为记忆的知识库"><a href="#4-4-作为记忆的知识库" class="headerlink" title="4.4 作为记忆的知识库"></a>4.4 作为记忆的知识库</h2><p>研究了 KnowledGPT 结合可修改的个性化知识库（PKB）的效果。KnowledGPT 从提供的文档中提取知识以构建 PKB，并使用 PKB 回答相关问题。实验结果表明，KnowledGPT 能够成功回答所有比较问题和大部分桥梁问题。此外，作者们还研究了 KnowledGPT 在提取 HotpotQA 数据集中 100 个文档上的知识覆盖率，发现当包括实体描述和实体方面信息时，知识提取覆盖率有显著提高。</p>
+<h1 id="5-缺陷"><a href="#5-缺陷" class="headerlink" title="5 缺陷"></a>5 缺陷</h1><p>尽管 KnowledGPT 在实验中表现出色，但仍存在一些限制。例如，检索过程只进行了一轮代码生成和执行，可能需要多轮机制来更好地允许 LLMs 自主探索知识库。此外，实验是在代表性但较小的数据集上进行的，受限于通过 API 访问 GPT-4 的成本。作者们还计划在未来的工作中研究对 LLMs 如 Llama 进行微调以提高效率，并进行更全面的实验。</p>
 
             
         </div>
@@ -895,7 +1018,7 @@
         
         <span class="tag">
             
-            <a href="/tags/CoM-LLMs-SQL/" style="color: #00a596">CoM LLMs SQL</a>
+            <a href="/tags/CoM-LLMs-SQL/" style="color: #ff7d73">CoM LLMs SQL</a>
         </span>
         
     </div>
