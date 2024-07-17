@@ -190,6 +190,123 @@
         
 
 <div class="post">
+    <a href="/2024/07/17/Can-LLM-Already-Serve-as-A-Database-Interface-A-BIg-Bench-for-Large-Scale-Database-Grounded-Text-to-SQLs/">
+        <h2 class="post-title">Can LLM Already Serve as A Database Interface?A BIg Bench for Large-Scale Database Grounded Text-to-SQLs</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/17
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>Text-to-SQL解析旨在将自然语言问题转换为可执行的sql，近年来得到了越来越多的关注。特别是GPT-4和Claude-2在这项任务中表现出了令人印象深刻的效果。然而，大多数流行的基准测试(例如，Spider和WikiSQL)关注的是数据库模式，只有很少的数据库值行，在学术研究和实际应用程序之间留下了差距。</p>
+<p>为了缓解这一差距，我们提出了BIRD，这是一个基于Text-to-SQL任务的大型数据库，包含12,751个Text-to-SQL对和95个数据库，总大小为33.4 GB，跨越37个专业领域。我们对数据库值的强调强调了数据库值的肮脏和噪声、NL问题和数据库值之间的外部知识基础以及SQL效率的新挑战，特别是在大规模数据库的背景下。</p>
+<p>为了解决这些问题，除了语义解析之外，Text-to-SQL模型还必须具有数据库值理解功能。实验结果证明了数据库值在大型数据库中生成准确的Text-to-SQL的重要性。此外，即使是最有效的text-to-SQL模型，例如，GPT-4的执行准确率仅达到54.89%，与人类92.96%的结果还有很大差距，证明挑战依然存在。我们还提供了效率分析，以深入了解如何生成对行业有益的文本到高效sql。我们相信，BIRD将有助于推进Text-to-SQL研究的实际应用。</p>
+<p>文章链接：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.03111">https://arxiv.org/pdf/2305.03111</a></p>
+<p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/AlibabaResearch/DAMO-ConvAI/tree/main/bird">https://github.com/AlibabaResearch/DAMO-ConvAI/tree/main/bird</a></p>
+<h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1 Introduction"></a>1 Introduction</h1><p>Text-to-SQL解析侧重于将自然语言问题转换为SQL查询，已引起学术界和工业界的重大研究兴趣。这种关注源于它的潜力，使非专业数据分析人员能够使用自然语言从无处不在的关系数据库中自动提取所需的信息。神经模型的最新进展，包括基于大型语言模型(llm)的神经模型，已经在现有的基准测试(如SPIDER和WikiSQL)上取得了令人印象深刻的表现。例如，在SPIDER排行榜中表现最好的模型的执行准确率从53.5%提高到了85.3%</p>
+<p>SPIDER中最新的SOTA解析器得益于大型语言模型(LLM)强大的理解和编码能力，而如此出色的性能让我们不禁要问一个问题：LLM已经可以作为数据库接口了吗?答案是否定的，因为以前的基准测试关注的是数据库模式，只有几行数据库值，在学术研究和现实世界之间留下了差距。如图1所示。</p>
+<img src="/2024/07/17/Can-LLM-Already-Serve-as-A-Database-Interface-A-BIg-Bench-for-Large-Scale-Database-Grounded-Text-to-SQLs/image-20240717171855478.png" class="" title="image-20240717171855478">
+<p>首先，我们发现当前最先进的模型仍然难以推广到以大型数据库大小和噪声值为特征的更现实的情况。其次，数据库大小的增长通常会导致大量的上下文压缩，从而使揭示整个上下文变得具有挑战性。因此需要外部知识推理才能全面理解。第三，现有的基准测试没有考虑SQL执行效率，这在实际应用程序中具有重要的实际意义，特别是在大型数据库的情况下。受这些观察结果的启发，我们的目标是开发一个新的text-to-SQL基准，它能更好地代表现实生活场景，并缩小实验和实际设置之间的差距。</p>
+<p>在这项工作中，我们提出了BIRD，一个基于Text-to-SQL的大规模数据库的大工作台，用于实际应用。BIRD包含了复杂的12,751个查询信息的例子，这些查询信息来自95个大型数据库，总大小为33.4 GB，跨越37个专业领域。为了培训和开发，我们从真实的分析平台(Kaggle, relationship .vit)中收集并修改了80个开源关系数据库。为了进一步避免数据泄漏，我们为一个隐藏测试集策划了15个额外的关系数据库。有了这些数据库，我们依靠众包来收集自然语言问题和相应的sql。此外，我们提出了一个新的评估指标有效效率评分(VES)来评估生成的sql的效率。据我们所知，BIRD是第一个结合效率的Text-to-SQL基准测试，在大量和嘈杂的数据库值上下文中促进更有效的查询方法。</p>
+<p>我们使用两种流行的方法来评估最先进的Text-to-SQL解析器的性能:使用T5的微调(FT)，以及使用先进的大型语言模型(llm)的上下文学习(ICL)，如ChatGPT (gpt-3.5-turbo)， Claude-2  (claude-2.0)， GPT-4  (GPT-4 -32k)。我们的实验结果表明，目前的模型很难很好地泛化BIRD。具体来说，即使是GPT-4，执行准确率也只有54.89%。相比之下，它的表现仍然远远落后于人类的92.96%，证明挑战仍然存在。此外，我们进行全面的分析，以提供见解和方向。我们鼓励NLP和数据库社区进一步研究，共同解决本基准中提出的更现实的设置。</p>
+<h1 id="2-任务制定与注释"><a href="#2-任务制定与注释" class="headerlink" title="2 任务制定与注释"></a>2 任务制定与注释</h1><p>文本到SQL是指将自然语言问题$Q$转换为能够从数据库检索相关数据的SQL查询$Y$的过程。数据库可以表示为$\mathcal{D}=&lt;\mathcal{C},\mathcal{T}&gt;$，其中$\mathcal{C}$和$\mathcal{T}$分别表示列和表。当我们处理类似BIRD的复杂数据库值时，引入外部知识数据，表示为$\mathcal{K}$来提高模型对于数据库值得理解。最后Text-to-SQL可以表示为：</p>
+<script type="math/tex; mode=display">Y=f(\mathcal{Q},\mathcal{D},\mathcal{K}|\theta)</script><p>其中函数$f(·|\theta)$可以表示为参数为$\theta$得模型或者神经网络</p>
+<h1 id="3-数据集建设"><a href="#3-数据集建设" class="headerlink" title="3 数据集建设"></a>3 数据集建设</h1><h2 id="3-1标注入口"><a href="#3-1标注入口" class="headerlink" title="3.1标注入口"></a>3.1标注入口</h2><p>为了提供高质量的基准，我们对所有申请人进行全面的考试，只雇用通过这些严格考试的人。</p>
+<h2 id="3-2数据库来源"><a href="#3-2数据库来源" class="headerlink" title="3.2数据库来源"></a>3.2数据库来源</h2><p>作者从三个不同的来源获取和处理数据库，以丰富真实世界属性：</p>
+<ul>
+<li><p>作者从三个不同的来源获取和处理数据库，以丰富真实世界属性：</p>
+</li>
+<li><p>48% 来自 CTU Prague Relational Learning Repository，这是一个用于机器学习研究的开放平台，提供多关系数据。</p>
+</li>
+<li><p>剩余的 20% 通过获取开放表格、综合和标准化模式以及生成数据库约束来构建。</p>
+</li>
+</ul>
+<p><strong>数据库的隐私保护</strong>：由于隐私保护的原因，收集具有复杂模式和足够值的数据库是困难的。早期的工作选择自行设计数据库模式和值生产，但这可能导致值分布和模式与真实世界场景不同。</p>
+<p><strong>数据库的多样性</strong>：最终，作者呈现了 95 个数据库，其中 69 个用于训练，11 个用于开发，15 个用于测试。这些数据库涵盖了 37 个专业领域，包括区块链、体育、医疗保健、政治等。</p>
+<h2 id="3-3问题注释"><a href="#3-3问题注释" class="headerlink" title="3.3问题注释"></a>3.3问题注释</h2><p>在 BIRD数据集中，如何收集和注释自然语言问题及其对应的 SQL 查询的过程。</p>
+<p><strong>数据库描述文件</strong>：强调了数据库描述文件的重要性，它为注释者提供了数据库的完整架构名称和值描述，帮助他们更好地理解数据库并提出问题。</p>
+<p><strong>外部知识证据</strong>：讨论了在将自然语言指令映射到数据库值时需要的外部知识证据，并将这类证据分为四类：</p>
+<ul>
+<li>数值推理知识：涉及某些 SQL 操作所需的数学计算。</li>
+<li>领域知识：特定领域知识，用于生成 SQL 操作。</li>
+<li>同义词知识：不同表述方式的相同或相似含义的词汇或表达。</li>
+<li>值说明：数据库值的详细描述，包括值类型、值类别以及与实体对应的列和值的映射组合。</li>
+</ul>
+<h2 id="3-4-SQL标注"><a href="#3-4-SQL标注" class="headerlink" title="3.4 SQL标注"></a>3.4 SQL标注</h2><p>在 BIRD 数据集中如何进行 SQL 查询的注释过程</p>
+<p><strong>双盲注释方法</strong>：</p>
+<ul>
+<li>采用双盲注释方法来提高 SQL 注释的准确性。这种方法涉及两位独立的 SQL 注释者为同一个问题生成 SQL 查询，他们之间不进行讨论。</li>
+<li>两位注释者生成的 SQL 查询在数据库中执行，如果执行结果相同，则被收集；如果结果不同，则需要专家检查并达成共识。</li>
+</ul>
+<p><strong>检查</strong>：</p>
+<p>专家评估每个文本到sql对，以确保最高质量的数据。评估过程包括两个维度:SQL有效性和文本-知识-SQL对齐。</p>
+<ul>
+<li>首先，确认SQL的有效性，确认每个SQL都是可执行的，并且可以从数据库返回一个有效的结果。“有效结果”是指非“NULL”的结果集。如果执行的结果集为“NULL”，专家将对问题的条件进行轻微更改，直到关联的sql可以提供有效的结果集。</li>
+<li>其次，涉及文本-知识-SQL对齐，以确保每个SQL都可以使用给定的文本和知识证据生成。如果证据不足以生成SQL或包含错误，则由专家负责纠正</li>
+</ul>
+<h1 id="4-数据统计"><a href="#4-数据统计" class="headerlink" title="4 数据统计"></a>4 数据统计</h1><p><strong>总体统计</strong>：</p>
+<ul>
+<li>提供了 BIRD 数据集与其他跨领域文本到 SQL 基准测试的比较概览。展示了 BIRD 数据集在规模、复杂 SQL 函数、知识推理和效率评估方面的特点。</li>
+</ul>
+<img src="/2024/07/17/Can-LLM-Already-Serve-as-A-Database-Interface-A-BIg-Bench-for-Large-Scale-Database-Grounded-Text-to-SQLs/image-20240717184753769.png" class="" title="image-20240717184753769">
+<p><strong>问题统计</strong>：</p>
+<ul>
+<li>讨论了数据库值在文本到 SQL 任务中带来的挑战，并将问题分为两大类：基础类型（Fundamental Type）和推理类型（Reasoning Type）。</li>
+<li>基础类型问题不需要数据库值理解即可回答，包括基于匹配（Match-based）、排名（Ranking）、比较（Comparison）、计数（Counting）和聚合（Aggregation）。</li>
+<li>推理类型问题需要外部知识来理解数据库值，BIRD 数据集中特有的问题类型，如领域知识（Domain Knowledge）、数值计算（Numeric Computing）、同义词（Synonym）和值说明（Value Illustration）。</li>
+</ul>
+<p><strong>数据库统计</strong>：</p>
+<ul>
+<li>调查了 BIRD 数据集中数据库领域的分布、数据库大小和值类型。通过太阳辐射图展示了训练和开发集中数据库的领域和大小分布。</li>
+<li>指出了 BIRD 数据集中相当一部分数据包含与日期相关的值，强调了这些时间敏感数据在现实世界应用中的重要性。</li>
+</ul>
+<img src="/2024/07/17/Can-LLM-Already-Serve-as-A-Database-Interface-A-BIg-Bench-for-Large-Scale-Database-Grounded-Text-to-SQLs/image-20240717184914861.png" class="" title="image-20240717184914861">
+<p><strong>SQL 统计</strong>：</p>
+<ul>
+<li>提供了 BIRD 数据集中 SQL 查询的复杂性和多样性的分布分析。展示了 SQL 查询在不同维度上的分布，如每条 SQL 查询的令牌数（No.Toks / SQL）、关键词数（No. of Keywords）、三元组数（No.n-grams / SQL，n=3）和连接数（No.JOINs / SQL）。</li>
+</ul>
+<h1 id="5评价指标"><a href="#5评价指标" class="headerlink" title="5评价指标"></a>5评价指标</h1><p><strong>执行准确率（Execution Accuracy, EX）</strong>：</p>
+<ul>
+<li><strong>定义</strong>：EX 定义为在评估集中，预测 SQL 和真实 SQL 执行结果相同的示例比例，相对于总 SQL 数量的比例。</li>
+<li><strong>计算公式</strong>： 𝐸𝑋=∑𝑛=1𝑁1(𝑉𝑛,𝑉^𝑛)<em>EX</em>=∑<em>n</em>=1<em>N</em>1(<em>V**n</em>,<em>V</em>^<em>n</em>) 其中 1(⋅)1(⋅) 是一个指示函数，如果 𝑉𝑛<em>V**n</em>（第 n 个真实 SQL 的结果集）等于 𝑉^𝑛<em>V</em>^<em>n</em>（第 n 个预测 SQL 的结果集），则返回 1，否则返回 0。</li>
+</ul>
+<p><strong>有效效率得分（Valid Efficiency Score, VES）</strong>：</p>
+<ul>
+<li><strong>目的</strong>：VES 设计用来衡量模型生成的有效 SQL 的效率。它考虑了 SQL 查询的执行效率和准确性，提供了模型性能的全面评估。</li>
+<li><strong>计算公式</strong>： 𝑉𝐸𝑆=∑𝑛=1𝑁1(𝑉𝑛,𝑉^𝑛)⋅𝑅(𝑌𝑛,𝑌^𝑛)<em>V**ES</em>=∑<em>n</em>=1<em>N</em>1(<em>V**n</em>,<em>V</em>^<em>n</em>)⋅<em>R</em>(<em>Y**n</em>,<em>Y</em>^<em>n</em>) 其中 𝑅(𝑌𝑛,𝑌^𝑛)<em>R</em>(<em>Y**n</em>,<em>Y</em>^<em>n</em>) 表示预测 SQL 相对于真实 SQL 的相对执行效率。𝐸(⋅)<em>E</em>(⋅) 是一个函数，用于测量每个 SQL 在给定环境中的绝对执行效率。公式中还引入了平方根函数，以减少异常值的影响。效率可以指运行时间、吞吐量、内存成本或合并指标。</li>
+<li><strong>考虑因素</strong>：VES 特别考虑了 “有效 SQL”，即预测 SQL 查询的结果集与真实 SQL 查询的结果集一致。任何无法获取正确值的 SQL 查询都将被宣布为无效，因为如果它们不能满足用户请求，无论它们的效率如何，都是完全无用的。</li>
+</ul>
+
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        <span class="icon">
+            <i class="fa-solid fa-tags fa-fw"></i>
+        </span>
+        
+        
+        
+        <span class="tag">
+            
+            <a href="/tags/sqL/" style="color: #00a596">sqL</a>
+        </span>
+        
+    </div>
+    <a href="/2024/07/17/Can-LLM-Already-Serve-as-A-Database-Interface-A-BIg-Bench-for-Large-Scale-Database-Grounded-Text-to-SQLs/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
     <a href="/2024/07/16/D-Bot-Database-Diagnosis-System-using-Large-Language-Models/">
         <h2 class="post-title">D-Bot: Database Diagnosis System using Large Language Models</h2>
     </a>
@@ -358,7 +475,8 @@
     <div class="description">
         <div class="content" v-pre>
             
-            <h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>大型语言模型(llm)在自然语言处理领域已经显示出令人印象深刻的影响，但它们仍然存在一些问题，如完整性、时效性、信誉度和适应性。虽然最近的努力主要集中在将LLMs与外部知识来源连接起来，但知识库(KBs)的集成仍然没有得到充分的研究，并面临着一些挑战。</p>
+            <p>[TOC]</p>
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>大型语言模型(llm)在自然语言处理领域已经显示出令人印象深刻的影响，但它们仍然存在一些问题，如完整性、时效性、信誉度和适应性。虽然最近的努力主要集中在将LLMs与外部知识来源连接起来，但知识库(KBs)的集成仍然没有得到充分的研究，并面临着一些挑战。</p>
 <p>在本文中，我们介绍了KnowledgeGPT，这是一个综合框架，可以将LLMs与各种知识库连接起来，促进知识的检索和存储。检索过程采用思想提示程序，生成编码格式的知识库检索语言，并为知识库操作预先定义功能。除了检索之外，KnowledgeGPT还提供了在个性化知识库中存储知识的功能，以满足个人用户的需求。通过大量的实验，我们表明，通过将LLMs与知识库集成，与vanilla LLMs相比，KnowledgeGPT可以正确地回答更多需要世界知识的问题，既利用了众所周知的知识库中存在的知识，也提取到了个性化的知识库中。</p>
 <p>文章链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.11761">https://arxiv.org/abs/2308.11761</a></p>
 <p>代码链接：</p>
@@ -1169,7 +1287,7 @@
         
         <span class="tag">
             
-            <a href="/tags/CoM-LLMs-SQL/" style="color: #ff7d73">CoM LLMs SQL</a>
+            <a href="/tags/CoM-LLMs-SQL/" style="color: #ffa2c4">CoM LLMs SQL</a>
         </span>
         
     </div>
@@ -1247,7 +1365,7 @@
         
         <span class="tag">
             
-            <a href="/tags/sql/" style="color: #03a9f4">sql</a>
+            <a href="/tags/sql/" style="color: #00a596">sql</a>
         </span>
         
     </div>
