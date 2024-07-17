@@ -277,12 +277,16 @@
 <h1 id="5评价指标"><a href="#5评价指标" class="headerlink" title="5评价指标"></a>5评价指标</h1><p><strong>执行准确率（Execution Accuracy, EX）</strong>：</p>
 <ul>
 <li><strong>定义</strong>：EX 定义为在评估集中，预测 SQL 和真实 SQL 执行结果相同的示例比例，相对于总 SQL 数量的比例。</li>
-<li><strong>计算公式</strong>： 𝐸𝑋=∑𝑛=1𝑁1(𝑉𝑛,𝑉^𝑛)<em>EX</em>=∑<em>n</em>=1<em>N</em>1(<em>V**n</em>,<em>V</em>^<em>n</em>) 其中 1(⋅)1(⋅) 是一个指示函数，如果 𝑉𝑛<em>V**n</em>（第 n 个真实 SQL 的结果集）等于 𝑉^𝑛<em>V</em>^<em>n</em>（第 n 个预测 SQL 的结果集），则返回 1，否则返回 0。</li>
+<li><strong>计算公式</strong>： 考虑结果集合作为$V_n$被第$n^{th}$真值SQL$Y_n$执行并且结果集$\hat{V}_{n}$被预测SQL$\hat{Y}_{n}$执行，那么EX可以被计算为</li>
 </ul>
+<script type="math/tex; mode=display">\mathrm{EX}=\frac{\sum_{n=1}^N\mathbb{1}(V_n,\hat{V_n})}{N}</script><p>其中，$\mathbb1(·)$有一个指示器得作用，可以被代表为：<script type="math/tex">\mathbb1(V,\hat V)=\begin{cases}1,&V=\hat V\\0,&V\neq\hat V\end{cases}</script></p>
 <p><strong>有效效率得分（Valid Efficiency Score, VES）</strong>：</p>
 <ul>
 <li><strong>目的</strong>：VES 设计用来衡量模型生成的有效 SQL 的效率。它考虑了 SQL 查询的执行效率和准确性，提供了模型性能的全面评估。</li>
-<li><strong>计算公式</strong>： 𝑉𝐸𝑆=∑𝑛=1𝑁1(𝑉𝑛,𝑉^𝑛)⋅𝑅(𝑌𝑛,𝑌^𝑛)<em>V**ES</em>=∑<em>n</em>=1<em>N</em>1(<em>V**n</em>,<em>V</em>^<em>n</em>)⋅<em>R</em>(<em>Y**n</em>,<em>Y</em>^<em>n</em>) 其中 𝑅(𝑌𝑛,𝑌^𝑛)<em>R</em>(<em>Y**n</em>,<em>Y</em>^<em>n</em>) 表示预测 SQL 相对于真实 SQL 的相对执行效率。𝐸(⋅)<em>E</em>(⋅) 是一个函数，用于测量每个 SQL 在给定环境中的绝对执行效率。公式中还引入了平方根函数，以减少异常值的影响。效率可以指运行时间、吞吐量、内存成本或合并指标。</li>
+<li><strong>计算公式</strong>：</li>
+</ul>
+<script type="math/tex; mode=display">\mathrm{VES}=\frac{\Sigma_{n=1}^N\mathbb{1}(V_n,\hat{V}_n)\cdot\mathbf{R}(Y_n,\hat{Y}_n)}{N},\quad\mathbf{R}(Y_n,\hat{Y}_n)=\sqrt{\frac{\mathbf{E}(Y_n)}{\mathbf{E}(\hat{Y}_n)}}</script><ul>
+<li>其中$R(·)$表示预测SQL相对于真实SQL的相对执行效率，允许与机器状态相关的不确定性。$E(·)$是衡量给定环境中每个SQL的绝对执行效率的函数。此外，我们还合并了平方根函数，以最小化比真实sql异常快或慢的随机实例。这里，效率可以指运行时间、吞吐量、内存成本或合并指标。在BIRD中，我们主要考虑的是此时的运行时间。</li>
 <li><strong>考虑因素</strong>：VES 特别考虑了 “有效 SQL”，即预测 SQL 查询的结果集与真实 SQL 查询的结果集一致。任何无法获取正确值的 SQL 查询都将被宣布为无效，因为如果它们不能满足用户请求，无论它们的效率如何，都是完全无用的。</li>
 </ul>
 
@@ -299,7 +303,7 @@
         
         <span class="tag">
             
-            <a href="/tags/sqL/" style="color: #00a596">sqL</a>
+            <a href="/tags/sqL/" style="color: #00bcd4">sqL</a>
         </span>
         
     </div>
@@ -1287,7 +1291,7 @@
         
         <span class="tag">
             
-            <a href="/tags/CoM-LLMs-SQL/" style="color: #ffa2c4">CoM LLMs SQL</a>
+            <a href="/tags/CoM-LLMs-SQL/" style="color: #03a9f4">CoM LLMs SQL</a>
         </span>
         
     </div>
@@ -1365,7 +1369,7 @@
         
         <span class="tag">
             
-            <a href="/tags/sql/" style="color: #00a596">sql</a>
+            <a href="/tags/sql/" style="color: #ff7d73">sql</a>
         </span>
         
     </div>
@@ -1467,7 +1471,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-sql/" style="color: #03a9f4">LLMs sql</a>
+            <a href="/tags/LLMs-sql/" style="color: #ff7d73">LLMs sql</a>
         </span>
         
     </div>
