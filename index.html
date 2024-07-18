@@ -207,7 +207,117 @@
     <div class="description">
         <div class="content" v-pre>
             
-            
+            <h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>最近基于llm的Text-to-SQL方法在处理“大型”数据库和需要多步骤推理的复杂用户问题时，通常会出现明显的性能下降。此外，大多数现有方法都忽视了llm利用外部工具和模型协作的关键意义。</p>
+<p>为了应对这些挑战，我们引入了MAC-SQL，这是一种新颖的基于llm的多代理协作框架。我们的框架包括一个核心分解代理，用于文本到SQL的生成，具有少量的思维链推理，以及两个辅助代理，它们利用外部工具或模型获取较小的子数据库并改进错误的SQL查询。</p>
+<p>分解代理与辅助代理协作，辅助代理根据需要被激活，并且可以扩展以适应新的特性或工具，从而实现有效的文本到sql解析。在我们的框架中，我们最初利用GPT-4作为所有代理任务的强大主干LLM，以确定框架的上限。</p>
+<p>然后，我们通过利用代码Llama 7B对开源指令遵循模型SQL-Llama进行微调，以完成GPT4所做的所有任务。实验表明，SQL-Llama的执行准确率为43.94，而vanilla GPT-4的基线准确率为46.35。在撰写本文时，MAC-SQL+GPT-4在BIRD基准测试上的执行精度为59.59，在其holdout测试集1上建立了一个新的先进技术(SOTA)</p>
+<h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1 Introduction"></a>1 Introduction</h1><p>贡献总结：</p>
+<ul>
+<li>提出了MAC-SQL，一种新的文本到sql的多代理协作框架，它集成了外部工具并促进了模型协作以解决复杂的场景。</li>
+<li>引入了一个名为SQL-Llama的指令调优模型，以填补用于文本到sql任务的开源代理指令遵循模型中的空白。</li>
+<li>实验结果表明，MAC-SQL在BIRD测试集上的执行准确率达到了59.59%。</li>
+</ul>
+<h1 id="2-前置知识"><a href="#2-前置知识" class="headerlink" title="2 前置知识"></a>2 前置知识</h1><h2 id="2-1-Text-to-SQ问题定义"><a href="#2-1-Text-to-SQ问题定义" class="headerlink" title="2.1 Text-to-SQ问题定义"></a>2.1 Text-to-SQ问题定义</h2><p>给定一个三元组$\mathcal{X}=(\mathcal{Q},\mathcal{S},\mathcal{K})$，其中$\mathcal{Q},\mathcal{S},\mathcal{K}$分别表示自然语言、数据库模式和外部知识（可选），数据库模式$S$可以定义为${\mathcal{T},\mathcal{C}}$，其中$\mathcal{T}$表示多个表${\mathcal{T_1},\mathcal{T_2},…,\mathcal{T_T}}$，$\mathcal{C}$表示列${\mathcal{C_1},\mathcal{C_2},…,\mathcal{C_|C|}}$，Text-to-SQL任务的目的是生成与问题Q对应的正确SQL Y</p>
+<h2 id="2-2-文本到sql的大型语言模型"><a href="#2-2-文本到sql的大型语言模型" class="headerlink" title="2.2 文本到sql的大型语言模型"></a>2.2 文本到sql的大型语言模型</h2><p>最近，文本到sql的任务被表述为生成任务，设计适当的提示（涉及创建一个包含上下文信息的输入，使得模型能够基于此上下文逐步生成完整的 SQL 查询。提示通常包括自然语言问题、数据库模式信息以及关键字等）来指导大型语言模型$\mathcal{M}$逐个令牌（令牌（token）是文本数据的最小单元，通常是单词、子词或字符。具体在生成 SQL 查询的任务中，令牌可以是 SQL 查询中的关键字、表名、列名、操作符、常量等。模型会逐个生成这些令牌，直至构建出完整的 SQL 查询）生成SQL查询。生成过程可表述为:</p>
+<script type="math/tex; mode=display">P_{\mathcal{M}}(\mathcal{Y}|\mathcal{X})=\prod_{i=1}^{|\mathcal{Y}|}P_{\mathcal{M}}(\mathcal{Y}_i|\mathcal{Y}_{<i},\mathcal{X})</script><p>其中，$\mathcal{Y}&lt;i=(\mathcal{Y_1},\mathcal{Y_2},…,\mathcal{Y_{i-1}})$是SQL查询$\mathcal{Y}$的前缀（SQL 查询的前缀指的是在当前生成步骤之前已经生成的部分查询），$P_{\mathcal{M}}(\mathcal{Y}|·)$是在给定三元组$\mathcal{X}=(\mathcal{Q},\mathcal{S},\mathcal{K})$下的第$i-th$个令牌下的SQL查询$\mathcal{Y}$的条件概率</p>
+<h1 id="3-MAC-SQL框架"><a href="#3-MAC-SQL框架" class="headerlink" title="3 MAC-SQL框架"></a>3 MAC-SQL框架</h1><h2 id="3-1-整体预览"><a href="#3-1-整体预览" class="headerlink" title="3.1 整体预览"></a>3.1 整体预览</h2><p>MAC-SQL包括一个用于文本到SQL生成的核心Decomposer代理，以及两个辅助代理:Selector和Refiner，用于工具使用和SQL细化。在算法1中，我们给出了MAC-SQL中三个agent的协作过程。</p>
+<h2 id="3-2-选择器"><a href="#3-2-选择器" class="headerlink" title="3.2 选择器"></a>3.2 选择器</h2><ol>
+<li><strong>功能描述：</strong></li>
+</ol>
+<ul>
+<li>选择器的目的就是为了定位最小的数据库模式子集，即从原始数据库模式中选择最相关的表和列，以回答用户的问题。这有助于减少无关信息的干扰，提高SQL查询的准确性和效率。</li>
+</ul>
+<ol>
+<li><strong>输入和输出</strong>：</li>
+</ol>
+<ul>
+<li>输入：元组$\mathcal{X}=(\mathcal{Q},\mathcal{S},\mathcal{K})$，其中数据库模式$\mathcal{S}$为$\{\mathcal{T},\mathcal{C}\}$</li>
+<li>输出：一个简化后的数据库模式子集$S^{‘}$，其中$S^{‘}=\{\mathcal{T}^{‘},\mathcal{C}^{‘}\}$，其中，$T^{^{\prime}}\subseteq T$并且$C^{^{\prime}}\subseteq C$</li>
+</ul>
+<ol>
+<li><strong>选择器：</strong></li>
+</ol>
+<ul>
+<li><p>加入问题$\mathcal{Q}$和外部知识$\mathcal{K}$后，选择器可以描述为：</p>
+<p><script type="math/tex">\mathcal{S}^{^{\prime}}=f_{selector}(\mathcal{Q},\mathcal{S},\mathcal{K}|\mathcal{M})</script>​</p>
+<p>其中，$f_{selector}(·|\mathcal{M})$通过LLM的提示代表了选择器的功能</p>
+</li>
+<li><p>选择器设计动机主要包含两个关键因素</p>
+<ul>
+<li>首先，在提示符中引入太多不相关的模式项会增加LLM在输出SQL中生成不相关模式项的可能性。</li>
+<li>其次，使用完整的数据库模式会导致文本长度过大，导致不必要的API成本，并且可能超过LLM的最大上下文长度。</li>
+</ul>
+</li>
+<li><p>重要的是要注意，只有当数据库模式提示符的长度超过长度阈值时，才会激活Selector;否则，后续进程将使用原始数据库模式S。</p>
+</li>
+</ul>
+<h2 id="3-3-分解器"><a href="#3-3-分解器" class="headerlink" title="3.3 分解器"></a>3.3 分解器</h2><ol>
+<li><strong>功能描述</strong>：</li>
+</ol>
+<ul>
+<li>Decomposer的目的是将复杂的自然语言问题分解为一系列更简单的子问题和子SQL查询。这种方法有助于逐步解决复杂问题，最终生成正确的SQL查询。</li>
+</ul>
+<img src="/2024/07/18/MAC-SQL-A-Multi-Agent-Collaborative-Framework-for-Text-to-SQL/image-20240718174341680.png" class="" title="image-20240718174341680">
+<ol>
+<li><strong>工作原理</strong>：</li>
+</ol>
+<ul>
+<li>Decomposer通过链式思维（Chain-of-Thought，CoT）推理方法，指导LLM逐步生成中间步骤。这些步骤包括子问题和子SQL查询，最终构建出完整的SQL查询。</li>
+<li><p>它首先判断用户问题的复杂性，如果问题可以通过简单的SQL查询直接回答，则直接生成SQL。如果问题更复杂，则从最简单的子问题开始生成SQL，并逐步细化，直到生成与问题对应的最终SQL。</p>
+</li>
+<li><p>Decomposer模式可以通过两种提示方法进行文本到sql解析:</p>
+<ul>
+<li><strong>链式思维推理</strong>：Decomposer采用链式思维推理方法，生成思考和推理过程，一次性获得答案。</li>
+<li><strong>最少到最多推理</strong>：另一种方法是通过迭代过程生成每个SQL查询，这种方法计算成本较高，但Decomposer选择了链式思维推理以提高效率。</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><p><strong>公式：</strong></p>
+<script type="math/tex; mode=display">P_{\mathcal{M}}(\mathcal{Y}|\mathcal{Q},\mathcal{S}^{'},\mathcal{K})=\prod_{j=1}^LP_{\mathcal{M}}(\mathcal{Y}^j|\mathcal{Y}^{<j};\mathcal{Q}^j,\mathcal{S}^{'},\mathcal{K})</script><p>其中，$\mathcal{Q}^j$和$\mathcal{Y}^j$分别是第$j$个子问题和子SQL查询，由LLM提示$\mathcal{M}$生成前子SQL序列$\mathcal{Y}^{&lt;j}$，通过数据库模式$S^{‘}$和外部知识$\mathcal{K}$进行过滤，$L$​是子问题的数量</p>
+</li>
+</ol>
+<h2 id="3-4-提炼器"><a href="#3-4-提炼器" class="headerlink" title="3.4 提炼器"></a>3.4 提炼器</h2><ol>
+<li><strong>功能描述</strong>：</li>
+</ol>
+<ul>
+<li>Refiner的主要功能是确保生成的SQL查询在语法上正确、可执行，并且能够从数据库中检索到非空的结果。它通过分析SQL执行的错误信息，指导大型语言模型（LLM）生成正确的SQL查询。</li>
+</ul>
+<ol>
+<li><strong>输入和输出</strong>：</li>
+</ol>
+<ul>
+<li>输入：一个有缺陷的SQL查询（$\mathcal{Y^{‘}}$）和来自外部SQL工具的错误消息反馈（$\mathcal{E}$）。</li>
+<li>输出：修正后的正确的SQL查询（$\mathcal{Y}$）</li>
+</ul>
+<ol>
+<li>公式：</li>
+</ol>
+<script type="math/tex; mode=display">\mathcal{Y}=f_{refiner}(\mathcal{E},\mathcal{Y}^{\prime},\mathcal{Q},\mathcal{S}^{\prime},\mathcal{K}|\mathcal{M})</script><p>其中，$f_{refiner}(·|\mathcal{M})$表示提炼其的功能，通过LLM的提示$\mathcal{M}$</p>
+<h1 id="4-SQL-Llama-Model"><a href="#4-SQL-Llama-Model" class="headerlink" title="4 SQL-Llama Model"></a>4 SQL-Llama Model</h1><h2 id="4-1-指令数据集构建（Instruction-Dataset-Construction）"><a href="#4-1-指令数据集构建（Instruction-Dataset-Construction）" class="headerlink" title="4.1 指令数据集构建（Instruction Dataset Construction）"></a>4.1 指令数据集构建（Instruction Dataset Construction）</h2><ul>
+<li><strong>目的</strong>：为了构建Agent-Instruct数据集，研究人员使用BIRD和Spider数据集的训练集，通过多智能体任务指导GPT-4生成指令数据。</li>
+<li><strong>过程</strong>：收集生成的指令数据，并根据难度级别进行过滤，排除那些输出SQL查询不正确的数据。</li>
+<li><strong>结果</strong>：最终形成了一个包含10,000条高质量指令数据的Agent-Instruct数据集D，涵盖3个智能体指令任务，覆盖BIRD和Spider数据集的分布。</li>
+</ul>
+<h2 id="4-2-多任务监督微调（Multi-task-Supervised-Fine-tuning）"><a href="#4-2-多任务监督微调（Multi-task-Supervised-Fine-tuning）" class="headerlink" title="4.2 多任务监督微调（Multi-task Supervised Fine-tuning）"></a>4.2 多任务监督微调（Multi-task Supervised Fine-tuning）</h2><ul>
+<li><strong>目的</strong>：研究人员专注于在MAC-SQL框架内开发开源模型，以实现与闭源模型如GPT-4相当的性能水平。</li>
+<li><strong>过程</strong>:<ul>
+<li>使用MAC-SQL的智能体指令数据对SQL-Llama模型进行监督微调。</li>
+<li>SQL-Llama模型基于Code Llama 7B，通过使用来自MAC-SQL的智能体指令数据进行微调，增强了其在数据库简化、问题分解、SQL生成和SQL校正方面的能力。</li>
+<li>训练目标是最小化N个任务的负对数似然损失，其中每个任务涉及选择数据库模式和中间SQL查询。</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-3-模型架构和训练"><a href="#4-3-模型架构和训练" class="headerlink" title="4.3 模型架构和训练"></a>4.3 模型架构和训练</h3><ul>
+<li><p><strong>模型基础</strong>：SQL-Llama模型基于Code Llama 7B，这是一个大型的语言模型，专门用于处理代码和结构化数据。</p>
+</li>
+<li><p><strong>训练数据</strong>：使用从MAC-SQL框架生成的指令数据集进行训练，确保模型能够学习并完成智能体任务。</p>
+</li>
+<li><p><strong>训练目标</strong>： </p>
+<script type="math/tex; mode=display">\mathcal{L}=-\sum_{i=1}^N\mathbb{E}_{\mathcal{Q},\mathcal{S}^i,\mathcal{K},\mathcal{Y}^i\sim\mathcal{D}}\left[\log P(\mathcal{Y}^i|\mathcal{Q},\mathcal{S}^i,\mathcal{K};\mathcal{M})\right]</script></li>
+</ul>
+<p>其中，$\mathcal{L}$为$N$个任务的训练目标， $\mathcal{S}^i$和$\mathcal{Y}^i$为第$i$个任务所选择的数据库模式和中间SQL查询。</p>
+
             
         </div>
     </div>
@@ -539,7 +649,7 @@
         
         <span class="tag">
             
-            <a href="/tags/sqL/" style="color: #ffa2c4">sqL</a>
+            <a href="/tags/sqL/" style="color: #00a596">sqL</a>
         </span>
         
     </div>
@@ -1527,7 +1637,7 @@
         
         <span class="tag">
             
-            <a href="/tags/CoM-LLMs-SQL/" style="color: #00bcd4">CoM LLMs SQL</a>
+            <a href="/tags/CoM-LLMs-SQL/" style="color: #00a596">CoM LLMs SQL</a>
         </span>
         
     </div>
@@ -1605,7 +1715,7 @@
         
         <span class="tag">
             
-            <a href="/tags/sql/" style="color: #00bcd4">sql</a>
+            <a href="/tags/sql/" style="color: #03a9f4">sql</a>
         </span>
         
     </div>
