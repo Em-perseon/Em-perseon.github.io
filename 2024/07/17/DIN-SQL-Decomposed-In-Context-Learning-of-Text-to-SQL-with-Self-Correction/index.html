@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>DIN-SQL: Decomposed In-Context Learning of Text-to-SQL with Self-Correction | XuSibo&#39;s Blog</title>
+    <meta name="author" content="Rick" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.css" />
+<script src="/js/lib/math.js"></script>
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>XUSIBO&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;XUSIBO&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>DIN-SQL: Decomposed In-Context Learning of Text-to-SQL with Self-Correction</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/17
+        </span>
+        
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <p>[TOC]</p>
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ol>
+<li><strong>背景</strong>：<ul>
+<li>在文本到 SQL（Text-to-SQL）任务中，尽管大型语言模型（LLMs）在零次和少次提示下表现出色，但它们在处理复杂查询时的性能仍与微调模型存在显著差距。特别是在 Spider 等挑战性数据集上，LLMs 的表现不如经过精心设计和微调的模型。</li>
+</ul>
+</li>
+<li><strong>问题</strong>：<ul>
+<li>研究者们面临的主要问题是，LLMs 在文本到 SQL 任务中在哪些方面失败，以及是否可以通过某些方法来提高它们的表现，使其达到或超越现有的最先进技术（SOTA）。</li>
+</ul>
+</li>
+<li><strong>解决方案</strong>：<ul>
+<li>本文提出了一种新的方法，通过将文本到 SQL 任务分解为更小的子任务，并利用这些子任务的解决方案来提高 LLMs 的性能。这种方法的核心在于：<ul>
+<li><strong>任务分解</strong>：将复杂的 SQL 查询生成问题分解为多个子问题，并将这些子问题的解决方案作为输入提供给 LLMs。</li>
+<li><strong>自适应提示策略</strong>：根据任务的复杂性引入不同的提示策略。</li>
+<li><strong>模式链接</strong>：解决在提示背景下的模式链接挑战，确保模型能够正确识别数据库模式和条件值。</li>
+<li><strong>自我纠正</strong>：使用 LLMs 进行自我纠正，以修复生成的 SQL 查询中的小错误。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>文章链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.11015">https://arxiv.org/abs/2304.11015</a></p>
+<p>代码：<a target="_blank" rel="noopener" href="https://github.com/MohammadrezaPourreza/Few-shot-NL2SQL-with-prompting">https://github.com/MohammadrezaPourreza/Few-shot-NL2SQL-with-prompting</a></p>
+<h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1 Introduction"></a>1 Introduction</h1><ol>
+<li><strong>数据库自然语言接口的目标</strong>：使最终用户更容易访问关系数据库中的数据。例如，给定一个口语化的查询（如“find employees who make more than their managers”），用户可能希望生成一个 SQL 查询来从数据库中检索相应的员工信息。</li>
+<li><strong>研究进展</strong>：过去二十年间，该领域的研究经历了几个阶段。早期系统是特定领域的，支持受控自然语言或依赖基于规则的方法。而近期的系统则提供更大的领域独立性，使用在多样化领域和数据集上训练的监督模型，以及在大型文本和代码库上训练的深度神经模型。</li>
+<li><strong>大型语言模型（LLMs）的使用</strong>：最新的发展是使用 LLMs 在零次和少次提示（zero-shot 和 few-shot prompting）下进行文本到 SQL 的转换。研究表明，LLMs 仅使用少量示例且无需微调即可提供强大的基线。</li>
+<li><strong>LLMs 性能差距</strong>：尽管 LLMs 在一些任务上表现出色，但在常用基准测试（如 Spider 数据集）上，它们的表现仍落后于精心设计和微调的模型，尤其是在中等和复杂查询上。</li>
+<li><strong>提示（Prompting）的优势</strong>：与传统的预训练或微调方法相比，提示方法的主要优势是 LLMs 可以在不需要大量特定任务训练数据的情况下执行预测任务。从头开始训练模型或微调它们是一个资源密集型的过程，通常需要大量的训练样本和机器资源，而这些资源可能并不总是可用的。</li>
+</ol>
+<h1 id="2-相关工作"><a href="#2-相关工作" class="headerlink" title="2 相关工作"></a>2 相关工作</h1><h1 id="3-Few-shot-Error-Analysis"><a href="#3-Few-shot-Error-Analysis" class="headerlink" title="3 Few-shot Error Analysis"></a>3 Few-shot Error Analysis</h1><p>统计产生故障的类型以及比例</p>
+<img src="/2024/07/17/DIN-SQL-Decomposed-In-Context-Learning-of-Text-to-SQL-with-Self-Correction/image-20240718155214459.png" class="" title="image-20240718155214459">
+<ul>
+<li>Schema linking：这个类别包含最多的失败查询，其中包括模型无法识别问题中提到的列名、表名或实体的实例。在某些情况下，查询需要聚合函数，但选择了匹配的列名。例如，“所有体育场的平均容量和最大容量是多少?”中包含一个名为“average”的列，该列由模型选择，而不是取容量列的平均值</li>
+<li>JOIN：这是第二大类别，包括需要JOIN的查询，但模型无法识别连接表所需的所有表或正确的外键</li>
+<li>GROUPY BY：这个类别包括SQL语句需要GROUP BY子句，但是模型没有认识到分组的需要，或者使用了错误的列对结果进行分组的情况</li>
+<li>Queries with nesting and set operations：对于这个类别，黄金查询使用嵌套或集合操作，但模型不能识别嵌套结构，或者无法检测正确的嵌套或集合操作。</li>
+<li>Invalid SQL：一小部分生成的SQL语句有语法错误，无法执行。</li>
+<li>Miscellaneous：这一类包括不属于上述任何一类的情况。示例包括包含额外谓词、遗漏谓词或缺少或冗余DISTINCT或DESC关键字的SQL查询。此类别还包括缺少where子句或查询具有冗余聚合函数的情况</li>
+</ul>
+<h1 id="4-方法"><a href="#4-方法" class="headerlink" title="4 方法"></a>4 方法</h1><p><strong>问题分解</strong>：作者指出，尽管零样本（zero-shot）提示方法在某些任务上表现出色，但在更复杂的查询中，尤其是在需要模式链接（schema linking）和多表连接（multiple joins）的情况下，这些模型的表现仍然存在挑战。为了解决这些问题，作者提出将问题分解为更小的子问题，并逐一解决。</p>
+<p><strong>四个模块</strong>：DIN-SQL方法包括四个主要模块：</p>
+<ul>
+<li><p><strong>模式链接（Schema Linking）</strong>：负责识别自然语言查询中对数据库模式和条件值的引用。为模式链接设计了一个基于提示符的模块。提示符包括从Spider数据集的训练集中随机选择的10个样本。按照思维链模板提示以Kojima et al .[2022]提出的“让我们一步一步地思考”开始。</p>
+</li>
+<li><p><strong>查询分类和分解（Query Classification and Decomposition）</strong>：</p>
+<ul>
+<li><p>对于每个连接，都有可能没有检测到正确的表或连接条件。随着查询中连接数量的增加，至少一个连接无法正确生成的可能性也会增加。缓解这个问题的一种方法是引入一个模块来检测要连接的表。</p>
+<p>还有一些查询具有过程组件，例如不相关的子查询，这些子查询可以独立生成并与主查询合并。</p>
+</li>
+<li><p>将查询分类为简单（easy）、非嵌套复杂（non-nested complex）和嵌套复杂（nested complex）三类，并检测需要连接的表集以及任何可能的子查询。</p>
+<ul>
+<li>简单类包括单表查询，无需连接或嵌套即可回答</li>
+<li>非嵌套类包括需要连接但不需要子查询的查询</li>
+<li>嵌套类中的查询可以包含连接、子查询和设置操作</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>SQL生成（SQL Generation）</strong>：根据不同的查询类别，使用不同的提示生成SQL查询。简单类别的查询使用简单的少量提示，非嵌套复杂类别的查询使用中间表示（如NatSQL），嵌套复杂类别的查询则需要多个中间步骤。</p>
+<ul>
+<li><strong>复杂性分类</strong>：SQL生成模块首先根据查询的复杂性将问题分为三个类别：<ul>
+<li><strong>简单（Easy）</strong>：不需要连接（JOIN）或嵌套查询的单表查询。</li>
+<li><strong>非嵌套复杂（Non-Nested Complex）</strong>：需要连接但不需要嵌套子查询的查询。</li>
+<li><strong>嵌套复杂（Nested Complex）</strong>：包含连接、子查询和集合操作（如EXCEPT、UNION、INTERSECT）的查询。</li>
+</ul>
+</li>
+<li><strong>中间表示</strong>：为了帮助生成SQL查询，使用了中间表示（如NatSQL）。NatSQL是一种简化的SQL表示，它去除了JOIN ON、FROM和GROUP BY等在自然语言中没有直接对应项的操作符，并将HAVING和WHERE子句合并。这种表示形式有助于简化从自然语言到SQL的转换过程。</li>
+<li><strong>生成策略</strong>：<ul>
+<li><strong>简单类别</strong>：对于简单类别的查询，使用简单的少量提示（few-shot prompting），不需要中间步骤。示例格式为$<Q_j,S_j,A_j>$，其中$Q_j$和$A_j$分别表示查询文本和SQL语句，$S_j$表示模式链接。</li>
+<li><strong>非嵌套复杂类别</strong>：对于需要连接的查询，使用NatSQL中间表示来桥接查询和SQL语句之间的差距。示例格式为$<Q_j,S_j,I_j,A_j>$，其中$S_j$和$I_j$分别表示模式链接和中间表示。</li>
+<li><strong>嵌套复杂类别</strong>：对于最复杂的查询类型，需要多个中间步骤。提示设计为让LLM首先解决子查询，然后使用这些子查询生成最终答案。示例格式为$<Q_j,S_j,<Q_{j_1},A_{j_1},...,Q_{j_k},A_{j_k}>,I_j,A_j&gt;$，其中$k$表示子问题的个数，$Q_{j_i}$和$A_{j_i}$分别表示第$i$个子问题和子查询。</li>
+</ul>
+</li>
+<li><strong>示例</strong>：文档中提供了针对不同类别查询的具体示例，展示了如何使用提示生成SQL查询。</li>
+<li><strong>提示的复杂性</strong>：作者指出，虽然更复杂的查询可以从列出中间步骤的链式思维（chain-of-thought）风格提示中受益，但这种列出可能会降低简单任务的性能。因此，SQL生成模块根据查询的复杂性使用不同的提示策略。</li>
+<li><strong>全提示</strong>：文档的附录部分提供了所有三个查询类别的完整提示示例，所有示例都从训练集的相同数据库中获取。</li>
+</ul>
+</li>
+<li><p><strong>自我修正（Self-correction）</strong>：生成的SQL查询有时可能存在缺失或冗余的关键字，自我修正模块旨在通过零样本设置来修正这些小错误。</p>
+<ul>
+<li><strong>问题识别</strong>：生成的SQL查询有时可能包含语法错误或逻辑错误，这些问题可能会影响查询的执行或结果的准确性。自我修正模块旨在识别并修正这些问题。</li>
+<li><strong>零样本设置</strong>：自我修正模块在零样本（zero-shot）设置中运行，这意味着模型在没有看到具体示例的情况下被要求修正代码。这种方法依赖于模型的泛化能力，使其能够理解和修正未见过的错误。</li>
+<li><strong>提示策略</strong>：为了实现自我修正，作者提出了两种不同的提示策略：<ul>
+<li><strong>通用提示（Generic Prompt）</strong>：这种提示假设提供的SQL查询是有缺陷的，并要求模型识别并修正错误。例如，提示可能以“Buggy SQL: … Fixed SQL: …”的形式出现。</li>
+<li><strong>温和提示（Gentle Prompt）</strong>：与通用提示不同，温和提示不假设SQL查询一定有错误。相反，它要求模型检查潜在的问题，并提供一些提示，指导模型检查特定的子句。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 XuSibo&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Rick
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

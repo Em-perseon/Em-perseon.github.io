@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Tags: CoM LLMs SQL | XuSibo&#39;s Blog</title>
+    <title>LLMs&#39;s tips | XuSibo&#39;s Blog</title>
     <meta name="author" content="Rick" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -42,6 +42,10 @@
 
 
 <script src="/js/lib/preview.js"></script>
+
+
+
+
 
 
 
@@ -159,98 +163,85 @@
 </transition>
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
-            <div id="archives">
-    
-    <div class="categories-tags">
-        
-        
-        
-        <span>
-            <a href="/tags/CoM-LLMs-SQL/" style="background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%)">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                CoM LLMs SQL
-            </a>
-        </span>
-        
-        
-        
-        
-        
-        <span>
-            <a href="/tags/sqL/" style="background: #ffa2c4">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                sqL
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/LLMs-SQL/" style="background: #00a596">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                LLMs SQL
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/LLMs-sql/" style="background: #ff7d73">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                LLMs sql
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/sql/" style="background: #03a9f4">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                sql
-            </a>
+            <div class="article">
+    <div>
+        <h1>LLMs&#39;s tips</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/17
         </span>
         
         
     </div>
     
-    <div class="timeline">
-        <div class="timeline-tail"></div>
-        <div class="timeline-content">
-            <div class="item-time">2024/7/14</div>
-            <a href="/2024/07/14/CHATDB-AUGMENTING-LLMS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY/">
-                <h3>CHATDB-AUGMENTING-LLMsS-WITH-DATABASES-AS-THEIR-SYMBOLIC-MEMORY</h3>
-            </a>
-            <div class="info">
-                
-                
-                <span class="tags">
-                    <span class="icon">
-                        <i class="fa-solid fa-tags fa-fw"></i>
-                    </span>
-                    
-                    
-                    <span class="tag">
-                        
-                        <a href="/tags/CoM-LLMs-SQL/" style="color: #ffa2c4">
-                            CoM LLMs SQL
-                        </a>
-                    </span>
-                    
-                </span>
-                
-            </div>
-        </div>
+    <div class="content" v-pre>
+        <h1 id="检索增强生成-Retrieval-augmented-Generation-RAG"><a href="#检索增强生成-Retrieval-augmented-Generation-RAG" class="headerlink" title="检索增强生成(Retrieval-augmented Generation RAG)"></a>检索增强生成(Retrieval-augmented Generation RAG)</h1><p>Retrieval-augmented generation (RAG) 是一种将检索和生成结合起来的自然语言处理技术。它的核心思想是利用大规模文档或知识库中的信息来增强生成模型的能力，从而提高答案的准确性和丰富性。RAG 模型通常由两个主要部分组成：检索模块和生成模块。</p>
+<h3 id="数学原理"><a href="#数学原理" class="headerlink" title="数学原理"></a>数学原理</h3><h4 id="1-检索模块（Retriever）"><a href="#1-检索模块（Retriever）" class="headerlink" title="1. 检索模块（Retriever）"></a>1. 检索模块（Retriever）</h4><p>检索模块的任务是从一个大规模的文档库或知识库中找到与输入查询最相关的文档。通常使用双塔结构（dual-encoder），即分别对查询和文档进行编码，并计算它们的相似度得分。</p>
+<ul>
+<li>设$q$是输入查询，$D=\{d_1,d_2,…,d_n\}$是文档库，检索模型的目标是找到与$q$最相关的文档子集$R\subseteq D$。</li>
+<li>使用编码器$E_q$和 $E_d$分别对查询和文档进行编码，得到向量表示$E_q(q)$和$E_d(d_i)$。</li>
+<li>计算查询与每个文档之间的相似度$\sin(E_q(q),E_d(d_i))$，例如使用点积或余弦相似度。</li>
+<li>选择相似度得分最高的$k$个文档$R=\{d_{i_1},d_{i_2},…,d_{i_k}\}$作为检索结果。</li>
+</ul>
+<script type="math/tex; mode=display">R=\{d_i\in D\mid\operatorname{sim}(E_q(q),E_d(d_i))\text{is among the top}k\}</script><h4 id="2-生成模块（Generator）"><a href="#2-生成模块（Generator）" class="headerlink" title="2. 生成模块（Generator）"></a>2. 生成模块（Generator）</h4><p>生成模块的任务是基于检索到的相关文档生成回答。生成模块通常是一个序列到序列（seq2seq）模型，例如 Transformer。</p>
+<ul>
+<li>输入由查询$q$和检索到的文档$R$组成，模型会将这些信息拼接成一个长的输入序列。</li>
+<li>使用生成模型（例如 BART、T5 等）生成回答$a$。</li>
+<li>生成过程可以表示为条件概率$P(a\mid q,R)$，即在给定查询和相关文档的条件下生成回答的概率。</li>
+</ul>
+<script type="math/tex; mode=display">P(a\mid q,R)=\prod_{t=1}^TP(a_t\mid q,R,a_{<t})</script><h4 id="3-训练和优化"><a href="#3-训练和优化" class="headerlink" title="3. 训练和优化"></a>3. 训练和优化</h4><p>RAG 模型的训练通常分为两步：</p>
+<ol>
+<li><strong>检索模块的训练</strong>：<ul>
+<li>使用监督学习的方法，根据查询和相关文档对（例如从现有的问答对中获取）训练检索模型。</li>
+<li>优化目标是最大化相关文档的相似度得分，同时最小化非相关文档的相似度得分。</li>
+</ul>
+</li>
+<li><strong>生成模块的训练</strong>：<ul>
+<li>在检索到的文档基础上，训练生成模型来生成高质量的回答。</li>
+<li>使用标准的序列到序列生成损失（例如交叉熵损失）来优化生成模型。</li>
+</ul>
+</li>
+</ol>
+<h4 id="4-推理（Inference）"><a href="#4-推理（Inference）" class="headerlink" title="4. 推理（Inference）"></a>4. 推理（Inference）</h4><p>在推理阶段，给定一个新的查询，首先使用检索模块从文档库中检索相关文档，然后将查询和检索结果输入到生成模块生成最终的回答。</p>
+<h3 id="数学总结"><a href="#数学总结" class="headerlink" title="数学总结"></a>数学总结</h3><ol>
+<li><strong>检索相似度计算</strong>：<ul>
+<li>$\sin(E_q(q),E_d(d_i))$：计算查询和文档的相似度。</li>
+</ul>
+</li>
+<li><strong>生成概率计算</strong>：<ul>
+<li>$P(a\mid q,R)=\prod_{t=1}^TP(a_t\mid q,R,a_{&lt;t})$：生成回答的条件概率。</li>
+</ul>
+</li>
+</ol>
+<p>通过这种方式，RAG 模型能够结合检索和生成的优势，在提供准确和丰富的回答方面表现出色。</p>
+<h1 id="Zero-shot-learning-and-Few-shot-Learning"><a href="#Zero-shot-learning-and-Few-shot-Learning" class="headerlink" title="Zero-shot learning and Few-shot Learning"></a>Zero-shot learning and Few-shot Learning</h1><p>Zero-shot 和 few-shot 是机器学习和自然语言处理（NLP）中的两种学习范式，旨在提高模型在处理未见过或只有极少数据的任务上的能力。</p>
+<ol>
+<li><strong>Zero-shot Learning（零样本学习）</strong>：<ul>
+<li><strong>定义</strong>：零样本学习是指模型能够在没有见过任何特定任务的训练示例的情况下，对该任务进行预测或分类。</li>
+<li><strong>原理</strong>：这种方法依赖于模型从其他任务中学到的知识，并将这种知识泛化到新任务上。例如，通过学习丰富的语义表示或利用预训练模型（如GPT-3），模型可以理解新的任务描述，并在没有具体训练数据的情况下执行任务。</li>
+<li><strong>应用场景</strong>：零样本学习适用于新兴的或数据稀缺的领域，例如自动生成代码、文本分类、机器翻译等。</li>
+</ul>
+</li>
+<li><strong>Few-shot Learning（少样本学习）</strong>：<ul>
+<li><strong>定义</strong>：少样本学习是指模型在只有少量（通常是几次）训练示例的情况下，对新任务进行预测或分类。</li>
+<li><strong>原理</strong>：这种方法通常依赖于元学习（meta-learning）或迁移学习（transfer learning），通过在大量不同但相关的任务上进行预训练，使模型能够快速适应新的任务。少样本学习方法包括原型网络（prototypical networks）、匹配网络（matching networks）、和 MAML（Model-Agnostic Meta-Learning）等。</li>
+<li><strong>应用场景</strong>：少样本学习适用于任务数据量有限但希望快速构建高效模型的情况，例如个性化推荐、医疗诊断等。</li>
+</ul>
+</li>
+</ol>
+<p>总结来说，零样本学习和少样本学习都是为了解决数据不足问题，前者在没有任何特定任务数据的情况下进行预测，后者则利用少量的任务数据进行学习。两者都在利用预训练模型和迁移学习方面取得了显著的进展，使得模型在面对新任务时具有更强的泛化能力。</p>
+
     </div>
+    
+    
+    
+    
+    
+    
     
 </div>
 
@@ -282,6 +273,12 @@
         
     </div>
     <script src="/js/main.js"></script>
+    
+    
+
+
+
+
     
 </body>
 </html>

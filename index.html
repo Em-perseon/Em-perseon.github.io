@@ -190,6 +190,242 @@
         
 
 <div class="post">
+    <a href="/2024/07/18/MAC-SQL-A-Multi-Agent-Collaborative-Framework-for-Text-to-SQL/">
+        <h2 class="post-title">MAC-SQL: A Multi-Agent Collaborative Framework for Text-to-SQL</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/18
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        
+        
+    </div>
+    <a href="/2024/07/18/MAC-SQL-A-Multi-Agent-Collaborative-Framework-for-Text-to-SQL/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
+    <a href="/2024/07/17/DIN-SQL-Decomposed-In-Context-Learning-of-Text-to-SQL-with-Self-Correction/">
+        <h2 class="post-title">DIN-SQL: Decomposed In-Context Learning of Text-to-SQL with Self-Correction</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/17
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <p>[TOC]</p>
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><ol>
+<li><strong>背景</strong>：<ul>
+<li>在文本到 SQL（Text-to-SQL）任务中，尽管大型语言模型（LLMs）在零次和少次提示下表现出色，但它们在处理复杂查询时的性能仍与微调模型存在显著差距。特别是在 Spider 等挑战性数据集上，LLMs 的表现不如经过精心设计和微调的模型。</li>
+</ul>
+</li>
+<li><strong>问题</strong>：<ul>
+<li>研究者们面临的主要问题是，LLMs 在文本到 SQL 任务中在哪些方面失败，以及是否可以通过某些方法来提高它们的表现，使其达到或超越现有的最先进技术（SOTA）。</li>
+</ul>
+</li>
+<li><strong>解决方案</strong>：<ul>
+<li>本文提出了一种新的方法，通过将文本到 SQL 任务分解为更小的子任务，并利用这些子任务的解决方案来提高 LLMs 的性能。这种方法的核心在于：<ul>
+<li><strong>任务分解</strong>：将复杂的 SQL 查询生成问题分解为多个子问题，并将这些子问题的解决方案作为输入提供给 LLMs。</li>
+<li><strong>自适应提示策略</strong>：根据任务的复杂性引入不同的提示策略。</li>
+<li><strong>模式链接</strong>：解决在提示背景下的模式链接挑战，确保模型能够正确识别数据库模式和条件值。</li>
+<li><strong>自我纠正</strong>：使用 LLMs 进行自我纠正，以修复生成的 SQL 查询中的小错误。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>文章链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.11015">https://arxiv.org/abs/2304.11015</a></p>
+<p>代码：<a target="_blank" rel="noopener" href="https://github.com/MohammadrezaPourreza/Few-shot-NL2SQL-with-prompting">https://github.com/MohammadrezaPourreza/Few-shot-NL2SQL-with-prompting</a></p>
+<h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1 Introduction"></a>1 Introduction</h1><ol>
+<li><strong>数据库自然语言接口的目标</strong>：使最终用户更容易访问关系数据库中的数据。例如，给定一个口语化的查询（如“find employees who make more than their managers”），用户可能希望生成一个 SQL 查询来从数据库中检索相应的员工信息。</li>
+<li><strong>研究进展</strong>：过去二十年间，该领域的研究经历了几个阶段。早期系统是特定领域的，支持受控自然语言或依赖基于规则的方法。而近期的系统则提供更大的领域独立性，使用在多样化领域和数据集上训练的监督模型，以及在大型文本和代码库上训练的深度神经模型。</li>
+<li><strong>大型语言模型（LLMs）的使用</strong>：最新的发展是使用 LLMs 在零次和少次提示（zero-shot 和 few-shot prompting）下进行文本到 SQL 的转换。研究表明，LLMs 仅使用少量示例且无需微调即可提供强大的基线。</li>
+<li><strong>LLMs 性能差距</strong>：尽管 LLMs 在一些任务上表现出色，但在常用基准测试（如 Spider 数据集）上，它们的表现仍落后于精心设计和微调的模型，尤其是在中等和复杂查询上。</li>
+<li><strong>提示（Prompting）的优势</strong>：与传统的预训练或微调方法相比，提示方法的主要优势是 LLMs 可以在不需要大量特定任务训练数据的情况下执行预测任务。从头开始训练模型或微调它们是一个资源密集型的过程，通常需要大量的训练样本和机器资源，而这些资源可能并不总是可用的。</li>
+</ol>
+<h1 id="2-相关工作"><a href="#2-相关工作" class="headerlink" title="2 相关工作"></a>2 相关工作</h1><h1 id="3-Few-shot-Error-Analysis"><a href="#3-Few-shot-Error-Analysis" class="headerlink" title="3 Few-shot Error Analysis"></a>3 Few-shot Error Analysis</h1><p>统计产生故障的类型以及比例</p>
+<img src="/2024/07/17/DIN-SQL-Decomposed-In-Context-Learning-of-Text-to-SQL-with-Self-Correction/image-20240718155214459.png" class="" title="image-20240718155214459">
+<ul>
+<li>Schema linking：这个类别包含最多的失败查询，其中包括模型无法识别问题中提到的列名、表名或实体的实例。在某些情况下，查询需要聚合函数，但选择了匹配的列名。例如，“所有体育场的平均容量和最大容量是多少?”中包含一个名为“average”的列，该列由模型选择，而不是取容量列的平均值</li>
+<li>JOIN：这是第二大类别，包括需要JOIN的查询，但模型无法识别连接表所需的所有表或正确的外键</li>
+<li>GROUPY BY：这个类别包括SQL语句需要GROUP BY子句，但是模型没有认识到分组的需要，或者使用了错误的列对结果进行分组的情况</li>
+<li>Queries with nesting and set operations：对于这个类别，黄金查询使用嵌套或集合操作，但模型不能识别嵌套结构，或者无法检测正确的嵌套或集合操作。</li>
+<li>Invalid SQL：一小部分生成的SQL语句有语法错误，无法执行。</li>
+<li>Miscellaneous：这一类包括不属于上述任何一类的情况。示例包括包含额外谓词、遗漏谓词或缺少或冗余DISTINCT或DESC关键字的SQL查询。此类别还包括缺少where子句或查询具有冗余聚合函数的情况</li>
+</ul>
+<h1 id="4-方法"><a href="#4-方法" class="headerlink" title="4 方法"></a>4 方法</h1><p><strong>问题分解</strong>：作者指出，尽管零样本（zero-shot）提示方法在某些任务上表现出色，但在更复杂的查询中，尤其是在需要模式链接（schema linking）和多表连接（multiple joins）的情况下，这些模型的表现仍然存在挑战。为了解决这些问题，作者提出将问题分解为更小的子问题，并逐一解决。</p>
+<p><strong>四个模块</strong>：DIN-SQL方法包括四个主要模块：</p>
+<ul>
+<li><p><strong>模式链接（Schema Linking）</strong>：负责识别自然语言查询中对数据库模式和条件值的引用。为模式链接设计了一个基于提示符的模块。提示符包括从Spider数据集的训练集中随机选择的10个样本。按照思维链模板提示以Kojima et al .[2022]提出的“让我们一步一步地思考”开始。</p>
+</li>
+<li><p><strong>查询分类和分解（Query Classification and Decomposition）</strong>：</p>
+<ul>
+<li><p>对于每个连接，都有可能没有检测到正确的表或连接条件。随着查询中连接数量的增加，至少一个连接无法正确生成的可能性也会增加。缓解这个问题的一种方法是引入一个模块来检测要连接的表。</p>
+<p>还有一些查询具有过程组件，例如不相关的子查询，这些子查询可以独立生成并与主查询合并。</p>
+</li>
+<li><p>将查询分类为简单（easy）、非嵌套复杂（non-nested complex）和嵌套复杂（nested complex）三类，并检测需要连接的表集以及任何可能的子查询。</p>
+<ul>
+<li>简单类包括单表查询，无需连接或嵌套即可回答</li>
+<li>非嵌套类包括需要连接但不需要子查询的查询</li>
+<li>嵌套类中的查询可以包含连接、子查询和设置操作</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>SQL生成（SQL Generation）</strong>：根据不同的查询类别，使用不同的提示生成SQL查询。简单类别的查询使用简单的少量提示，非嵌套复杂类别的查询使用中间表示（如NatSQL），嵌套复杂类别的查询则需要多个中间步骤。</p>
+<ul>
+<li><strong>复杂性分类</strong>：SQL生成模块首先根据查询的复杂性将问题分为三个类别：<ul>
+<li><strong>简单（Easy）</strong>：不需要连接（JOIN）或嵌套查询的单表查询。</li>
+<li><strong>非嵌套复杂（Non-Nested Complex）</strong>：需要连接但不需要嵌套子查询的查询。</li>
+<li><strong>嵌套复杂（Nested Complex）</strong>：包含连接、子查询和集合操作（如EXCEPT、UNION、INTERSECT）的查询。</li>
+</ul>
+</li>
+<li><strong>中间表示</strong>：为了帮助生成SQL查询，使用了中间表示（如NatSQL）。NatSQL是一种简化的SQL表示，它去除了JOIN ON、FROM和GROUP BY等在自然语言中没有直接对应项的操作符，并将HAVING和WHERE子句合并。这种表示形式有助于简化从自然语言到SQL的转换过程。</li>
+<li><strong>生成策略</strong>：<ul>
+<li><strong>简单类别</strong>：对于简单类别的查询，使用简单的少量提示（few-shot prompting），不需要中间步骤。示例格式为$<Q_j,S_j,A_j>$，其中$Q_j$和$A_j$分别表示查询文本和SQL语句，$S_j$表示模式链接。</li>
+<li><strong>非嵌套复杂类别</strong>：对于需要连接的查询，使用NatSQL中间表示来桥接查询和SQL语句之间的差距。示例格式为$<Q_j,S_j,I_j,A_j>$，其中$S_j$和$I_j$分别表示模式链接和中间表示。</li>
+<li><strong>嵌套复杂类别</strong>：对于最复杂的查询类型，需要多个中间步骤。提示设计为让LLM首先解决子查询，然后使用这些子查询生成最终答案。示例格式为$<Q_j,S_j,<Q_{j_1},A_{j_1},...,Q_{j_k},A_{j_k}>,I_j,A_j&gt;$，其中$k$表示子问题的个数，$Q_{j_i}$和$A_{j_i}$分别表示第$i$个子问题和子查询。</li>
+</ul>
+</li>
+<li><strong>示例</strong>：文档中提供了针对不同类别查询的具体示例，展示了如何使用提示生成SQL查询。</li>
+<li><strong>提示的复杂性</strong>：作者指出，虽然更复杂的查询可以从列出中间步骤的链式思维（chain-of-thought）风格提示中受益，但这种列出可能会降低简单任务的性能。因此，SQL生成模块根据查询的复杂性使用不同的提示策略。</li>
+<li><strong>全提示</strong>：文档的附录部分提供了所有三个查询类别的完整提示示例，所有示例都从训练集的相同数据库中获取。</li>
+</ul>
+</li>
+<li><p><strong>自我修正（Self-correction）</strong>：生成的SQL查询有时可能存在缺失或冗余的关键字，自我修正模块旨在通过零样本设置来修正这些小错误。</p>
+<ul>
+<li><strong>问题识别</strong>：生成的SQL查询有时可能包含语法错误或逻辑错误，这些问题可能会影响查询的执行或结果的准确性。自我修正模块旨在识别并修正这些问题。</li>
+<li><strong>零样本设置</strong>：自我修正模块在零样本（zero-shot）设置中运行，这意味着模型在没有看到具体示例的情况下被要求修正代码。这种方法依赖于模型的泛化能力，使其能够理解和修正未见过的错误。</li>
+<li><strong>提示策略</strong>：为了实现自我修正，作者提出了两种不同的提示策略：<ul>
+<li><strong>通用提示（Generic Prompt）</strong>：这种提示假设提供的SQL查询是有缺陷的，并要求模型识别并修正错误。例如，提示可能以“Buggy SQL: … Fixed SQL: …”的形式出现。</li>
+<li><strong>温和提示（Gentle Prompt）</strong>：与通用提示不同，温和提示不假设SQL查询一定有错误。相反，它要求模型检查潜在的问题，并提供一些提示，指导模型检查特定的子句。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        
+        
+    </div>
+    <a href="/2024/07/17/DIN-SQL-Decomposed-In-Context-Learning-of-Text-to-SQL-with-Self-Correction/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
+    <a href="/2024/07/17/LLMs-s-tips/">
+        <h2 class="post-title">LLMs&#39;s tips</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/17
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <h1 id="检索增强生成-Retrieval-augmented-Generation-RAG"><a href="#检索增强生成-Retrieval-augmented-Generation-RAG" class="headerlink" title="检索增强生成(Retrieval-augmented Generation RAG)"></a>检索增强生成(Retrieval-augmented Generation RAG)</h1><p>Retrieval-augmented generation (RAG) 是一种将检索和生成结合起来的自然语言处理技术。它的核心思想是利用大规模文档或知识库中的信息来增强生成模型的能力，从而提高答案的准确性和丰富性。RAG 模型通常由两个主要部分组成：检索模块和生成模块。</p>
+<h3 id="数学原理"><a href="#数学原理" class="headerlink" title="数学原理"></a>数学原理</h3><h4 id="1-检索模块（Retriever）"><a href="#1-检索模块（Retriever）" class="headerlink" title="1. 检索模块（Retriever）"></a>1. 检索模块（Retriever）</h4><p>检索模块的任务是从一个大规模的文档库或知识库中找到与输入查询最相关的文档。通常使用双塔结构（dual-encoder），即分别对查询和文档进行编码，并计算它们的相似度得分。</p>
+<ul>
+<li>设$q$是输入查询，$D=\{d_1,d_2,…,d_n\}$是文档库，检索模型的目标是找到与$q$最相关的文档子集$R\subseteq D$。</li>
+<li>使用编码器$E_q$和 $E_d$分别对查询和文档进行编码，得到向量表示$E_q(q)$和$E_d(d_i)$。</li>
+<li>计算查询与每个文档之间的相似度$\sin(E_q(q),E_d(d_i))$，例如使用点积或余弦相似度。</li>
+<li>选择相似度得分最高的$k$个文档$R=\{d_{i_1},d_{i_2},…,d_{i_k}\}$作为检索结果。</li>
+</ul>
+<script type="math/tex; mode=display">R=\{d_i\in D\mid\operatorname{sim}(E_q(q),E_d(d_i))\text{is among the top}k\}</script><h4 id="2-生成模块（Generator）"><a href="#2-生成模块（Generator）" class="headerlink" title="2. 生成模块（Generator）"></a>2. 生成模块（Generator）</h4><p>生成模块的任务是基于检索到的相关文档生成回答。生成模块通常是一个序列到序列（seq2seq）模型，例如 Transformer。</p>
+<ul>
+<li>输入由查询$q$和检索到的文档$R$组成，模型会将这些信息拼接成一个长的输入序列。</li>
+<li>使用生成模型（例如 BART、T5 等）生成回答$a$。</li>
+<li>生成过程可以表示为条件概率$P(a\mid q,R)$，即在给定查询和相关文档的条件下生成回答的概率。</li>
+</ul>
+<script type="math/tex; mode=display">P(a\mid q,R)=\prod_{t=1}^TP(a_t\mid q,R,a_{<t})</script><h4 id="3-训练和优化"><a href="#3-训练和优化" class="headerlink" title="3. 训练和优化"></a>3. 训练和优化</h4><p>RAG 模型的训练通常分为两步：</p>
+<ol>
+<li><strong>检索模块的训练</strong>：<ul>
+<li>使用监督学习的方法，根据查询和相关文档对（例如从现有的问答对中获取）训练检索模型。</li>
+<li>优化目标是最大化相关文档的相似度得分，同时最小化非相关文档的相似度得分。</li>
+</ul>
+</li>
+<li><strong>生成模块的训练</strong>：<ul>
+<li>在检索到的文档基础上，训练生成模型来生成高质量的回答。</li>
+<li>使用标准的序列到序列生成损失（例如交叉熵损失）来优化生成模型。</li>
+</ul>
+</li>
+</ol>
+<h4 id="4-推理（Inference）"><a href="#4-推理（Inference）" class="headerlink" title="4. 推理（Inference）"></a>4. 推理（Inference）</h4><p>在推理阶段，给定一个新的查询，首先使用检索模块从文档库中检索相关文档，然后将查询和检索结果输入到生成模块生成最终的回答。</p>
+<h3 id="数学总结"><a href="#数学总结" class="headerlink" title="数学总结"></a>数学总结</h3><ol>
+<li><strong>检索相似度计算</strong>：<ul>
+<li>$\sin(E_q(q),E_d(d_i))$：计算查询和文档的相似度。</li>
+</ul>
+</li>
+<li><strong>生成概率计算</strong>：<ul>
+<li>$P(a\mid q,R)=\prod_{t=1}^TP(a_t\mid q,R,a_{&lt;t})$：生成回答的条件概率。</li>
+</ul>
+</li>
+</ol>
+<p>通过这种方式，RAG 模型能够结合检索和生成的优势，在提供准确和丰富的回答方面表现出色。</p>
+<h1 id="Zero-shot-learning-and-Few-shot-Learning"><a href="#Zero-shot-learning-and-Few-shot-Learning" class="headerlink" title="Zero-shot learning and Few-shot Learning"></a>Zero-shot learning and Few-shot Learning</h1><p>Zero-shot 和 few-shot 是机器学习和自然语言处理（NLP）中的两种学习范式，旨在提高模型在处理未见过或只有极少数据的任务上的能力。</p>
+<ol>
+<li><strong>Zero-shot Learning（零样本学习）</strong>：<ul>
+<li><strong>定义</strong>：零样本学习是指模型能够在没有见过任何特定任务的训练示例的情况下，对该任务进行预测或分类。</li>
+<li><strong>原理</strong>：这种方法依赖于模型从其他任务中学到的知识，并将这种知识泛化到新任务上。例如，通过学习丰富的语义表示或利用预训练模型（如GPT-3），模型可以理解新的任务描述，并在没有具体训练数据的情况下执行任务。</li>
+<li><strong>应用场景</strong>：零样本学习适用于新兴的或数据稀缺的领域，例如自动生成代码、文本分类、机器翻译等。</li>
+</ul>
+</li>
+<li><strong>Few-shot Learning（少样本学习）</strong>：<ul>
+<li><strong>定义</strong>：少样本学习是指模型在只有少量（通常是几次）训练示例的情况下，对新任务进行预测或分类。</li>
+<li><strong>原理</strong>：这种方法通常依赖于元学习（meta-learning）或迁移学习（transfer learning），通过在大量不同但相关的任务上进行预训练，使模型能够快速适应新的任务。少样本学习方法包括原型网络（prototypical networks）、匹配网络（matching networks）、和 MAML（Model-Agnostic Meta-Learning）等。</li>
+<li><strong>应用场景</strong>：少样本学习适用于任务数据量有限但希望快速构建高效模型的情况，例如个性化推荐、医疗诊断等。</li>
+</ul>
+</li>
+</ol>
+<p>总结来说，零样本学习和少样本学习都是为了解决数据不足问题，前者在没有任何特定任务数据的情况下进行预测，后者则利用少量的任务数据进行学习。两者都在利用预训练模型和迁移学习方面取得了显著的进展，使得模型在面对新任务时具有更强的泛化能力。</p>
+
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        
+        
+    </div>
+    <a href="/2024/07/17/LLMs-s-tips/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
     <a href="/2024/07/17/Can-LLM-Already-Serve-as-A-Database-Interface-A-BIg-Bench-for-Large-Scale-Database-Grounded-Text-to-SQLs/">
         <h2 class="post-title">Can LLM Already Serve as A Database Interface?A BIg Bench for Large-Scale Database Grounded Text-to-SQLs</h2>
     </a>
@@ -303,7 +539,7 @@
         
         <span class="tag">
             
-            <a href="/tags/sqL/" style="color: #00bcd4">sqL</a>
+            <a href="/tags/sqL/" style="color: #ffa2c4">sqL</a>
         </span>
         
     </div>
@@ -1134,7 +1370,7 @@
         
         <span class="tag">
             
-            <a href="/tags/LLMs-SQL/" style="color: #ff7d73">LLMs SQL</a>
+            <a href="/tags/LLMs-SQL/" style="color: #ffa2c4">LLMs SQL</a>
         </span>
         
     </div>
@@ -1291,7 +1527,7 @@
         
         <span class="tag">
             
-            <a href="/tags/CoM-LLMs-SQL/" style="color: #03a9f4">CoM LLMs SQL</a>
+            <a href="/tags/CoM-LLMs-SQL/" style="color: #00bcd4">CoM LLMs SQL</a>
         </span>
         
     </div>
@@ -1369,113 +1605,11 @@
         
         <span class="tag">
             
-            <a href="/tags/sql/" style="color: #ff7d73">sql</a>
+            <a href="/tags/sql/" style="color: #00bcd4">sql</a>
         </span>
         
     </div>
     <a href="/2024/07/13/Improving-Demonstration-Diversity-by-Human-Free-Fusing-for-Text-to-SQL/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2024/07/12/DTS-SQL-Decomposed-Text-to-SQL-with-Small-Large-Language-Models/">
-        <h2 class="post-title">DTS-SQL: Decomposed Text-to-SQL with Small Large Language Models</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2024/7/12
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <h1 id="1-Abstract"><a href="#1-Abstract" class="headerlink" title="1. Abstract"></a>1. Abstract</h1><p>文章介绍了一种名为DTS-SQL的新技术，它是一种分解式文本到SQL（Text-to-SQL）的方法，旨在减小开源小型语言模型（LLMs）与专有大型语言模型之间的性能差距。<br></p>
-<p>文章链接：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2402.01117">https://arxiv.org/pdf/2402.01117</a><br>代码链接：<a target="_blank" rel="noopener" href="https://anonymous.4open.science/r/DTS-SQL-2A42/README.md">https://anonymous.4open.science/r/DTS-SQL-2A42/README.md</a></p>
-<h1 id="2-Methodology"><a href="#2-Methodology" class="headerlink" title="2. Methodology"></a>2. Methodology</h1><ul>
-<li><p>LLMs的一个显著发展是，其会进行训练后细化，增强了它们与首选行为的一致性。<br></p>
-<ul>
-<li>训练后细化指的是大型语言模型（LLMs）完成初步的<strong>预训练阶段</strong>之后，进行的进一步训练或调整过程。这个阶段的目的是使模型更好地适应特定的应用场景或任务，提高其性能和输出结果的准确性。</li>
-</ul>
-</li>
-<li><p>目前由于缺乏包含人类或者人工智能反馈的广泛数据集，导致人们导致人们主要关注<strong>Text-to-SQL</strong>的监督微调。这种方法需要一组特定的指令或提示及其相应的输出或响应。<br></p>
-<ul>
-<li>关于为什么要关注<strong>Text-to-SQL</strong>：Text-to-SQL系统能够将自然语言描述转化成对应的SQL查询语句，这项技术能够有效地辅助人们对海量的数据库进行查询。<ul>
-<li>Text-to-SQL就是这样一项转化自然语言描述为SQL查询语句的技术。举个例子：当我们询问智能助手 “贾樟柯导演是在哪出生的啊？”，Text-to-SQL模型就会先根据问句解析出SQL语句“SELECT birth_city FROM director WHERE name =”贾樟柯””，再对数据库执行该命令，最后向用户返回查询结果“山西省汾阳市”。<br></li>
-<li>《一文了解Text-to-SQL》文章链接：<a target="_blank" rel="noopener" href="https://www.jiqizhixin.com/articles/2019-12-27-11">https://www.jiqizhixin.com/articles/2019-12-27-11</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li>文章研究在Text-to-SQL上下文中对llm进行监督微调的既定方法。介绍了新的两步微调方法，旨在增强文本到sql领域中模型的性能</li>
-</ul>
-<h2 id="2-1有监督问题到SQL的微调（Supervised-fine-tunning-for-Text-to-SQL）"><a href="#2-1有监督问题到SQL的微调（Supervised-fine-tunning-for-Text-to-SQL）" class="headerlink" title="2.1有监督问题到SQL的微调（Supervised fine-tunning for Text-to-SQL）"></a>2.1有监督问题到SQL的微调（Supervised fine-tunning for Text-to-SQL）</h2><ul>
-<li>在这个小节中，将探索在开源社区实践的Text-to-SQL任务的监督调优过程</li>
-<li><p>给定一组数据库$D_i$ 其中包含对问题$q_i$和相应的SQL查询$s_i$，目标是使用一组训练数据$T=\{(q_i,s_i,D_i)\}$对大预言模型M进行微调，其中$q_i$和$s_i$表示自然语言问题和及其在数据库$D_i$上关联的SQL查询。监督微调的目标是为了<strong>最小化经验损失</strong>：<br>$\min_{\sigma, M} \frac{1}{|T|} \sum_{i=1}^{|T|} \mathcal{L}(M(\sigma_f(q_i, D_i, s_i)))$</p>
-<ul>
-<li>其中，$\mathcal{L}$是测量实际SQL查询和模型生成的SQL查询之间的差异。</li>
-<li>$\sigma_f$​​决定了问题、数据库模式和SQL查询的格式</li>
-<li>$M^<em>$表示经过微调（fine-tuning）后的模型参数，M表示model，然后</em>表示经过微调</li>
-</ul>
-</li>
-<li><p>主要的问题就是，我们事先不知道数据库中的表和哪些表是和要生成的SQL相关</p>
-</li>
-<li>因此一种常用的调优方法包括在提示中包括<strong>所有表的模式</strong>以及<strong>问题</strong>和<strong>SQL对</strong>。<ul>
-<li>这种方法有两个目的:<ul>
-<li>教模型生成正确的SQL查询</li>
-<li>并从所有提供的表中识别相关的表。</li>
-</ul>
-</li>
-<li>这种同时针对两个目标进行训练的方法使llm的SQL生成任务变得复杂，特别是对于只有几十亿个参数的较小模型。每个任务——生成SQL查询并正确链接到相关模式——都需要自己的推理过程。在大型语言模型中，很大一部分错误可归因于不正确的模式链接，这是该领域的一个主要挑战</li>
-</ul>
-</li>
-</ul>
-<h2 id="2-2分解监督微调（Decomposed-Supervised-Fine-tuning）"><a href="#2-2分解监督微调（Decomposed-Supervised-Fine-tuning）" class="headerlink" title="2.2分解监督微调（Decomposed Supervised Fine-tuning）"></a>2.2分解监督微调（Decomposed Supervised Fine-tuning）</h2><p>提出了一个两阶段的微调过程，将模式链接和SQL生成分开，旨在提高NL-to-SQL系统的性能</p>
-<h3 id="2-2-1模式链接微调-（-Schema-linking-Fine-tuning）"><a href="#2-2-1模式链接微调-（-Schema-linking-Fine-tuning）" class="headerlink" title="2.2.1模式链接微调 （ Schema-linking Fine-tuning）"></a>2.2.1模式链接微调 （ Schema-linking Fine-tuning）</h3><ul>
-<li>模式链接涉及识别数据库中相关的列和表，以响应自然语言查询。<ul>
-<li>它已被证明可以增强跨域泛化性并促进复杂查询的创建</li>
-<li>在之前的研究中，模式链接主要是通过上下文学习方法或在SQL生成的微调过程中隐含地完成的</li>
-</ul>
-</li>
-<li>在本文章当中，将模式链接视为一项独特的任务，并显式微调llm，以便在使用自然语言查询时识别相关的表和列。</li>
-<li>给定训练数据集$T=\{(q_i,s_i,D_i)\}$，提取 SQL查询中所使用的所有列和表，创建一个新的数据集$T=\{(q_i,T_i,C_i,D_i)\}$，其中$T_i$和$C_i$表示SQL查询$s_i$中使用的表和列表。在模式链接的监督微调过程中，主要的目标也是最小化经验损失，由下式进行定义：<script type="math/tex">\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i=1}^{|T|}\mathcal{L}(M^*(\sigma_s(q_i,T_i,C_i,D_i))</script><ul>
-<li>其中，$\mathcal{L}$表示模型下一个token预测的损失，将预测的列表和表名词与实际的基础真值名称进行比较</li>
-</ul>
-</li>
-</ul>
-<h3 id="2-2-2-SQL生成微调（SQL-Generation-Fine-tuning）"><a href="#2-2-2-SQL生成微调（SQL-Generation-Fine-tuning）" class="headerlink" title="2.2.2 SQL生成微调（SQL Generation Fine-tuning）"></a>2.2.2 SQL生成微调（SQL Generation Fine-tuning）</h3><ul>
-<li>当确定了用于生成SQL的适当表之后，下一步就是利用一个基于问题和正确表的模式构造SQL查询模型。由于我们已经使用模式链接模块确定了可能正确的表，因此不需要在SQL生成模型的输入中包含所有表。</li>
-<li>与之前微调llm的方法相反，我们从训练数据集$T=\{(q_i.s_i,D_i)\}$中提取与基本真实SQL查询对应的相关表。然后对LLM进行微调，同时最小化下面的损失函数：<script type="math/tex">\min_{\sigma,M^*}\frac{1}{|T|}\sum_{i=1}^{|T|}\mathcal{L}(M^*(\sigma_g(q_i,T_i,s_i))</script><ul>
-<li>其中损失函数和2.1定义的是一样的，文本到sql训练过程的这种分解允许llm以单一目标进行训练。通过分离模式链接和SQL查询生成任务，我们改进了训练过程，实现了更集中、更有效的微调。</li>
-</ul>
-</li>
-</ul>
-<h1 id="3-Limitations"><a href="#3-Limitations" class="headerlink" title="3. Limitations"></a>3. Limitations</h1><ul>
-<li>本文主要侧重于增强文本到sql任务的小型和大型语言模型的性能。然而，各种模式链接技术仍有进一步研究和比较的余地。将检索方法或上下文学习等方法与更大的模型(如GPT-4)一起应用于模式链接任务时，可以对确定最有效的模式链接方法产生有价值的见解。</li>
-</ul>
-
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        <span class="icon">
-            <i class="fa-solid fa-tags fa-fw"></i>
-        </span>
-        
-        
-        
-        <span class="tag">
-            
-            <a href="/tags/LLMs-sql/" style="color: #ff7d73">LLMs sql</a>
-        </span>
-        
-    </div>
-    <a href="/2024/07/12/DTS-SQL-Decomposed-Text-to-SQL-with-Small-Large-Language-Models/" class="go-post">阅读全文</a>
 </div>
 
 
@@ -1483,8 +1617,16 @@
     
     <span class="current">1</span>
     
+    <a class="page-num" href="/page/2">
+        2
+    </a>
     
     
+    
+    
+    <a class="page-num" href="/page/2/">
+        <i class="fa-solid fa-caret-right fa-fw"></i>
+    </a>
     
 </div>
 

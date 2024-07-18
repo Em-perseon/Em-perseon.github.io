@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>DTS-SQL: Decomposed Text-to-SQL with Small Large Language Models | XuSibo&#39;s Blog</title>
+    <title>XuSibo&#39;s Blog</title>
     <meta name="author" content="Rick" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -47,9 +47,7 @@
 
 
 
-
-
-
+<script src="/js/lib/home.js"></script>
 
 <link rel="stylesheet" href="/css/main.css" />
 
@@ -163,11 +161,40 @@
 </transition>
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
-            <div class="article">
-    <div>
-        <h1>DTS-SQL: Decomposed Text-to-SQL with Small Large Language Models</h1>
+            <div id="home-head">
+    <div
+        id="home-background"
+        ref="homeBackground"
+        data-images="/images/background.jpg"
+    ></div>
+    <div id="home-info" @click="homeClick">
+        <span class="loop"></span>
+        <span class="loop"></span>
+        <span class="loop"></span>
+        <span class="loop"></span>
+        <span class="info">
+            <div class="wrap">
+                <h1>XuSibo&#39;s Blog</h1>
+                <h3></h3>
+                <h5></h5>
+            </div>
+        </span>
     </div>
-    <div class="info">
+</div>
+<div
+    id="home-posts-wrap"
+    ref="homePostsWrap"
+    true
+>
+    <div id="home-posts">
+        
+
+<div class="post">
+    <a href="/2024/07/12/DTS-SQL-Decomposed-Text-to-SQL-with-Small-Large-Language-Models/">
+        <h2 class="post-title">DTS-SQL: Decomposed Text-to-SQL with Small Large Language Models</h2>
+    </a>
+    <div class="category-and-date">
+        
         <span class="date">
             <span class="icon">
                 <i class="fa-solid fa-calendar fa-fw"></i>
@@ -176,25 +203,11 @@
         </span>
         
         
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/LLMs-sql/" style="color: #00a596">
-                    LLMs sql
-                </a>
-            </span>
-            
-        </span>
-        
     </div>
-    
-    <div class="content" v-pre>
-        <h1 id="1-Abstract"><a href="#1-Abstract" class="headerlink" title="1. Abstract"></a>1. Abstract</h1><p>文章介绍了一种名为DTS-SQL的新技术，它是一种分解式文本到SQL（Text-to-SQL）的方法，旨在减小开源小型语言模型（LLMs）与专有大型语言模型之间的性能差距。<br></p>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <h1 id="1-Abstract"><a href="#1-Abstract" class="headerlink" title="1. Abstract"></a>1. Abstract</h1><p>文章介绍了一种名为DTS-SQL的新技术，它是一种分解式文本到SQL（Text-to-SQL）的方法，旨在减小开源小型语言模型（LLMs）与专有大型语言模型之间的性能差距。<br></p>
 <p>文章链接：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2402.01117">https://arxiv.org/pdf/2402.01117</a><br>代码链接：<a target="_blank" rel="noopener" href="https://anonymous.4open.science/r/DTS-SQL-2A42/README.md">https://anonymous.4open.science/r/DTS-SQL-2A42/README.md</a></p>
 <h1 id="2-Methodology"><a href="#2-Methodology" class="headerlink" title="2. Methodology"></a>2. Methodology</h1><ul>
 <li><p>LLMs的一个显著发展是，其会进行训练后细化，增强了它们与首选行为的一致性。<br></p>
@@ -258,13 +271,69 @@
 <li>本文主要侧重于增强文本到sql任务的小型和大型语言模型的性能。然而，各种模式链接技术仍有进一步研究和比较的余地。将检索方法或上下文学习等方法与更大的模型(如GPT-4)一起应用于模式链接任务时，可以对确定最有效的模式链接方法产生有价值的见解。</li>
 </ul>
 
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        <span class="icon">
+            <i class="fa-solid fa-tags fa-fw"></i>
+        </span>
+        
+        
+        
+        <span class="tag">
+            
+            <a href="/tags/LLMs-sql/" style="color: #03a9f4">LLMs sql</a>
+        </span>
+        
+    </div>
+    <a href="/2024/07/12/DTS-SQL-Decomposed-Text-to-SQL-with-Small-Large-Language-Models/" class="go-post">阅读全文</a>
+</div>
+
+
+        <div class="page-current">
+    
+    <a class="page-num" href="/">
+        <i class="fa-solid fa-caret-left fa-fw"></i>
+    </a>
+    <a class="page-num" href="/">1</a>
+    <span class="page-omit">...</span>
+    
+    <span class="current">2</span>
+    
+    
+    
+    
+</div>
+
     </div>
     
-    
-    
-    
-    
-    
+    <div id="home-card">
+        <div id="card-style">
+    <div id="card-div">
+        <div class="avatar">
+            <img src="/images/avatar.jpg" alt="avatar" />
+        </div>
+        <div class="name">Rick</div>
+        <div class="description">
+            <p>Description<br>…</p>
+
+        </div>
+        
+        
+        <div class="friend-links">
+            
+            <div class="friend-link">
+                <a target="_blank" rel="noopener" href="https://argvchs.github.io">Argvchs</a>
+            </div>
+            
+        </div>
+        
+    </div>
+</div>
+
+    </div>
     
 </div>
 
@@ -296,12 +365,6 @@
         
     </div>
     <script src="/js/main.js"></script>
-    
-    
-
-
-
-
     
 </body>
 </html>
